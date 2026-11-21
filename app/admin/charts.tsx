@@ -24,8 +24,8 @@ export function DailyBars({ days, label }: { days: { date: string; count: number
     <figure>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} className="h-auto w-full">
         {/* recessive grid: baseline + max line */}
-        <line x1={padL} x2={W} y1={padT + plotH} y2={padT + plotH} stroke="#8b5e1a66" />
-        <line x1={padL} x2={W} y1={padT} y2={padT} stroke="#8b5e1a26" strokeDasharray="3 3" />
+        <line x1={padL} x2={W} y1={padT + plotH} y2={padT + plotH} stroke="#6e5a4a" />
+        <line x1={padL} x2={W} y1={padT} y2={padT} stroke="#e6dcc0" strokeDasharray="3 3" />
         <text x={padL - 6} y={padT + 4} textAnchor="end" fontSize="11" fill="var(--color-ink)">
           {niceMax}
         </text>

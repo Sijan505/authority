@@ -1,23 +1,37 @@
 @import "tailwindcss";
 
+/*
+ * Palette (from the Issue 01 cover): cream paper, deep-brown ink,
+ * and a brown-to-gold gradient reserved for the wordmark.
+ * Older token names (ivory, brown, gold, tika…) are kept so every page follows the theme.
+ */
 @theme {
-  --color-ivory: #fdfdf5;
-  --color-brown: #3b1f12;
-  --color-ink: #4a3226; /* body text, 11:1 on ivory */
-  --color-gold-dark: #8b5e1a; /* 5.6:1 on ivory, safe for small text */
-  --color-gold: #c9900f; /* decorative only */
+  --color-ivory: #fcfbf0; /* cream paper background */
+  --color-paper: #fffef8; /* raised surfaces: inputs, cards */
+  --color-brown: #3b1a12; /* headings, deep brown */
+  --color-ink: #3b1a12; /* body text */
+  --color-mute: #6e5a4a; /* secondary text, 6.3:1 on paper */
+  --color-line: #e6dcc0; /* hairlines */
+  --color-tika: #8a5a14; /* dark gold accent, 5.7:1 on paper */
+  --color-gold-dark: #8a5a14; /* small accent text */
+  --color-gold: #c8962a; /* bright gold, decorative only */
+  --color-gold-pale: #efdfb2; /* placeholder columns */
   --color-error: #9b1c1c;
-  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-display: var(--font-newsreader), "Newsreader", Georgia, serif;
+  --font-serif: var(--font-newsreader), "Newsreader", Georgia, serif;
+  --font-sans: var(--font-hanken), "Hanken Grotesk", system-ui, sans-serif;
+  --font-deva: var(--font-tiro), "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
 }
 
 /* Per-field accent, overridden by <FieldTheme> on field pages */
 :root {
-  --accent: #8b5e1a;
-  --tint: #f3e6c4;
+  --accent: #8a5a14;
+  --tint: #efdfb2;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 72px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -29,34 +43,72 @@ html {
 body {
   background: var(--color-ivory);
   color: var(--color-ink);
-  font-family: var(--font-display);
-  font-size: 1.1875rem;
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  line-height: 1.1;
 }
 
 ::selection {
-  background: #c9900f40;
+  background: #c8962a40;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-gold-dark);
+  outline: 2px solid var(--color-tika);
   outline-offset: 3px;
 }
 
+/* Hero entrance */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility rise {
+  opacity: 0;
+  animation: rise 1s forwards;
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+@utility font-deva {
+  font-family: var(--font-deva);
+}
+
 @utility gold-text {
-  background: linear-gradient(90deg, #8b5e1a, #c9900f);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-tika);
 }
 
 @utility gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #8b5e1a 20%, #c9900f 80%, transparent);
+  background: var(--color-line);
 }
 
 @utility placeholder-gradient {
-  background: linear-gradient(160deg, #fdfdf5 0%, var(--tint) 55%, #d9b46a 100%);
+  background: linear-gradient(90deg, var(--color-paper) 0%, var(--tint) 65%, color-mix(in srgb, var(--tint) 70%, var(--color-line)) 100%);
+}
+
+/* AUTHORITY wordmark: deep brown → amber → gold, left to right */
+@utility wordmark-gradient {
+  background: linear-gradient(90deg, #3b1a12 0%, #6b3a10 35%, #a06a18 65%, #c8962a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @utility accent-text {
@@ -67,16 +119,21 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.75rem;
-  font-size: 1.125rem;
-  letter-spacing: 0.03em;
-  background: linear-gradient(90deg, #6f4a12, #8b5e1a);
-  color: #fdfdf5;
-  border-radius: 999px;
-  transition: filter 150ms;
+  padding: 0.8rem 1.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  border: 1px solid var(--color-ink);
   cursor: pointer;
+  transition:
+    background 150ms,
+    border-color 150ms;
   &:hover {
-    filter: brightness(1.12);
+    background: var(--color-tika);
+    border-color: var(--color-tika);
+    color: #fff;
   }
   &:disabled {
     opacity: 0.6;
@@ -86,58 +143,70 @@ body {
 
 @utility btn-accent {
   background: var(--accent);
+  border-color: var(--accent);
+}
+
+@utility btn-alt {
+  background: transparent;
+  color: var(--color-ink);
+}
+
+@utility btn-light {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  border-color: var(--color-ivory);
 }
 
 @utility btn-sm {
-  padding: 0.4rem 1rem;
-  font-size: 1rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.875rem;
 }
 
 @utility btn-ghost {
   display: inline-flex;
   align-items: center;
   padding: 0.35rem 0.9rem;
-  border: 1px solid #8b5e1a66;
-  border-radius: 999px;
-  color: var(--color-brown);
-  font-size: 1rem;
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  font-size: 0.9375rem;
   cursor: pointer;
   &:hover {
-    border-color: var(--color-gold-dark);
+    border-color: var(--color-ink);
   }
 }
 
 @utility link {
-  color: var(--color-gold-dark);
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-line);
   text-underline-offset: 4px;
   cursor: pointer;
   &:hover {
-    text-decoration: underline;
+    text-decoration-color: var(--color-tika);
   }
 }
 
 @utility nav-link {
-  color: var(--color-brown);
-  font-size: 1.0625rem;
-  text-underline-offset: 6px;
+  color: var(--color-mute);
+  font-size: 0.9375rem;
+  white-space: nowrap;
   cursor: pointer;
   &:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--color-gold);
+    color: var(--color-ink);
   }
 }
 
 @utility label {
   display: block;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--color-brown);
-  line-height: 1.35;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.4;
 }
 
 @utility hint {
-  font-size: 1rem;
-  color: var(--color-ink);
+  font-size: 0.9375rem;
+  color: var(--color-mute);
   margin-top: 0.25rem;
 }
 
@@ -146,13 +215,12 @@ body {
   width: 100%;
   margin-top: 0.6rem;
   padding: 0.6rem 0.85rem;
-  background: #fffef9;
-  border: 1px solid #8b5e1a66;
-  border-radius: 0.375rem;
-  color: var(--color-brown);
-  font-size: 1.0625rem;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  font-size: 1rem;
   &:focus {
-    outline: 2px solid var(--color-gold-dark);
+    outline: 2px solid var(--color-tika);
     outline-offset: 1px;
     border-color: transparent;
   }
@@ -169,32 +237,30 @@ body {
 @utility chip-face {
   display: inline-block;
   padding: 0.4rem 1rem;
-  border: 1px solid #8b5e1a59;
-  border-radius: 999px;
-  color: var(--color-brown);
-  font-size: 1.0625rem;
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  font-size: 0.9375rem;
   transition:
     background 120ms,
     border-color 120ms;
   &:hover {
-    border-color: var(--color-gold-dark);
+    border-color: var(--color-ink);
   }
   .peer:checked ~ & {
-    background: var(--color-brown);
-    border-color: var(--color-brown);
+    background: var(--color-ink);
+    border-color: var(--color-ink);
     color: var(--color-ivory);
   }
   .peer:focus-visible ~ & {
-    outline: 2px solid var(--color-gold-dark);
+    outline: 2px solid var(--color-tika);
     outline-offset: 2px;
   }
 }
 
 @utility card {
-  border: 1px solid #8b5e1a40;
-  border-radius: 0.5rem;
+  border: 1px solid var(--color-line);
   padding: 1.25rem;
-  background: #fffef9;
+  background: var(--color-paper);
 }
 
 @utility table-admin {
@@ -203,12 +269,12 @@ body {
   & th {
     text-align: left;
     font-weight: 600;
-    color: var(--color-brown);
-    border-bottom: 1px solid #8b5e1a66;
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-ink);
     padding: 0.5rem 0.75rem 0.5rem 0;
   }
   & td {
-    border-bottom: 1px solid #8b5e1a26;
+    border-bottom: 1px solid var(--color-line);
     padding: 0.6rem 0.75rem 0.6rem 0;
     vertical-align: top;
   }

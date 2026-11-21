@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   ];
   return (
     <div>
-      <div className="border-b border-gold/30 bg-[#f8f4e6]">
+      <div className="border-b border-gold/30 bg-paper">
         <nav aria-label="Admin" className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
           <span className="text-sm uppercase tracking-[0.2em] text-gold-dark">Admin</span>
           {links.map(([href, label]) => (

@@ -4,17 +4,20 @@ import { site } from "@/config/site";
 
 export const copy = {
   meta: {
-    title: "Authority — Members Club for Nepal's Fashion, Hospitality & Luxury",
+    title: "Authority — a members club for Nepal's tastemakers",
     description:
-      "Authority is Nepal's members club for fashion, hospitality and luxury, with articles by field and a monthly magazine. Kathmandu, Chitwan and Pokhara.",
+      "Authority is a private members club for the people shaping contemporary Nepal: dinners, openings, stays and introductions, hosted across the country.",
   },
 
   brand: {
     wordmark: "AUTHORITY",
-    tagline: "by the tastemaker, for the tastemaker",
+    tagline: "By the tastemaker, for the tastemaker.",
   },
 
   nav: {
+    experiences: "Experiences",
+    divisions: "Divisions",
+    addressBook: "Address Book",
     articles: "Articles",
     membership: "Membership",
     about: "About",
@@ -40,44 +43,118 @@ export const copy = {
   },
 
   home: {
-    whatIs: {
-      eyebrow: "What is Authority",
-      heading: "A club for the people who set the taste",
-      body: [
-        "Authority is a members club for Nepal's fashion, hospitality and luxury world.",
-        "Members receive articles chosen for their own field and a monthly magazine, and meet the people shaping it.",
-      ],
+    hero: {
+      deva: "गाँस · बास · कपास",
+      lede: "A private members club for the people shaping contemporary Nepal, built around evenings, openings and stays worth showing up for.",
+      body: "Members meet in person: dinners with chefs, hotel previews, studio visits and introductions across Kathmandu, Chitwan and Pokhara. A publication will follow once the community is established.",
+      primary: "See membership",
+      secondary: "See the experiences",
     },
-    whatItDoes: {
-      eyebrow: "What it does",
-      heading: "Articles by field, doors that are usually closed",
+    experiences: {
+      heading: "The experiences",
+      intro: "Small, hosted and in person. Each one is led by a person or place from the community.",
       items: [
-        { title: "Articles by field", body: "Reporting and features for your industry, not everyone else's." },
-        { title: "Partner venues", body: "Offers and discounts from founding partner venues in your field." },
-        { title: "Conversation", body: "Pro members comment, post and meet others in their field." },
+        { title: "Table", body: "dinners and tastings with chefs and producers", tag: "Gaas" },
+        { title: "Stay", body: "hotel previews, openings and member rates", tag: "Baas" },
+        { title: "Studio", body: "visits to designers, ateliers and weavers", tag: "Kapas" },
+        { title: "Introductions", body: "curated meetings between members", tag: "All divisions" },
       ],
+      emptyHeading: "The first dates are being set.",
+      emptyBody:
+        "No events are scheduled yet. Register your interest and you will hear first, with the city, venue and how many seats are open.",
+      emptyCta: "Register your interest",
     },
-    audience: {
-      eyebrow: "Who it is for",
+    divisions: {
       heading: "Three worlds, one table",
-      cards: [
-        { title: "Gaas", subtitle: "Taste", image: "Image: Gaas", body: "Chefs, restaurateurs, bar owners and producers." },
-        { title: "Baas", subtitle: "Stay", image: "Image: Baas", body: "Hotels, lodges, homestays and travel." },
-        { title: "Kapas", subtitle: "Clothes", image: "Image: Kapas", body: "Designers, ateliers, weavers and stylists." },
+      items: [
+        { deva: "गाँस", name: "Gaas", kind: "Food and culinary culture", body: "Chefs, restaurateurs, bar owners, producers and growers. Think dinners and tastings." },
+        { deva: "बास", name: "Baas", kind: "Hospitality and travel", body: "Hotels, lodges, homestays and the people who run them." },
+        { deva: "कपास", name: "Kapas", kind: "Fashion and design", body: "Designers, ateliers, weavers, stylists and makers." },
       ],
-      extra: [
-        { title: "Creators", body: "Writers, photographers and filmmakers telling these stories." },
-        { title: "Students", body: "The next generation of the industry, welcome from day one." },
-      ],
+      peopleHeading: "The people",
+      peopleBody:
+        "Behind every good table, room and garment is someone with a point of view: founders, craftspeople, creators, students and emerging talent. Members meet them in person first. Their stories will be published later.",
     },
-    articles: {
-      eyebrow: "From the articles",
-      heading: "Read by field",
-      all: "All articles",
+    addressBook: {
+      heading: "The Address Book",
+      lede: "Restaurants, hotels, designers and experiences we would send a friend to.",
+      body: "Every entry is visited and chosen by us. It is not a paid listing. Entries will appear here as the first experiences are confirmed.",
+      cta: "What is live and what is coming",
+    },
+    roadmap: {
+      heading: "What is live, what is coming",
+      intro: "We mark each part honestly, so you know what you can use today.",
+      items: [
+        { title: "Membership and sign-in", note: "", status: "Live, tiers being confirmed", live: true },
+        { title: "Hosted experiences", note: "dinners, previews, studio visits", status: "First focus, dates to come" },
+        { title: "The Cultural Calendar", note: "public and private events", status: "First focus" },
+        { title: "The Address Book", note: "", status: "In development" },
+        { title: "The Network", note: "member directory", status: "In development" },
+        { title: "The Circles", note: "smaller interest groups", status: "Planned" },
+        { title: "The Request Desk", note: "member concierge", status: "Planned" },
+        { title: "The Unlisted", note: "private experiences", status: "Planned" },
+        { title: "The Exchange and Opportunities Board", note: "", status: "Planned" },
+        { title: "The Authority Passport", note: "digital membership identity", status: "Planned" },
+        { title: "The Authority List", note: "annual recognition", status: "Planned" },
+        { title: "The magazine", note: "stories, profiles, monthly issues", status: "Later" },
+      ] as { title: string; note: string; status: string; live?: boolean }[],
+    },
+    tiers: {
+      heading: "Three ways to belong",
+      items: [
+        { name: "The Reader", price: "Free", features: ["Updates on new experiences", "Public events, when announced", "The magazine, when it launches"] },
+        {
+          name: "The Member",
+          price: "Price to be confirmed",
+          features: ["Everything in The Reader", "Member experiences and event booking", "Member directory and Circles", "Selected partner privileges"],
+        },
+        {
+          name: "The Inner Circle",
+          price: "Price to be confirmed",
+          features: ["Everything in The Member", "Priority invitations", "Curated introductions", "Concierge and private experiences"],
+        },
+      ],
+      readerCta: "Sign in with Google",
+      memberCta: "Join now",
+      innerCta: "Read the details",
+      note: "These tiers are proposed. Your existing payment setup continues to apply until pricing and benefits are confirmed.",
+    },
+    about: {
+      heading: "Why Authority exists",
+      lede: "Nepal has plenty of talent and very few places that gather it.",
+      body: [
+        "Chefs, hoteliers, designers and makers work a few streets apart and rarely meet. Authority is where they find each other, in a room, over a meal.",
+        "We are a members club first. The community comes before the content, so a publication will come later, once there is a real community to write about. We want to be taken seriously abroad while staying plainly Nepali.",
+      ],
+      aside: "Over time we aim to widen the circle: more cities, more fields and more people from the Nepali diaspora.",
+    },
+    faq: {
+      heading: "Questions",
+      items: [
+        {
+          q: "Who can join?",
+          a: "Anyone can read. Membership is aimed at people working in or serious about Nepal's food, hospitality, fashion, design and creative fields, including students.",
+          flag: "To confirm: whether applications are reviewed.",
+        },
+        { q: "What does it cost?", a: "The Reader is free.", flag: "To confirm: Member and Inner Circle pricing and billing period." },
+        {
+          q: "How do I pay or cancel?",
+          a: "Payment runs through the existing payment setup: eSewa, Khalti or bank transfer.",
+          flag: "To confirm: cancellation and refund terms before they are published.",
+        },
+        {
+          q: "What happens to my data?",
+          a: "You sign in with Google and tell us your field. See the",
+          flag: "To confirm: full privacy policy and member-directory visibility controls.",
+          privacyLink: true,
+        },
+        { q: "Where are events held?", a: "We are rooted in Kathmandu, Chitwan and Pokhara.", flag: "To confirm: the first event dates and any availability outside Nepal." },
+      ] as { q: string; a: string; flag: string; privacyLink?: boolean }[],
     },
     join: {
-      heading: "Join Authority",
-      body: "Sign in with Google, tell us your field, and choose a membership.",
+      heading: "Take a seat.",
+      body: "Register your interest today and be first to hear about the opening experiences.",
+      contact: "Contact the editors",
     },
   },
 

@@ -1,22 +1,13 @@
 import Image from "next/image";
 
-/** Small hand-drawn star that sits above the wordmark. */
+/** The Authority logo: a single-stroke, hand-drawn star. */
+export const LOGO_PATH =
+  "M23.5 42.1C23.3 29 22.8 14.9 22.9 5.9C28.4 14.3 38.9 26.6 45.4 35.4C34.3 29.6 15.5 27.2 2.4 32.5C17.8 23.1 36.6 13.7 45.4 9.3C38.9 14.3 28.4 26.6 25.2 41.7";
+
 export function Star({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 48" className={className} aria-hidden="true" fill="none">
-      <defs>
-        <linearGradient id="star-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#8B5E1A" />
-          <stop offset="1" stopColor="#C9900F" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M24.4 4.8c1.2 4.6 2.3 9.9 3.9 14.1 4.8.4 9.6.2 14.6 1.1-3.6 3.2-8 5.9-11.6 9.2 1.5 4.9 3.3 9.4 4.4 14.1-4.2-2.6-7.9-5.6-11.6-8.2-3.9 2.8-7.8 5.6-12 8.6 1.4-5 3.1-9.6 4.6-14.4-3.8-3-7.9-5.7-11.6-9 4.8-.6 9.8-.4 14.5-.9 1.7-4.7 3.1-9.5 4.8-14.6Z"
-        stroke="url(#star-gold)"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
+      <path d={LOGO_PATH} stroke="currentColor" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
