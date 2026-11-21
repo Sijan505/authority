@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum PackageType {
+  BASIC
+  PRO
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  PENDING_PAYMENT
+  ACTIVE
+  REJECTED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  ESEWA
+  KHALTI
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id          String     @id @default(cuid())
+  email       String     @unique // one account per Google email
+  googleId    String?    @unique @map("google_id")
+  name        String?
+  image       String?
+  role        Role       @default(MEMBER)
+  status      UserStatus @default(ACTIVE)
+  fieldId     String?    @map("field_id")
+  city        String?
+  contact     String?
+  onboardedAt DateTime?  @map("onboarded_at")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  field            Field?           @relation(fields: [fieldId], references: [id])
+  application      Application?
+  subscriptions    Subscription[]
+  payments         Payment[]        @relation("PaymentUser")
+  verifiedPayments Payment[]        @relation("PaymentVerifier")
+  comments         Comment[]
+  posts            DiscussionPost[]
+  reports          Report[]         @relation("Reporter")
+  resolvedReports  Report[]         @relation("Resolver")
+  blocking         UserBlock[]      @relation("Blocker")
+  blockedBy        UserBlock[]      @relation("Blocked")
+  auditLogs        AuditLog[]
+
+  @@index([fieldId])
+  @@map("users")
+}
+
+model Field {
+  id       String @id @default(cuid())
+  slug     String @unique
+  name     String
+  position Int    @default(0)
+
+  users        User[]
+  applications Application[]
+  articles     Article[]
+  posts        DiscussionPost[]
+  offers       Offer[]
+
+  @@map("fields")
+}
+
+model Application {
+  id           String   @id @default(cuid())
+  userId       String   @unique @map("user_id")
+  fieldId      String   @map("field_id")
+  name         String
+  city         String
+  contact      String
+  perks        String[]
+  deposit      String // Yes / Maybe / No: signal only, nothing is charged
+  helpBuild    String   @map("help_build")
+  contribution String?
+  status       String   @default("SUBMITTED")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  field Field @relation(fields: [fieldId], references: [id])
+
+  @@map("applications")
+}
+
+model Subscription {
+  id           String             @id @default(cuid())
+  userId       String             @map("user_id")
+  package      PackageType
+  billingCycle BillingCycle       @map("billing_cycle")
+  status       SubscriptionStatus @default(PENDING_PAYMENT)
+  startsAt     DateTime?          @map("starts_at")
+  expiresAt    DateTime?          @map("expires_at")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments Payment[]
+
+  @@index([userId, status])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  subscriptionId   String        @map("subscription_id")
+  userId           String        @map("user_id")
+  amount           Int // NPR
+  method           PaymentMethod
+  reference        String
+  screenshot       Bytes?
+  screenshotType   String?       @map("screenshot_type")
+  status           PaymentStatus @default(PENDING)
+  note             String?
+  verifiedById     String?       @map("verified_by")
+  verifiedAt       DateTime?     @map("verified_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  user         User         @relation("PaymentUser", fields: [userId], references: [id], onDelete: Cascade)
+  verifiedBy   User?        @relation("PaymentVerifier", fields: [verifiedById], references: [id])
+
+  @@index([status])
+  @@map("payments")
+}
+
+model Article {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  excerpt     String
+  body        String
+  fieldId     String        @map("field_id")
+  authorName  String        @map("author_name")
+  tags        String[]
+  status      ArticleStatus @default(DRAFT)
+  publishedAt DateTime?     @map("published_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  field    Field     @relation(fields: [fieldId], references: [id])
+  comments Comment[]
+
+  @@index([fieldId, status, publishedAt])
+  @@map("articles")
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  articleId String    @map("article_id")
+  userId    String    @map("user_id")
+  body      String
+  removedAt DateTime? @map("removed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  article Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reports Report[]
+
+  @@index([articleId, createdAt])
+  @@map("comments")
+}
+
+model DiscussionPost {
+  id        String    @id @default(cuid())
+  fieldId   String    @map("field_id")
+  userId    String    @map("user_id")
+  parentId  String?   @map("parent_id") // set for replies
+  body      String
+  removedAt DateTime? @map("removed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  field   Field            @relation(fields: [fieldId], references: [id])
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent  DiscussionPost?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies DiscussionPost[] @relation("Replies")
+  reports Report[]
+
+  @@index([fieldId, parentId, createdAt])
+  @@map("discussion_posts")
+}
+
+model Report {
+  id           String       @id @default(cuid())
+  reporterId   String       @map("reporter_id")
+  commentId    String?      @map("comment_id")
+  postId       String?      @map("post_id")
+  reason       String
+  status       ReportStatus @default(OPEN)
+  resolvedById String?      @map("resolved_by")
+  resolvedAt   DateTime?    @map("resolved_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  reporter   User            @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy User?           @relation("Resolver", fields: [resolvedById], references: [id])
+  comment    Comment?        @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  post       DiscussionPost? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("reports")
+}
+
+// A member hiding another member's Pro content from themselves.
+model UserBlock {
+  blockerId String   @map("blocker_id")
+  blockedId String   @map("blocked_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@id([blockerId, blockedId])
+  @@map("user_blocks")
+}
+
+model Offer {
+  id           String    @id @default(cuid())
+  fieldId      String    @map("field_id")
+  name         String
+  venue        String
+  discountText String    @map("discount_text")
+  validFrom    DateTime? @map("valid_from")
+  validUntil   DateTime? @map("valid_until")
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  field Field @relation(fields: [fieldId], references: [id])
+
+  @@index([fieldId, active])
+  @@map("offers")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?  @map("actor_id")
+  action     String
+  targetType String   @map("target_type")
+  targetId   String   @map("target_id")
+  details    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// Fixed-window counters for rate limiting, shared across server instances.
+model RateLimit {
+  key         String   @id
+  count       Int
+  windowStart DateTime @map("window_start")
+
+  @@map("rate_limits")
+}

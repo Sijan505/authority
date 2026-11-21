@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ivory: #fdfdf5;
+  --color-brown: #3b1f12;
+  --color-ink: #4a3226; /* body text, 11:1 on ivory */
+  --color-gold-dark: #8b5e1a; /* 5.6:1 on ivory, safe for small text */
+  --color-gold: #c9900f; /* decorative only */
+  --color-error: #9b1c1c;
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+}
+
+/* Per-field accent, overridden by <FieldTheme> on field pages */
+:root {
+  --accent: #8b5e1a;
+  --tint: #f3e6c4;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+}
+
+::selection {
+  background: #c9900f40;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-dark);
+  outline-offset: 3px;
+}
+
+@utility gold-text {
+  background: linear-gradient(90deg, #8b5e1a, #c9900f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8b5e1a 20%, #c9900f 80%, transparent);
+}
+
+@utility placeholder-gradient {
+  background: linear-gradient(160deg, #fdfdf5 0%, var(--tint) 55%, #d9b46a 100%);
+}
+
+@utility accent-text {
+  color: var(--accent);
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  font-size: 1.125rem;
+  letter-spacing: 0.03em;
+  background: linear-gradient(90deg, #6f4a12, #8b5e1a);
+  color: #fdfdf5;
+  border-radius: 999px;
+  transition: filter 150ms;
+  cursor: pointer;
+  &:hover {
+    filter: brightness(1.12);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+@utility btn-accent {
+  background: var(--accent);
+}
+
+@utility btn-sm {
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+}
+
+@utility btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid #8b5e1a66;
+  border-radius: 999px;
+  color: var(--color-brown);
+  font-size: 1rem;
+  cursor: pointer;
+  &:hover {
+    border-color: var(--color-gold-dark);
+  }
+}
+
+@utility link {
+  color: var(--color-gold-dark);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@utility nav-link {
+  color: var(--color-brown);
+  font-size: 1.0625rem;
+  text-underline-offset: 6px;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gold);
+  }
+}
+
+@utility label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-brown);
+  line-height: 1.35;
+}
+
+@utility hint {
+  font-size: 1rem;
+  color: var(--color-ink);
+  margin-top: 0.25rem;
+}
+
+@utility input {
+  display: block;
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  background: #fffef9;
+  border: 1px solid #8b5e1a66;
+  border-radius: 0.375rem;
+  color: var(--color-brown);
+  font-size: 1.0625rem;
+  &:focus {
+    outline: 2px solid var(--color-gold-dark);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+  &[aria-invalid="true"] {
+    border-color: var(--color-error);
+  }
+}
+
+@utility chip {
+  position: relative;
+  cursor: pointer;
+}
+
+@utility chip-face {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border: 1px solid #8b5e1a59;
+  border-radius: 999px;
+  color: var(--color-brown);
+  font-size: 1.0625rem;
+  transition:
+    background 120ms,
+    border-color 120ms;
+  &:hover {
+    border-color: var(--color-gold-dark);
+  }
+  .peer:checked ~ & {
+    background: var(--color-brown);
+    border-color: var(--color-brown);
+    color: var(--color-ivory);
+  }
+  .peer:focus-visible ~ & {
+    outline: 2px solid var(--color-gold-dark);
+    outline-offset: 2px;
+  }
+}
+
+@utility card {
+  border: 1px solid #8b5e1a40;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  background: #fffef9;
+}
+
+@utility table-admin {
+  width: 100%;
+  font-size: 1rem;
+  & th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-brown);
+    border-bottom: 1px solid #8b5e1a66;
+    padding: 0.5rem 0.75rem 0.5rem 0;
+  }
+  & td {
+    border-bottom: 1px solid #8b5e1a26;
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    vertical-align: top;
+  }
+}
