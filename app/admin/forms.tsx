@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { moderate, reviewPayment, saveArticle, saveOffer, updateMember } from "@/app/actions/admin";
+import { deleteArticle, moderate, reviewPayment, saveArticle, saveOffer, updateMember } from "@/app/actions/admin";
 import { FieldError, FormMessage, PendingButton, SubmitButton, useKeepValuesAction } from "@/components/forms";
 import type { ActionState } from "@/lib/validation";
 
@@ -240,6 +240,24 @@ export function OfferForm({ values, fields }: { values: OfferValues; fields: Opt
       <PendingButton pending={pending} pendingLabel="Saving…">
         Save offer
       </PendingButton>
+    </form>
+  );
+}
+
+/** Delete button that asks for confirmation before submitting. */
+export function DeleteArticleButton({ id, title, className = "btn-ghost text-red-700" }: { id: string; title: string; className?: string }) {
+  return (
+    <form
+      action={deleteArticle}
+      className="inline"
+      onSubmit={(e) => {
+        if (!window.confirm(`Delete "${title}"? Its comments will be deleted too. This can't be undone.`)) e.preventDefault();
+      }}
+    >
+      <input type="hidden" name="id" value={id} />
+      <button type="submit" className={className}>
+        Delete
+      </button>
     </form>
   );
 }

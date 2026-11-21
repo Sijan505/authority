@@ -3,6 +3,7 @@ import { setArticleStatus } from "@/app/actions/admin";
 import { formatDate } from "@/components/ArticleCard";
 import { requireAdmin } from "@/lib/access";
 import { db } from "@/lib/db";
+import { DeleteArticleButton } from "../forms";
 
 export default async function AdminArticles() {
   await requireAdmin();
@@ -52,9 +53,13 @@ export default async function AdminArticles() {
                       {a.status === "PUBLISHED" ? "Unpublish" : "Publish"}
                     </button>
                   </form>{" "}
+                  <Link href={`/admin/articles/${a.id}`} className="link text-sm">
+                    Edit
+                  </Link>{" "}
                   <Link href={`/articles/${a.slug}`} className="link text-sm">
                     View
-                  </Link>
+                  </Link>{" "}
+                  <DeleteArticleButton id={a.id} title={a.title} />
                 </td>
               </tr>
             ))}

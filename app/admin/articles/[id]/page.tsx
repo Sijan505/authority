@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/access";
 import { db } from "@/lib/db";
 import { listFields } from "@/lib/queries";
-import { ArticleForm } from "../../forms";
+import { ArticleForm, DeleteArticleButton } from "../../forms";
 
 /** Edits an article, or creates one when the id is "new". */
 export default async function EditArticle({ params }: PageProps<"/admin/articles/[id]">) {
@@ -30,7 +30,10 @@ export default async function EditArticle({ params }: PageProps<"/admin/articles
 
   return (
     <div className="max-w-3xl">
-      <h1 className="text-4xl font-medium text-brown">{article ? "Edit article" : "New article"}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-medium text-brown">{article ? "Edit article" : "New article"}</h1>
+        {article && <DeleteArticleButton id={article.id} title={article.title} className="btn btn-sm" />}
+      </div>
       <div className="mt-8">
         <ArticleForm values={values} fields={fields.map((f) => ({ value: f.id, label: f.name }))} />
       </div>

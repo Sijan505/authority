@@ -138,6 +138,26 @@ export async function setArticleStatus(formData: FormData) {
   revalidatePath("/", "layout");
 }
 
+/** Permanently deletes an article; its comments and their reports cascade. */
+export async function deleteArticle(formData: FormData) {
+  const admin = await assertAdmin();
+  const id = String(formData.get("id") ?? "");
+  await db.$transaction(async (tx) => {
+    const article = await tx.article.findUnique({ where: { id }, select: { id: true, title: true, slug: true } });
+    if (!article) return;
+    await tx.article.delete({ where: { id } });
+    await audit(tx, {
+      actorId: admin.user.id,
+      action: "article.delete",
+      targetType: "article",
+      targetId: id,
+      details: { title: article.title, slug: article.slug },
+    });
+  });
+  revalidatePath("/", "layout");
+  redirect("/admin/articles");
+}
+
 // ---- Offers ----
 
 export async function saveOffer(_prev: ActionState, formData: FormData): Promise<ActionState> {
