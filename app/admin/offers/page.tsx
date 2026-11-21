@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatDate } from "@/components/ArticleCard";
 import { requireAdmin } from "@/lib/access";
 import { db } from "@/lib/db";
+import { DeleteOfferButton } from "../forms";
 
 export default async function AdminOffers() {
   await requireAdmin();
@@ -28,6 +29,9 @@ export default async function AdminOffers() {
               <th scope="col">Discount</th>
               <th scope="col">Validity</th>
               <th scope="col">Active</th>
+              <th scope="col">
+                <span className="sr-only">Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -45,6 +49,12 @@ export default async function AdminOffers() {
                   {o.validFrom ? formatDate(o.validFrom) : "—"} – {o.validUntil ? formatDate(o.validUntil) : "—"}
                 </td>
                 <td>{o.active ? "Yes" : "No"}</td>
+                <td className="whitespace-nowrap">
+                  <Link href={`/admin/offers/${o.id}`} className="link text-sm">
+                    Edit
+                  </Link>{" "}
+                  <DeleteOfferButton id={o.id} title={o.name} />
+                </td>
               </tr>
             ))}
           </tbody>

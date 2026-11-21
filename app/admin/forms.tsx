@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { deleteArticle, moderate, reviewPayment, saveArticle, saveOffer, updateMember } from "@/app/actions/admin";
+import { deleteArticle, deleteOffer, moderate, reviewPayment, saveArticle, saveOffer, updateMember } from "@/app/actions/admin";
 import { FieldError, FormMessage, PendingButton, SubmitButton, useKeepValuesAction } from "@/components/forms";
 import type { ActionState } from "@/lib/validation";
 
@@ -244,14 +244,35 @@ export function OfferForm({ values, fields }: { values: OfferValues; fields: Opt
   );
 }
 
+type DeleteProps = { id: string; title: string; className?: string };
+
+export function DeleteArticleButton(props: DeleteProps) {
+  return (
+    <ConfirmDeleteButton
+      {...props}
+      action={deleteArticle}
+      message={`Delete "${props.title}"? Its comments will be deleted too. This can't be undone.`}
+    />
+  );
+}
+
+export function DeleteOfferButton(props: DeleteProps) {
+  return <ConfirmDeleteButton {...props} action={deleteOffer} message={`Delete the offer "${props.title}"? This can't be undone.`} />;
+}
+
 /** Delete button that asks for confirmation before submitting. */
-export function DeleteArticleButton({ id, title, className = "btn-ghost text-red-700" }: { id: string; title: string; className?: string }) {
+function ConfirmDeleteButton({
+  id,
+  action,
+  message,
+  className = "btn-ghost text-red-700",
+}: DeleteProps & { action: (formData: FormData) => Promise<void>; message: string }) {
   return (
     <form
-      action={deleteArticle}
+      action={action}
       className="inline"
       onSubmit={(e) => {
-        if (!window.confirm(`Delete "${title}"? Its comments will be deleted too. This can't be undone.`)) e.preventDefault();
+        if (!window.confirm(message)) e.preventDefault();
       }}
     >
       <input type="hidden" name="id" value={id} />

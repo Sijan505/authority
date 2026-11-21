@@ -186,6 +186,20 @@ export async function saveOffer(_prev: ActionState, formData: FormData): Promise
   return result;
 }
 
+/** Permanently deletes an offer. */
+export async function deleteOffer(formData: FormData) {
+  const admin = await assertAdmin();
+  const id = String(formData.get("id") ?? "");
+  await db.$transaction(async (tx) => {
+    const offer = await tx.offer.findUnique({ where: { id }, select: { name: true, venue: true } });
+    if (!offer) return;
+    await tx.offer.delete({ where: { id } });
+    await audit(tx, { actorId: admin.user.id, action: "offer.delete", targetType: "offer", targetId: id, details: offer });
+  });
+  revalidatePath("/", "layout");
+  redirect("/admin/offers");
+}
+
 // ---- Members ----
 
 export async function updateMember(_prev: ActionState, formData: FormData): Promise<ActionState> {

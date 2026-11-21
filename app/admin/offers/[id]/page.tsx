@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/access";
 import { db } from "@/lib/db";
 import { listFields } from "@/lib/queries";
-import { OfferForm } from "../../forms";
+import { DeleteOfferButton, OfferForm } from "../../forms";
 
 const toInput = (d: Date | null) => (d ? d.toISOString().slice(0, 10) : "");
 
@@ -28,7 +28,10 @@ export default async function EditOffer({ params }: PageProps<"/admin/offers/[id
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-4xl font-medium text-brown">{offer ? "Edit offer" : "New offer"}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-medium text-brown">{offer ? "Edit offer" : "New offer"}</h1>
+        {offer && <DeleteOfferButton id={offer.id} title={offer.name} className="btn btn-sm" />}
+      </div>
       <div className="mt-8">
         <OfferForm values={values} fields={fields.map((f) => ({ value: f.id, label: f.name }))} />
       </div>
