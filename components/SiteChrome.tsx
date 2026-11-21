@@ -94,7 +94,13 @@ export function SiteFooter() {
           </Link>
         </li>
       </ul>
-      <p className="mt-6 text-sm">{copy.footer.rights}</p>
+      <p className="mt-6 text-sm">
+        {copy.footer.rights}
+        <span aria-hidden="true" className="mx-2">·</span>
+        <Link href="/admin-login" className="link" rel="nofollow">
+          Admin
+        </Link>
+      </p>
     </footer>
   );
 }

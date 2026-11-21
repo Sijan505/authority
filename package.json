@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:seed": "prisma db seed",
     "db:sync-fields": "tsx prisma/seed-fields.ts",
-    "ship": "git push && vercel deploy --prod --yes",
+    "admin:password": "node scripts/set-admin-password.mjs",
+    "ship":"git push && vercel deploy --prod --yes",
     "vercel-build": "prisma migrate deploy && tsx prisma/seed-fields.ts && next build"
   },
   "dependencies": {

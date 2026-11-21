@@ -1,8 +1,11 @@
 import "server-only";
 import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
+import { checkAdminCredentials } from "@/lib/admin-password";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
+import { ipFromHeaders, rateLimit } from "@/lib/rate-limit";
 
 export function adminEmails() {
   return (process.env.ADMIN_EMAILS ?? "")
@@ -20,9 +23,39 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
+    // Username + password for the admin panel only (see /admin-login).
+    CredentialsProvider({
+      id: "admin-login",
+      name: "Admin",
+      credentials: { username: { type: "text" }, password: { type: "password" } },
+      async authorize(credentials, req) {
+        const raw = (req.headers ?? {}) as Record<string, string | string[] | undefined>;
+        const h = new Headers();
+        for (const k of ["x-forwarded-for", "x-real-ip"]) {
+          const v = raw[k];
+          if (v) h.set(k, Array.isArray(v) ? v[0] : v);
+        }
+        const ip = ipFromHeaders(h);
+        if (!(await rateLimit(`admin-login:${ip}`, 5, 15 * 60))) throw new Error("rate");
+        if (!credentials?.username || !credentials.password) return null;
+        if (!checkAdminCredentials(credentials.username, credentials.password)) return null;
+
+        // The password admin shares one account with the first ADMIN_EMAILS address (if any).
+        const email = adminEmails()[0] ?? "admin@authority.local";
+        const user = await db.user.upsert({
+          where: { email },
+          create: { email, name: "Admin", role: "ADMIN", onboardedAt: null },
+          update: { role: "ADMIN" },
+        });
+        if (user.status === "SUSPENDED") return null;
+        await audit(db, { actorId: user.id, action: "admin.password_login", targetType: "user", targetId: user.id, details: { ip } });
+        return { id: user.id, email: user.email, name: user.name };
+      },
+    }),
   ],
   callbacks: {
     async signIn({ account, profile }) {
+      if (account?.provider === "admin-login") return true; // checked in authorize()
       if (account?.provider !== "google") return false;
       const google = profile as GoogleProfile | undefined;
       if (!google?.email || !google.email_verified) return "/signin?error=unverified";
