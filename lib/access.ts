@@ -11,6 +11,8 @@ import { db } from "@/lib/db";
 
 export type Plan = "BASIC" | "PRO";
 
+const ADMIN_PASSWORD_SESSION_HOURS = 8;
+
 export type Viewer = NonNullable<Awaited<ReturnType<typeof getViewer>>>;
 
 /** The signed-in user with their current paid access, or null. Cached per request. */
@@ -43,7 +45,11 @@ export const getViewer = cache(async () => {
     user,
     plan,
     suspended,
-    isAdmin: user.role === "ADMIN" && !suspended,
+    // Password logins only grant admin for ADMIN_PASSWORD_SESSION_HOURS; then sign in again.
+    isAdmin:
+      user.role === "ADMIN" &&
+      !suspended &&
+      (session?.method !== "admin-login" || now.getTime() - (session.loginAt ?? 0) < ADMIN_PASSWORD_SESSION_HOURS * 3_600_000),
     onboarded,
     proExpiresAt,
     daysLeft,

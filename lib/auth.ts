@@ -36,7 +36,9 @@ export const authOptions: NextAuthOptions = {
           if (v) h.set(k, Array.isArray(v) ? v[0] : v);
         }
         const ip = ipFromHeaders(h);
+        // Per IP, plus a site-wide cap so guessing spread over many IPs is also stopped.
         if (!(await rateLimit(`admin-login:${ip}`, 5, 15 * 60))) throw new Error("rate");
+        if (!(await rateLimit("admin-login:all", 20, 60 * 60))) throw new Error("rate");
         if (!credentials?.username || !credentials.password) return null;
         if (!checkAdminCredentials(credentials.username, credentials.password)) return null;
 
@@ -103,12 +105,16 @@ export const authOptions: NextAuthOptions = {
       if (account && token.email) {
         const user = await db.user.findUnique({ where: { email: token.email.toLowerCase() }, select: { id: true } });
         token.uid = user?.id;
+        token.method = account.provider;
+        token.loginAt = Date.now();
       }
       return token;
     },
 
     async session({ session, token }) {
       if (session.user) session.user.id = token.uid as string | undefined;
+      session.method = token.method;
+      session.loginAt = token.loginAt;
       return session;
     },
   },
