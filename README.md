@@ -1,5 +1,7 @@
 # Authority — Members Platform
 
+**Live site:** https://authority-five.vercel.app
+
 Authority is a Nepal article publisher for fashion, hospitality and luxury. Members get its articles by field (industry), plus offers from partner venues, and Pro members can comment, post and see their field's member directory.
 
 | Package | Price | Includes |
