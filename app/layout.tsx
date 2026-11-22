@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Hanken_Grotesk, Newsreader, Tiro_Devanagari_Hindi } from "next/font/google";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { Analytics } from "@/components/Analytics";
+import { InquiryForm } from "@/components/Inquiry";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { copy } from "@/content/copy";
 import "./globals.css";
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </div>
         <SiteFooter />
+        <InquiryForm />
         <Analytics />
         <VercelAnalytics />
       </body>

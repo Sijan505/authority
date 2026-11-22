@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { cities, depositOptions, helpOptions, perks } from "@/config/site";
+import { cities, depositOptions, helpOptions, inquiryCities, inquiryInterests, inquiryRoles, inquiryWorlds, perks } from "@/config/site";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -151,6 +151,32 @@ export const moderationSchema = z.object({
 });
 
 /** First error message per field, for showing next to inputs. */
+/** Short reference shown to the visitor after an inquiry and on the admin list, e.g. "AU-7K3F9Q". */
+export const inquiryRef = (id: string) => `AU-${id.slice(-6).toUpperCase()}`;
+
+/** Longest answer the inquiry accepts for each text field; the form uses the same limits. */
+export const INQUIRY_LIMITS = { name: 120, email: 200, whatsapp: 40, link: 300, referrer: 120, long: 2000 } as const;
+
+export const inquirySchema = z.object({
+  name: text(INQUIRY_LIMITS.name).min(1, "Please tell us your name."),
+  email: text(INQUIRY_LIMITS.email)
+    .min(1, "We need an email to reply.")
+    .refine((v) => EMAIL_RE.test(v), "Please enter a valid email.")
+    .transform((v) => v.toLowerCase()),
+  whatsapp: text(INQUIRY_LIMITS.whatsapp)
+    .refine((v) => v === "" || parseContact(v)?.type === "whatsapp", "Please enter a valid WhatsApp number, or leave it empty.")
+    .transform((v) => (v ? parseContact(v)!.normalized : null)),
+  world: z.enum(inquiryWorlds, { message: "Please choose one." }),
+  role: z.enum(inquiryRoles, { message: "Please choose one." }),
+  city: z.enum(inquiryCities, { message: "Please choose one." }),
+  building: text(INQUIRY_LIMITS.long).min(1, "Please tell us a little."),
+  link: text(INQUIRY_LIMITS.link).transform((v) => v || null),
+  interests: z.array(z.enum(inquiryInterests)).min(1, "Please choose at least one.").max(inquiryInterests.length),
+  bring: text(INQUIRY_LIMITS.long).min(1, "Please tell us a little."),
+  referrer: text(INQUIRY_LIMITS.referrer).transform((v) => v || null),
+  notes: text(INQUIRY_LIMITS.long).transform((v) => v || null),
+});
+
 export function fieldErrors(error: z.ZodError) {
   const out: Record<string, string> = {};
   for (const issue of error.issues) {

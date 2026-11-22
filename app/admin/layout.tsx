@@ -10,6 +10,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const n = copy.admin.nav;
   const links = [
     ["/admin", n.dashboard],
+    ["/admin/inquiries", n.inquiries],
     ["/admin/payments", n.payments],
     ["/admin/articles", n.articles],
     ["/admin/offers", n.offers],

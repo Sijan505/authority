@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import { Star } from "@/components/Decor";
+import { InquiryButton } from "@/components/Inquiry";
 import { site } from "@/config/site";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
@@ -30,7 +31,10 @@ export async function SiteHeader() {
       <SignOutButton className="nav-link text-left" />
     </>
   ) : (
-    <SignInButton label={copy.nav.signIn} className="btn btn-sm" />
+    <>
+      <InquiryButton className="nav-link text-ink">{copy.inquiry.cta}</InquiryButton>
+      <SignInButton label={copy.nav.signIn} className="btn btn-sm" />
+    </>
   );
 
   return (
@@ -41,7 +45,7 @@ export async function SiteHeader() {
           <span className="wordmark-gradient font-serif text-xl tracking-[0.32em]">{copy.brand.wordmark}</span>
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-5 lg:flex">
+        <nav aria-label="Main" className="hidden items-center gap-5 xl:flex">
           {publicLinks.map((l) => (
             <Link key={l.href} href={l.href} className="nav-link">
               {l.label}
@@ -52,7 +56,7 @@ export async function SiteHeader() {
         </nav>
 
         {/* Mobile menu: native <details>, keyboard accessible without JS */}
-        <details className="relative lg:hidden">
+        <details className="relative xl:hidden">
           <summary className="cursor-pointer list-none border border-line px-3 py-1 text-[0.9375rem] [&::-webkit-details-marker]:hidden">
             {copy.nav.menu}
           </summary>

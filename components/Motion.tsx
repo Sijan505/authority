@@ -1,23 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-// The wordmark gradient from globals.css (.wordmark-gradient), as [position, r, g, b].
-const WORDMARK_STOPS = [
-  [0, 0x3b, 0x1a, 0x12],
-  [0.35, 0x6b, 0x3a, 0x10],
-  [0.65, 0xa0, 0x6a, 0x18],
-  [1, 0xc8, 0x96, 0x2a],
-] as const;
-
-function gradientAt(t: number) {
-  const hi = WORDMARK_STOPS.findIndex((s) => s[0] >= t);
-  const b = WORDMARK_STOPS[Math.max(hi, 1)];
-  const a = WORDMARK_STOPS[Math.max(hi, 1) - 1];
-  const k = (t - a[0]) / (b[0] - a[0]);
-  const mix = (j: 1 | 2 | 3) => Math.round(a[j] + (b[j] - a[j]) * k);
-  return `rgb(${mix(1)} ${mix(2)} ${mix(3)})`;
-}
+import { letterColour } from "@/components/wordmark";
 
 const prefersReducedMotion =() => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -96,9 +80,7 @@ export function ScrollWordmark({ word, className = "" }: { word: string; classNa
           key={i}
           aria-hidden="true"
           className="hero-letter"
-          // Each letter takes its colour from the wordmark gradient (brown → gold); a
-          // background-clip gradient on the parent does not paint transformed children.
-          style={{ "--i": i, color: gradientAt(letters.length > 1 ? i / (letters.length - 1) : 0) } as React.CSSProperties}
+          style={{ "--i": i, color: letterColour(i, letters.length) } as React.CSSProperties}
         >
           {ch}
         </span>
@@ -107,22 +89,22 @@ export function ScrollWordmark({ word, className = "" }: { word: string; classNa
   );
 }
 
-/** Counts 000 → 100 while the intro curtain is up. */
-export function IntroCounter({ duration = 2200 }: { duration?: number }) {
+/** Counts 000 → 100 while the intro curtain is up, in step with the gold line in globals.css. */
+export function IntroCounter({ duration = 2400, delay = 100 }: { duration?: number; delay?: number }) {
   const [n, setN] = useState(0);
 
   useEffect(() => {
     let frame = 0;
-    const start = performance.now();
+    const start = performance.now() + delay;
     const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
+      const t = Math.min(1, Math.max(0, (now - start) / duration));
       // Ease out, so the count slows as it reaches 100.
       setN(Math.round(100 * (1 - Math.pow(1 - t, 3))));
       if (t < 1) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [duration]);
+  }, [duration, delay]);
 
   return <span>{String(n).padStart(3, "0")}</span>;
 }

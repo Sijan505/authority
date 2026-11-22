@@ -296,3 +296,24 @@ model RateLimit {
 
   @@map("rate_limits")
 }
+
+// "Request an invitation" answers from the public inquiry form (components/Inquiry.tsx).
+model Inquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  whatsapp  String?
+  world     String
+  role      String
+  city      String
+  building  String
+  link      String?
+  interests String[]
+  bring     String
+  referrer  String? // set when a member sent them
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("inquiries")
+}

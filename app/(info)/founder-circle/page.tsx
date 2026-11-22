@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { InquiryButton } from "@/components/Inquiry";
 import { Reveal } from "@/components/Motion";
 import { Eyebrow, Heading, Lede, RuleGrid, Section, Wrap } from "@/components/Sections";
 import { copy } from "@/content/copy";
@@ -48,9 +49,12 @@ export default function FounderCirclePage() {
         <Reveal>
           <Eyebrow>{copy.home.join.eyebrow}</Eyebrow>
           <p className="max-w-[30ch] font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.2] font-light text-gold">{copy.home.join.heading}</p>
-          <Link href="/contact" className="btn btn-light mt-10">
-            {fc.cta}
-          </Link>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <InquiryButton className="btn btn-light" />
+            <Link href="/contact" className="btn btn-light">
+              {fc.cta}
+            </Link>
+          </div>
         </Reveal>
       </Section>
     </main>

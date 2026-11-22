@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SignInButton } from "@/components/AuthButtons";
+import { InquiryButton, InquiryPrompt } from "@/components/Inquiry";
 import { IntroLoader } from "@/components/IntroLoader";
 import { Reveal, ScrollWordmark } from "@/components/Motion";
 import { Eyebrow, Heading, Lede, Section, Wrap } from "@/components/Sections";
@@ -23,6 +24,7 @@ export default async function Home() {
   return (
     <main>
       <IntroLoader />
+      <InquiryPrompt />
 
       {/* Hero */}
       <section className="flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden pt-14 pb-10">
@@ -47,12 +49,10 @@ export default async function Home() {
               <Reveal delay={120}>
                 <p className="max-w-[56ch]">{home.hero.body}</p>
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <a href="#membership" className="btn">
+                  <InquiryButton className="btn" />
+                  <a href="#membership" className="btn btn-alt">
                     {home.hero.primary}
                   </a>
-                  <Link href="/platform" className="btn btn-alt">
-                    {home.hero.secondary}
-                  </Link>
                 </div>
               </Reveal>
             </div>
@@ -262,6 +262,7 @@ export default async function Home() {
         </Reveal>
         <Reveal delay={150}>
           <div className="mt-10 flex flex-wrap gap-3">
+            <InquiryButton className="btn btn-light" />
             {join(copy.signIn.google, "btn btn-light")}
             <Link href="/contact" className="btn btn-light">
               {home.join.contact}
