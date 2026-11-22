@@ -22,19 +22,32 @@ export const helpOptions = ["Yes, I'd like to help", "Maybe, tell me more", "No,
 /** Days before expiry when the dashboard starts showing a renewal reminder. */
 export const RENEWAL_REMINDER_DAYS = 7;
 
-// Options for the "Request an invitation" inquiry (components/Inquiry.tsx). The server
-// validates answers against these lists, so edit them here only.
-export const inquiryWorlds = ["Gaas: food and dining", "Baas: hospitality and places", "Kapas: fashion and craft", "A bit of everything"] as const;
+// The public interest form (components/Inquiry.tsx), following the landing-page
+// workplan. The server validates answers against these lists, so edit them here only.
+// It reuses cities, perks, depositOptions and helpOptions from above.
+export const inquiryFields = ["Fashion", "Food", "Hospitality", "Travel", "Creative", "Student", "Other"] as const;
 
-export const inquiryRoles = [
-  "Founder or business owner",
-  "Creative: designer, photographer, artist",
-  "Chef or hospitality professional",
-  "Maker or artisan",
-  "Student or emerging talent",
-  "Curious, and want to be in the room",
-] as const;
+// TBC: price bands to test, per year.
+export const priceBands = ["Under Rs 5,000", "Rs 5,000 – 10,000", "Rs 10,000 – 25,000", "Over Rs 25,000", "Not sure yet"] as const;
 
-export const inquiryCities = ["Kathmandu", "Chitwan", "Pokhara", "Elsewhere in Nepal", "Outside Nepal"] as const;
+export const contributionOptions = ["Writing", "Photography", "Venues", "Brand connections", "Styling", "Other"] as const;
 
-export const inquiryInterests = ["The Experiences", "The Network", "The Request Desk", "The Exchange", "The Journal", "The Founder Circle"] as const;
+/** Where a sign-up came from, read from ?utm_source= / ?ref= or the referring site. */
+export const inquirySources = ["Instagram", "TikTok", "Facebook", "Referral", "Search", "Direct", "Other"] as const;
+
+/**
+ * The first event. Set reserved to a real number to show the seat counter
+ * ("25 of 40 seats reserved"); while it is null the page says reservations open soon.
+ */
+export const issueDrop = {
+  seats: 40, // TBC
+  reserved: null as number | null,
+  venue: "A partner venue in Kathmandu", // TBC: name the venue once confirmed
+};
+
+/** Founding partners. Empty slots show as "coming soon" up to partnerSlots. */
+export const partners: { name: string; kind: string; href?: string }[] = [];
+export const partnerSlots = 6;
+
+/** TBC: success target for the interest test, set before launch (shown in admin). */
+export const successTarget = { signups: 200, willingToPayShare: 0.25, deposits: 20 };

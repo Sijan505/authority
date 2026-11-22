@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { cities, depositOptions, helpOptions, inquiryCities, inquiryInterests, inquiryRoles, inquiryWorlds, perks } from "@/config/site";
+import { cities, contributionOptions, depositOptions, helpOptions, inquiryFields, inquirySources, perks, priceBands } from "@/config/site";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -155,27 +155,35 @@ export const moderationSchema = z.object({
 export const inquiryRef = (id: string) => `AU-${id.slice(-6).toUpperCase()}`;
 
 /** Longest answer the inquiry accepts for each text field; the form uses the same limits. */
-export const INQUIRY_LIMITS = { name: 120, email: 200, whatsapp: 40, link: 300, referrer: 120, long: 2000 } as const;
+export const INQUIRY_LIMITS = { name: 120, contact: 200 } as const;
 
-export const inquirySchema = z.object({
-  name: text(INQUIRY_LIMITS.name).min(1, "Please tell us your name."),
-  email: text(INQUIRY_LIMITS.email)
-    .min(1, "We need an email to reply.")
-    .refine((v) => EMAIL_RE.test(v), "Please enter a valid email.")
-    .transform((v) => v.toLowerCase()),
-  whatsapp: text(INQUIRY_LIMITS.whatsapp)
-    .refine((v) => v === "" || parseContact(v)?.type === "whatsapp", "Please enter a valid WhatsApp number, or leave it empty.")
-    .transform((v) => (v ? parseContact(v)!.normalized : null)),
-  world: z.enum(inquiryWorlds, { message: "Please choose one." }),
-  role: z.enum(inquiryRoles, { message: "Please choose one." }),
-  city: z.enum(inquiryCities, { message: "Please choose one." }),
-  building: text(INQUIRY_LIMITS.long).min(1, "Please tell us a little."),
-  link: text(INQUIRY_LIMITS.link).transform((v) => v || null),
-  interests: z.array(z.enum(inquiryInterests)).min(1, "Please choose at least one.").max(inquiryInterests.length),
-  bring: text(INQUIRY_LIMITS.long).min(1, "Please tell us a little."),
-  referrer: text(INQUIRY_LIMITS.referrer).transform((v) => v || null),
-  notes: text(INQUIRY_LIMITS.long).transform((v) => v || null),
-});
+export const inquirySchema = z
+  .object({
+    field: z.enum(inquiryFields, { message: "Please choose your field." }),
+    name: text(INQUIRY_LIMITS.name).min(1, "Please tell us your name."),
+    city: z.enum(cities, { message: "Please choose your city." }),
+    contact: text(INQUIRY_LIMITS.contact)
+      .min(1, "We need an email or WhatsApp number to send your invite.")
+      .refine((v) => parseContact(v) !== null, "Enter a valid email (name@example.com) or WhatsApp number (98XXXXXXXX)."),
+    perks: z.array(z.enum(perks)).min(1, "Please choose at least one.").max(perks.length),
+    priceBand: z.enum(priceBands, { message: "Please choose one." }),
+    deposit: z.enum(depositOptions, { message: "Please choose an answer." }),
+    helpBuild: z.enum(helpOptions, { message: "Please choose an answer." }),
+    contribution: z.array(z.enum(contributionOptions)).max(contributionOptions.length).default([]),
+    source: z.enum(inquirySources).catch("Direct"),
+    sourceDetail: text(200).catch("").transform((v) => v || null),
+  })
+  .transform(({ contact, ...v }) => {
+    const c = parseContact(contact)!;
+    return {
+      ...v,
+      contact: c.normalized,
+      contactType: c.type,
+      // Only people who might help say how.
+      contribution: v.helpBuild === helpOptions[2] ? [] : [...new Set(v.contribution)],
+      perks: [...new Set(v.perks)],
+    };
+  });
 
 export function fieldErrors(error: z.ZodError) {
   const out: Record<string, string> = {};

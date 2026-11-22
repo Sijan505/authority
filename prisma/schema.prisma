@@ -297,22 +297,35 @@ model RateLimit {
   @@map("rate_limits")
 }
 
-// "Request an invitation" answers from the public inquiry form (components/Inquiry.tsx).
+// Answers from the public interest form (components/Inquiry.tsx). Rows from the first
+// version of the form (Nov 2026) have email/world/role/building/bring set instead of
+// the newer columns, which is why most columns are optional here.
 model Inquiry {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  whatsapp  String?
-  world     String
-  role      String
-  city      String
-  building  String
-  link      String?
-  interests String[]
-  bring     String
-  referrer  String? // set when a member sent them
-  notes     String?
-  createdAt DateTime @default(now()) @map("created_at")
+  id           String   @id @default(cuid())
+  name         String
+  city         String
+  field        String?
+  contact      String?  @unique // normalised email or +977… WhatsApp; one sign-up each
+  contactType  String?  @map("contact_type") // "email" | "whatsapp"
+  perks        String[] @default([])
+  priceBand    String?  @map("price_band")
+  deposit      String? // Yes / Maybe / No: a signal only, nothing is charged
+  helpBuild    String?  @map("help_build")
+  contribution String[] @default([])
+  source       String? // Instagram, TikTok, Referral… (config/site.ts inquirySources)
+  sourceDetail String?  @map("source_detail") // raw utm_source / ref / referring host
+  // First version of the form
+  email        String?
+  whatsapp     String?
+  world        String?
+  role         String?
+  building     String?
+  link         String?
+  interests    String[] @default([])
+  bring        String?
+  referrer     String?
+  notes        String?
+  createdAt    DateTime @default(now()) @map("created_at")
 
   @@index([createdAt])
   @@map("inquiries")

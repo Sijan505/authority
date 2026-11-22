@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { letterColour } from "@/components/wordmark";
 
 const prefersReducedMotion =() => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -87,24 +87,4 @@ export function ScrollWordmark({ word, className = "" }: { word: string; classNa
       ))}
     </h1>
   );
-}
-
-/** Counts 000 → 100 while the intro curtain is up, in step with the gold line in globals.css. */
-export function IntroCounter({ duration = 2400, delay = 100 }: { duration?: number; delay?: number }) {
-  const [n, setN] = useState(0);
-
-  useEffect(() => {
-    let frame = 0;
-    const start = performance.now() + delay;
-    const tick = (now: number) => {
-      const t = Math.min(1, Math.max(0, (now - start) / duration));
-      // Ease out, so the count slows as it reaches 100.
-      setN(Math.round(100 * (1 - Math.pow(1 - t, 3))));
-      if (t < 1) frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [duration, delay]);
-
-  return <span>{String(n).padStart(3, "0")}</span>;
 }

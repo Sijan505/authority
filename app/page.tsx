@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { SignInButton } from "@/components/AuthButtons";
+import { LOGO_PATH } from "@/components/Decor";
 import { InquiryButton, InquiryPrompt } from "@/components/Inquiry";
 import { IntroLoader } from "@/components/IntroLoader";
 import { Reveal, ScrollWordmark } from "@/components/Motion";
 import { Eyebrow, Heading, Lede, Section, Wrap } from "@/components/Sections";
+import { issueDrop, partners, partnerSlots } from "@/config/site";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
 
@@ -132,7 +134,83 @@ export default async function Home() {
         </Reveal>
       </Section>
 
-      {/* 05 · Point of view */}
+      {/* 05 · How it works */}
+      <Section id="how-it-works">
+        <Heading eyebrow={home.how.eyebrow} title={home.how.heading} />
+        <ol className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-3">
+          {home.how.steps.map((s, i) => (
+            <Reveal key={s.title} delay={i * 90}>
+              <li className="border-t border-ink pt-6">
+                <span className="mb-5 block font-serif text-[3.5rem] leading-none font-light text-tika tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mb-3 text-[1.75rem] font-light">{s.title}</h3>
+                <p>{s.body}</p>
+              </li>
+            </Reveal>
+          ))}
+        </ol>
+        <Reveal className="mt-12">
+          <InquiryButton className="btn" />
+        </Reveal>
+      </Section>
+
+      {/* 06 · The first issue and The Issue Drop */}
+      <Section id="issue" className="bg-gold-pale/40">
+        <div className="grid items-center gap-14 md:grid-cols-[1fr_1.1fr] md:gap-20">
+          <Reveal>
+            <MagazineCover />
+          </Reveal>
+          <div>
+            <Heading eyebrow={home.issue.eyebrow} title={home.issue.heading} />
+            <Reveal>
+              <p className="mt-8 max-w-[52ch] text-lg">{home.issue.body}</p>
+            </Reveal>
+            <Reveal delay={120}>
+              <IssueDrop />
+            </Reveal>
+          </div>
+        </div>
+      </Section>
+
+      {/* 07 · Founding partners */}
+      <Section id="partners">
+        <div className="grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end md:gap-16">
+          <Heading eyebrow={home.partners.eyebrow} title={home.partners.heading} />
+          <Reveal delay={120}>
+            <p className="max-w-[52ch] text-lg">{home.partners.body}</p>
+          </Reveal>
+        </div>
+        <Reveal className="mt-14">
+          <ul className="grid grid-cols-2 border-t border-l border-line md:grid-cols-3">
+            {Array.from({ length: Math.max(partnerSlots, partners.length) }, (_, i) => {
+              const p = partners[i];
+              const kind = p?.kind ?? home.partners.slotKinds[i % home.partners.slotKinds.length];
+              return (
+                <li key={i} className="flex min-h-36 flex-col justify-between border-r border-b border-line p-5 md:min-h-44 md:p-7">
+                  <span className="text-[0.6875rem] tracking-[0.28em] text-mute uppercase">{kind}</span>
+                  {p ? (
+                    p.href ? (
+                      <a href={p.href} target="_blank" rel="noopener noreferrer" className="font-serif text-[1.625rem] font-light hover:text-tika">
+                        {p.name}
+                      </a>
+                    ) : (
+                      <span className="font-serif text-[1.625rem] font-light">{p.name}</span>
+                    )
+                  ) : (
+                    <span className="font-serif text-[1.375rem] font-light text-ink/30 italic">{home.partners.soon}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </Reveal>
+        <Reveal className="mt-10">
+          <Link href="/contact" className="btn btn-alt">
+            {home.partners.cta}
+          </Link>
+        </Reveal>
+      </Section>
+
+      {/* 08 · Point of view */}
       <section className="overflow-hidden py-24 md:py-40">
         <Wrap>
           <Reveal>
@@ -149,7 +227,7 @@ export default async function Home() {
         </Wrap>
       </section>
 
-      {/* 06 · Honest about what exists */}
+      {/* 09 · Honest about what exists */}
       <Section id="status">
         <Heading eyebrow={home.status.eyebrow} title={home.status.heading} />
         <div className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-3">
@@ -164,7 +242,7 @@ export default async function Home() {
         </div>
       </Section>
 
-      {/* 07 · Membership */}
+      {/* 10 · Membership */}
       <Section id="membership">
         <Heading eyebrow={home.tiers.eyebrow} title={home.tiers.heading} />
         <Reveal className="mt-14">
@@ -204,7 +282,7 @@ export default async function Home() {
         <p className="mt-5 text-sm text-mute">{home.tiers.note}</p>
       </Section>
 
-      {/* 08 · Founder Circle */}
+      {/* 11 · Founder Circle */}
       <Section id="founder-circle" className="bg-gold-pale/40">
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr] md:items-end md:gap-16">
           <Heading eyebrow={home.founderCircle.eyebrow} title={home.founderCircle.heading} />
@@ -273,5 +351,62 @@ export default async function Home() {
         </Reveal>
       </Section>
     </main>
+  );
+}
+
+/** Issue 01 as a type-only ivory cover; the photo slot waits for the titaura shoot. */
+function MagazineCover() {
+  const c = copy.home.issue.cover;
+  return (
+    <div className="relative mx-auto aspect-[3/4] w-full max-w-[400px] border border-ink/15 bg-ivory p-6 shadow-[0_30px_60px_-30px_rgba(59,26,18,0.45)] md:-rotate-2 md:p-8">
+      <div className="flex h-full flex-col">
+        <div className="flex items-baseline justify-between border-b border-ink pb-3">
+          <span className="wordmark-gradient font-serif text-[clamp(1.5rem,4vw,2.125rem)] font-light tracking-[0.22em]">{copy.brand.wordmark}</span>
+          <span className="text-[0.625rem] tracking-[0.28em] text-mute uppercase">{c.issue}</span>
+        </div>
+        <div className="my-5 grid flex-1 place-items-center bg-gold-pale/50">
+          <div className="flex flex-col items-center gap-3 text-tika">
+            <svg viewBox="0 0 48 48" className="h-12 w-12" fill="none" aria-hidden="true">
+              <path d={LOGO_PATH} stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" strokeLinecap="round" />
+            </svg>
+            <span className="text-[0.625rem] tracking-[0.32em] uppercase">{c.soon}</span>
+          </div>
+        </div>
+        <p lang="ne" className="font-deva text-lg text-tika">
+          {copy.home.hero.deva}
+        </p>
+        {c.lines.map((l, i) => (
+          <p key={l} className={i === 0 ? "mt-1 text-[0.625rem] tracking-[0.28em] text-mute uppercase" : "mt-2 font-serif text-[1.25rem] leading-tight font-light italic"}>
+            {l}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** The first event, with a seat counter once real reservations are set in config/site.ts. */
+function IssueDrop() {
+  const e = copy.home.issue.event;
+  const { seats, reserved, venue } = issueDrop;
+  const share = reserved === null ? 0 : Math.min(1, reserved / seats);
+  return (
+    <div className="mt-10 bg-ink p-7 text-ivory md:p-9">
+      <p className="text-[0.6875rem] tracking-[0.32em] text-gold uppercase">{e.label}</p>
+      <h3 className="mt-3 text-[clamp(2rem,4vw,2.75rem)] leading-none font-light">{e.name}</h3>
+      <p className="mt-4 max-w-[46ch] opacity-85">{e.body}</p>
+      <p className="mt-2 text-sm opacity-60">{venue}</p>
+      <div className="mt-7">
+        {reserved !== null && (
+          <div className="mb-3 h-px w-full bg-ivory/20" role="presentation">
+            <div className="h-px origin-left bg-gold" style={{ transform: `scaleX(${share})` }} />
+          </div>
+        )}
+        <p className="text-sm tracking-[0.12em] uppercase opacity-80 tabular-nums">{reserved === null ? e.seatsSoon(seats) : e.seatsOf(Math.min(reserved, seats), seats)}</p>
+      </div>
+      <div className="mt-7">
+        <InquiryButton className="btn btn-light">{e.cta}</InquiryButton>
+      </div>
+    </div>
   );
 }

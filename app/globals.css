@@ -296,11 +296,11 @@ h3 {
 }
 
 /*
- * Intro (about 3.6s, once per visit):
- *   0.0s  the star logo draws itself; the counter and a gold line start filling
- *   0.8s  AUTHORITY rises out of a blur, letter by letter, brown → gold
- *   1.7s  गाँस · बास · कपास appear one word at a time, then the tagline
- *   3.0s  the contents fade, then a cream and a brown curtain lift in turn
+ * Intro (about 2.5s, once per visit):
+ *   0.10s  AUTHORITY rises from behind a mask while its letter-spacing settles
+ *   0.75s  a thin gold rule draws outward from the centre
+ *   1.00s  the tagline and the city line fade in
+ *   1.60s  the contents fade; at 1.75s one ivory curtain lifts, trailing a gold hairline
  * The exit is pure CSS, so the page is never stuck behind it, even without JS.
  */
 .intro-wrap {
@@ -308,134 +308,113 @@ h3 {
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  animation: intro-gone 0s linear 3.9s forwards;
+  animation: intro-gone 0s linear 2.55s forwards;
 }
 .intro-wrap[hidden] {
   display: none;
 }
-.intro-back,
 .intro {
   position: absolute;
   inset: 0;
-  pointer-events: auto;
-}
-.intro-back {
-  background: var(--color-ink);
-  animation: intro-lift 0.9s cubic-bezier(0.76, 0, 0.24, 1) 3.05s forwards;
-}
-.intro {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   padding: 1.5rem;
   background: var(--color-ivory);
   color: var(--color-ink);
-  animation: intro-lift 0.9s cubic-bezier(0.76, 0, 0.24, 1) 2.9s forwards;
+  pointer-events: auto;
+  animation: intro-lift 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.75s forwards;
+}
+/* Gold hairline along the curtain's bottom edge, seen as it lifts. */
+.intro::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c8962a 30%, #c8962a 70%, transparent);
 }
 @media (min-width: 768px) {
   .intro {
     padding: 2rem 2.5rem;
   }
 }
-/* Everything inside fades and settles just before the curtain moves. */
-.intro > * {
-  animation: intro-fade 0.5s ease-in 2.6s forwards;
-}
-.intro-top,
-.intro-bottom {
-  opacity: 0;
-  animation:
-    intro-in 0.8s ease-out 0.2s forwards,
-    intro-fade 0.5s ease-in 2.6s forwards;
-}
-
 .intro-center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.75rem;
+  text-align: center;
+  animation: intro-fade 0.4s ease-in 1.6s forwards;
 }
-.intro-star {
-  width: clamp(2.5rem, 5vw, 3.5rem);
-  height: auto;
-  color: var(--color-tika);
-}
-.intro-star path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: intro-draw 1.3s cubic-bezier(0.65, 0, 0.35, 1) 0.1s forwards;
+.intro-mask {
+  overflow: hidden;
+  padding: 0.08em 0 0.04em; /* room for serif ascenders inside the mask */
 }
 .intro-word {
-  display: flex;
-  justify-content: center;
+  display: block;
   font-family: var(--font-serif);
   font-weight: 300;
-  font-size: clamp(2.25rem, 10vw, 7.5rem);
-  letter-spacing: 0.18em;
-  margin-right: -0.18em; /* optically centre: cancel the trailing letter-spacing */
+  font-size: clamp(2.5rem, 10vw, 7rem);
   line-height: 1;
+  letter-spacing: 0.34em;
+  margin-right: -0.34em; /* optically centre: cancel the trailing letter-spacing */
+  transform: translateY(110%);
+  animation: intro-rise 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards;
 }
-.intro-word span {
-  display: inline-block;
-  opacity: 0;
-  filter: blur(12px);
-  transform: translateY(0.4em) scale(1.08);
-  animation: intro-letter 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-  animation-delay: calc(0.8s + var(--i) * 75ms);
-}
-.intro-deva {
-  display: flex;
-  gap: 0.9em;
-  font-family: var(--font-deva);
-  font-size: clamp(1.125rem, 2.4vw, 1.75rem);
-  color: var(--color-tika);
-}
-.intro-deva span {
-  opacity: 0;
-  transform: translateY(0.5em);
-  animation: intro-in 0.7s ease-out forwards;
-  animation-delay: calc(1.7s + var(--i) * 160ms);
+.intro-rule {
+  display: block;
+  width: min(14rem, 40vw);
+  height: 1px;
+  margin: clamp(1.25rem, 3vw, 2rem) 0 clamp(1rem, 2.4vw, 1.5rem);
+  background: linear-gradient(90deg, transparent, #c8962a 20%, #c8962a 80%, transparent);
+  transform: scaleX(0);
+  animation: intro-draw-rule 0.8s cubic-bezier(0.65, 0, 0.35, 1) 0.75s forwards;
 }
 .intro-tagline {
-  opacity: 0;
-  animation: intro-in 0.8s ease-out 2.15s forwards;
-}
-
-/* Gold line filling in step with the counter (both ease out over 2.4s). */
-.intro-progress {
-  position: relative;
-  height: 1px;
-  margin-bottom: 1rem;
-  background: var(--color-line);
-  overflow: hidden;
-}
-.intro-progress::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #3b1a12 0%, #6b3a10 35%, #a06a18 65%, #c8962a 100%);
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: intro-fill 2.4s cubic-bezier(0.33, 1, 0.68, 1) 0.1s forwards;
-}
-.intro-count {
   font-family: var(--font-serif);
-  font-size: clamp(3rem, 12vw, 9rem);
-  font-weight: 300;
-  line-height: 0.8;
-  font-variant-numeric: tabular-nums;
+  font-style: italic;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  color: var(--color-mute);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: intro-in 0.7s ease-out 1s forwards;
+}
+.intro-foot {
+  position: absolute;
+  inset: auto 1.5rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  opacity: 0;
+  animation:
+    intro-in 0.7s ease-out 1s forwards,
+    intro-fade 0.4s ease-in 1.6s forwards;
+}
+@media (min-width: 768px) {
+  .intro-foot {
+    inset: auto 2.5rem 2rem;
+  }
 }
 
+@keyframes intro-rise {
+  to {
+    transform: none;
+    letter-spacing: 0.22em;
+    margin-right: -0.22em;
+  }
+}
+@keyframes intro-draw-rule {
+  to {
+    transform: scaleX(1);
+  }
+}
 @keyframes intro-draw {
   to {
     stroke-dashoffset: 0;
-  }
-}
-@keyframes intro-letter {
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
   }
 }
 @keyframes intro-in {
@@ -447,12 +426,7 @@ h3 {
 @keyframes intro-fade {
   to {
     opacity: 0;
-    transform: translateY(-12px);
-  }
-}
-@keyframes intro-fill {
-  to {
-    transform: scaleX(1);
+    transform: translateY(-8px);
   }
 }
 @keyframes intro-lift {
@@ -484,7 +458,7 @@ h3 {
 }
 /* While the intro is playing, hold the hero letters back until the curtain lifts. */
 html:has(.intro-wrap:not([hidden])) .hero-letter {
-  animation-delay: calc(3.3s + var(--i) * 60ms);
+  animation-delay: calc(2s + var(--i) * 60ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
