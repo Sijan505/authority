@@ -4,9 +4,9 @@ import { site } from "@/config/site";
 
 export const copy = {
   meta: {
-    title: "Authority — a members club for Nepal's tastemakers",
+    title: "Authority — by the tastemaker, for the tastemaker",
     description:
-      "Authority is a private members club for the people shaping contemporary Nepal: dinners, openings, stays and introductions, hosted across the country.",
+      "Authority is a private membership and cultural platform bringing together the people, places, ideas and businesses shaping contemporary Nepal.",
   },
 
   brand: {
@@ -15,9 +15,9 @@ export const copy = {
   },
 
   nav: {
-    experiences: "Experiences",
-    divisions: "Divisions",
-    addressBook: "Address Book",
+    platform: "Platform",
+    divisions: "Gaas · Baas · Kapas",
+    founderCircle: "Founder Circle",
     articles: "Articles",
     membership: "Membership",
     about: "About",
@@ -44,96 +44,111 @@ export const copy = {
 
   home: {
     hero: {
+      eyebrow: "A private membership and cultural platform",
       deva: "गाँस · बास · कपास",
-      lede: "A private members club for the people shaping contemporary Nepal, built around evenings, openings and stays worth showing up for.",
-      body: "Members meet in person: dinners with chefs, hotel previews, studio visits and introductions across Kathmandu, Chitwan and Pokhara. A publication will follow once the community is established.",
+      lede: "Authority brings together the people, places, ideas and businesses shaping contemporary Nepal.",
+      body: "A private membership and cultural platform, starting in Nepal. We want to give people visibility, help them connect and make opportunities happen. We are building on what already exists.",
       primary: "See membership",
-      secondary: "See the experiences",
+      secondary: "Explore the platform",
+      scroll: "Scroll",
     },
-    experiences: {
-      heading: "The experiences",
-      intro: "Small, hosted and in person. Each one is led by a person or place from the community.",
+    start: {
+      eyebrow: "01 · The starting point",
+      heading: "There are so many interesting people doing things in Nepal.",
+      body: "Chefs, hoteliers, designers, makers, founders. They are building real things, but they don't always have a common place to be discovered, connected and introduced to one another.",
+    },
+    opportunity: {
+      eyebrow: "02 · The opportunity",
+      heading: "Connections are waiting to happen.",
       items: [
-        { title: "Table", body: "dinners and tastings with chefs and producers", tag: "Gaas" },
-        { title: "Stay", body: "hotel previews, openings and member rates", tag: "Baas" },
-        { title: "Studio", body: "visits to designers, ateliers and weavers", tag: "Kapas" },
-        { title: "Introductions", body: "curated meetings between members", tag: "All divisions" },
+        { who: "A hotelier", what: "might never meet the person building a fashion label they would love to work with." },
+        { who: "A designer", what: "has an idea for a hotel collaboration and doesn't know who to approach." },
+        { who: "A young entrepreneur", what: "has something brilliant to offer but lacks the right introductions." },
       ],
-      emptyHeading: "The first dates are being set.",
-      emptyBody:
-        "No events are scheduled yet. Register your interest and you will hear first, with the city, venue and how many seats are open.",
-      emptyCta: "Register your interest",
     },
     divisions: {
-      heading: "Three worlds, one table",
+      eyebrow: "03 · Our editorial identity",
+      heading: "Three Nepali words.",
       items: [
-        { deva: "गाँस", name: "Gaas", kind: "Food and culinary culture", body: "Chefs, restaurateurs, bar owners, producers and growers. Think dinners and tastings." },
-        { deva: "बास", name: "Baas", kind: "Hospitality and travel", body: "Hotels, lodges, homestays and the people who run them." },
-        { deva: "कपास", name: "Kapas", kind: "Fashion and design", body: "Designers, ateliers, weavers, stylists and makers." },
+        {
+          deva: "गाँस",
+          name: "Gaas",
+          kind: "Food and dining culture",
+          body: "Restaurants, chefs, producers and the people shaping Nepal's food scene.",
+        },
+        {
+          deva: "बास",
+          name: "Baas",
+          kind: "Hospitality and places",
+          body: "Hotels, architecture, destinations and the people changing how Nepal welcomes the world.",
+        },
+        {
+          deva: "कपास",
+          name: "Kapas",
+          kind: "Fashion and craftsmanship",
+          body: "Designers, textiles, artisans and the people preserving and reinventing Nepali identity.",
+        },
       ],
-      peopleHeading: "The people",
+      peopleHeading: "And the people behind all of it.",
       peopleBody:
-        "Behind every good table, room and garment is someone with a point of view: founders, craftspeople, creators, students and emerging talent. Members meet them in person first. Their stories will be published later.",
+        "Founders, creatives, entrepreneurs, artists and thinkers contributing to the country's cultural landscape. We want to find the ones who deserve more attention and give emerging talent the same curiosity as established names. We are not here to tell people what matters.",
     },
-    addressBook: {
-      heading: "The Address Book",
-      lede: "Restaurants, hotels, designers and experiences we would send a friend to.",
-      body: "Every entry is visited and chosen by us. It is not a paid listing. Entries will appear here as the first experiences are confirmed.",
-      cta: "What is live and what is coming",
+    platform: {
+      eyebrow: "04 · The platform",
+      heading: "One idea, six sides.",
+      cta: "See the whole platform",
     },
-    roadmap: {
-      heading: "What is live, what is coming",
-      intro: "We mark each part honestly, so you know what you can use today.",
-      items: [
-        { title: "Membership and sign-in", note: "", status: "Live, tiers being confirmed", live: true },
-        { title: "Hosted experiences", note: "dinners, previews, studio visits", status: "First focus, dates to come" },
-        { title: "The Cultural Calendar", note: "public and private events", status: "First focus" },
-        { title: "The Address Book", note: "", status: "In development" },
-        { title: "The Network", note: "member directory", status: "In development" },
-        { title: "The Circles", note: "smaller interest groups", status: "Planned" },
-        { title: "The Request Desk", note: "member concierge", status: "Planned" },
-        { title: "The Unlisted", note: "private experiences", status: "Planned" },
-        { title: "The Exchange and Opportunities Board", note: "", status: "Planned" },
-        { title: "The Authority Passport", note: "digital membership identity", status: "Planned" },
-        { title: "The Authority List", note: "annual recognition", status: "Planned" },
-        { title: "The magazine", note: "stories, profiles, monthly issues", status: "Later" },
-      ] as { title: string; note: string; status: string; live?: boolean }[],
+    pov: {
+      eyebrow: "05 · Our point of view",
+      lines: ["Luxury is not the product.", "Taste is the product."],
+      body: "We care about curiosity, character and knowledge, not just money or status.",
+    },
+    status: {
+      eyebrow: "06 · Where we are",
+      heading: "Honest about what exists.",
+      columns: [
+        { title: "Today", body: "The website and membership sign-in, and the Gaas, Baas and Kapas identity." },
+        { title: "In development", body: "The Address Book and the member Network." },
+        {
+          title: "Next",
+          body: "Hosted experiences and a cultural calendar first. The Journal, Request Desk, Exchange and the rest follow in stages.",
+        },
+      ],
     },
     tiers: {
+      eyebrow: "07 · Membership",
       heading: "Three ways to belong",
       items: [
-        { name: "The Reader", price: "Free", features: ["Updates on new experiences", "Public events, when announced", "The magazine, when it launches"] },
+        { name: "The Reader", price: "Free", features: ["Updates on new experiences", "Public events, when announced", "The Journal, when it launches"] },
         {
           name: "The Member",
           price: "Price to be confirmed",
-          features: ["Everything in The Reader", "Member experiences and event booking", "Member directory and Circles", "Selected partner privileges"],
+          features: ["Everything in The Reader", "Member experiences and event booking", "The member Network", "Selected partner perks"],
         },
         {
           name: "The Inner Circle",
           price: "Price to be confirmed",
-          features: ["Everything in The Member", "Priority invitations", "Curated introductions", "Concierge and private experiences"],
+          features: ["Everything in The Member", "Priority invitations", "Curated introductions", "The Request Desk, when it launches"],
         },
       ],
       readerCta: "Sign in with Google",
       memberCta: "Join now",
-      innerCta: "Read the details",
+      innerCta: "See member perks",
       note: "These tiers are proposed. Your existing payment setup continues to apply until pricing and benefits are confirmed.",
     },
-    about: {
-      heading: "Why Authority exists",
-      lede: "Nepal has plenty of talent and very few places that gather it.",
-      body: [
-        "Chefs, hoteliers, designers and makers work a few streets apart and rarely meet. Authority is where they find each other, in a room, over a meal.",
-        "We are a members club first. The community comes before the content, so a publication will come later, once there is a real community to write about. We want to be taken seriously abroad while staying plainly Nepali.",
-      ],
-      aside: "Over time we aim to widen the circle: more cities, more fields and more people from the Nepali diaspora.",
+    founderCircle: {
+      eyebrow: "08 · The Founder Circle",
+      heading: "The first people who help shape it.",
+      body: "The Founder Circle is the initial group who will share their knowledge, challenge our ideas and help turn the vision into something real. It isn't about putting names on a website.",
+      cta: "About the Founder Circle",
     },
     faq: {
+      eyebrow: "Questions",
       heading: "Questions",
       items: [
         {
           q: "Who can join?",
-          a: "Anyone can read. Membership is aimed at people working in or serious about Nepal's food, hospitality, fashion, design and creative fields, including students.",
+          a: "Anyone can read. Membership is aimed at people working in or serious about Nepal's food, hospitality, fashion, design and creative fields, including students. You don't need to be wealthy or established.",
           flag: "To confirm: whether applications are reviewed.",
         },
         { q: "What does it cost?", a: "The Reader is free.", flag: "To confirm: Member and Inner Circle pricing and billing period." },
@@ -152,10 +167,175 @@ export const copy = {
       ] as { q: string; a: string; flag: string; privacyLink?: boolean }[],
     },
     join: {
-      heading: "Take a seat.",
-      body: "Register your interest today and be first to hear about the opening experiences.",
-      contact: "Contact the editors",
+      eyebrow: "An invitation",
+      body: [
+        "We know what we want Authority to become. We also know that building something meaningful takes the right people.",
+        "We are not looking to build this alone. We want people who see the potential, have something to contribute and want to help shape what comes next.",
+      ],
+      heading: "If the idea makes sense to you, we'd like to have that conversation.",
+      contact: "Contact the team",
     },
+  },
+
+  platform: {
+    heading: "The platform",
+    intro: "One idea, six sides. Each part is marked honestly, so you know what exists today and what is still to come.",
+    sides: [
+      {
+        id: "journal",
+        pillar: "The Culture",
+        name: "The Journal",
+        short: "Stories, interviews and profiles.",
+        lines: ["Who is the chef everyone will be talking about next year?", "What is opening, and who is behind it?", "Which designer should you know about?"],
+        body: "A publication covering people, places, businesses and ideas worth knowing about: news, interviews, features, recommendations, profiles and original stories. The stories are there to lead to discovery and real connections.",
+        status: "Later. We are building the community first.",
+      },
+      {
+        id: "network",
+        pillar: "The Community",
+        name: "The Network",
+        short: "Curated people from different industries.",
+        lines: ["Need a photographer?", "A pastry chef?", "Someone to talk to about a hotel project?"],
+        body: "A curated community of people from different industries who can meet, exchange ideas, share knowledge and build genuine relationships. A member directory will make it easier to find the right person.",
+        status: "In development.",
+      },
+      {
+        id: "experiences",
+        pillar: "The Access",
+        name: "The Experiences",
+        short: "Private dinners, previews and gatherings.",
+        lines: ["A chef is cooking for twelve people on Friday.", "You have a seat."],
+        body: "Private dinners, previews, industry gatherings, behind-the-scenes access and cultural events that bring interesting people together. You should leave having met someone, learned something or found an opportunity.",
+        status: "First focus. Dates to be announced.",
+        live: true,
+      },
+      {
+        id: "request-desk",
+        pillar: "The Service",
+        name: "The Request Desk",
+        short: "Recommendations, introductions and research.",
+        lines: ["A room at a hotel you love?", "A fashion item you can't find?", "A table at a restaurant?", "Wine recommendations?", "An itinerary for a peaceful trip?", "We've got you."],
+        body: "A member concierge. You send a request and a person on our team replies: recommendations, introductions, research and help reaching the experiences or services you are after. Exactly which requests we can take on is still being confirmed.",
+        status: "Planned.",
+      },
+      {
+        id: "exchange",
+        pillar: "The Opportunity",
+        name: "The Exchange",
+        short: "Collaborations and partnerships.",
+        lines: ["You are launching a label and need a stockist.", "You have a space and want a collaborator."],
+        body: "A place for collaborations, business connections, creative opportunities and partnerships. We make curated introductions between members, and an Opportunities Board lets members post and answer collaborations.",
+        status: "Planned.",
+      },
+      {
+        id: "long-game",
+        pillar: "The Legacy",
+        name: "The Long Game",
+        short: "Emerging talent, craft and recognition.",
+        lines: ["A young designer has real talent and no audience yet.", "A craft that deserves to be kept alive."],
+        body: "Supporting emerging talent, celebrating Nepali craftsmanship, recognising people doing meaningful work and contributing to the cultural industries we care about. An annual recognition, The Authority List, is part of this.",
+        status: "Planned.",
+      },
+    ] as { id: string; pillar: string; name: string; short: string; lines: string[]; body: string; status: string; live?: boolean }[],
+    statusLabel: "Status",
+    together: {
+      eyebrow: "How it brings people together",
+      heading: "Bringing people into the same room.",
+      items: [
+        { title: "Private viewings", body: "Members see new work first, ask questions and give honest feedback." },
+        { title: "Openings before the opening", body: "Members try a new place before it opens, and the owner learns what works." },
+        { title: "Studio and kitchen visits", body: "Behind-the-scenes access to the people making things." },
+        { title: "Introductions", body: "We connect members who should meet, such as a designer and a hotelier." },
+      ],
+    },
+    ideas: {
+      eyebrow: "Working with businesses in Nepal",
+      heading: "Ideas we want to try with members.",
+      items: [
+        { title: "A fashion label", body: "Hosts a private viewing. Members see the collection, give feedback, and the label meets possible stockists and collaborators." },
+        { title: "A new restaurant", body: "Invites members to a pre-opening dinner. The team hears honest feedback before the doors open." },
+        { title: "A hotel or lodge", body: "Hosts members for a preview stay. Members meet the team and share what they notice, from the room to the welcome." },
+        { title: "A designer and a hotelier", body: "We introduce them so they can explore a collaboration, such as in-room textiles or staff uniforms." },
+        { title: "Artisans and weavers", body: "Open their workshops. Members learn the craft and meet the makers, and designers can start working with them." },
+        { title: "A chef and a designer", body: "A one-night collaboration: food from one, the table or the clothes from the other." },
+      ],
+      note: "These are ideas, not announcements. Nothing here is scheduled and no partnerships have been agreed yet.",
+    },
+    collab: {
+      eyebrow: "How a collaboration happens",
+      heading: "From idea to introduction.",
+      steps: [
+        { title: "Share", body: "A member tells us what they are launching or working on." },
+        { title: "Invite", body: "We invite the members best placed to respond." },
+        { title: "Gather", body: "Members come, see it and give feedback in person." },
+        { title: "Follow up", body: "We make introductions so a good conversation can lead somewhere." },
+      ],
+      note: "Businesses get honest feedback, early supporters and new connections. How partnerships and member privileges work will be agreed with each business.",
+    },
+    perks: {
+      eyebrow: "Member perks",
+      heading: "What members could get.",
+      items: [
+        { title: "Member discounts", body: "At partner restaurants, hotels and venues." },
+        { title: "Room upgrades", body: "When the hotel has availability." },
+        { title: "Exclusive wine lists", body: "Bottles and menus offered to members only." },
+        { title: "Priority reservations", body: "At partner restaurants, where they offer it." },
+        { title: "First look", body: "Early access to new collections and private viewings." },
+        { title: "Priority fittings", body: "Appointments with participating tailors and designers." },
+        { title: "Member-only menus", body: "Tasting menus and chef's table seats not on the public menu." },
+        { title: "Early booking", body: "First access to seats at hosted experiences." },
+        { title: "A welcome touch", body: "A drink, a dish or a small gift on arrival." },
+      ],
+      note: "These perks are proposed. Each depends on an agreement with the partner, and availability will vary. Which perks come with The Member and which with The Inner Circle is still to be decided.",
+    },
+  },
+
+  founderCircle: {
+    eyebrow: "The Founder Circle",
+    heading: "The first people who help shape it.",
+    intro:
+      "The Founder Circle is the initial group who will share their knowledge, challenge our ideas and help turn the vision into something real. It isn't about putting names on a website. We want people who understand the idea and want to help build it.",
+    looking: {
+      eyebrow: "Who we are looking for",
+      heading: "People who bring something.",
+      body: "Experience, ideas, skills, time, relationships or a different perspective. You don't need to be wealthy or established.",
+      items: [
+        "Hospitality, travel and tourism",
+        "Fashion, textiles, design and craftsmanship",
+        "Media, journalism, communications and publishing",
+        "Entrepreneurs and business development",
+        "Technology, digital products and communities",
+        "Photographers, designers and storytellers",
+        "Strong, genuine networks in Nepal's industries",
+        "Young people with fresh ideas and ambition",
+      ],
+    },
+    ask: {
+      eyebrow: "What we ask of you",
+      heading: "Be invested.",
+      items: [
+        "Help shape the direction and identity of Authority.",
+        "Contribute ideas and constructive criticism.",
+        "Introduce us to relevant people and businesses.",
+        "Build relationships within your industry.",
+        "Share your professional skills where it fits.",
+        "Help spot partnerships and collaborations.",
+        "Join conversations, meetings and early initiatives.",
+        "Be genuinely invested in how it develops.",
+      ],
+    },
+    not: {
+      eyebrow: "What we are not looking for",
+      heading: "A title is not enough.",
+      items: [
+        "People who simply want a title.",
+        "People who only want to use Authority for self-promotion.",
+        "People interested only in looking associated with something exclusive.",
+        "People who agree with everything but won't contribute.",
+      ],
+      note: "The Founder Circle is built on mutual respect, trust and real contribution. Roles, ownership and anything financial are not defined yet. They will be discussed and agreed separately.",
+    },
+    cta: "Contact the team",
   },
 
   articles: {
@@ -301,11 +481,48 @@ export const copy = {
 
   about: {
     heading: "About Authority",
+    eyebrow: "About",
+    lede: "Authority brings together the people, places, ideas and businesses shaping contemporary Nepal.",
     body: [
-      "Authority is an article publisher for Nepal's fashion, hospitality and luxury world. Its members club gives members articles by field: the reporting that matters to their industry.",
-      "Members also receive a monthly magazine, offers from partner venues, and, on Pro, a place to talk with others in their field.",
-      "We start in Kathmandu, Chitwan and Pokhara.",
+      "Chefs, hoteliers, designers, makers and founders are building real things, often a few streets apart, without a common place to be discovered, connected and introduced to one another.",
+      "Authority is a private membership and cultural platform, starting in Nepal. The community comes first: hosted experiences and introductions now, with the Journal following once there is a real community to write about.",
+      "We want to be distinctly Nepali in perspective and international in standards.",
     ],
+    care: {
+      eyebrow: "What makes us different",
+      heading: "What we care about.",
+      items: [
+        "Taste, knowledge, curiosity, character and contribution. Not wealth or status.",
+        "Stories that lead to discovery and real connections, not just articles.",
+        "Events where you leave having met someone, learned something or found an opportunity.",
+        "One of the most respected networks, not the biggest.",
+        "Emerging talent gets the same attention as established names.",
+        "Distinctly Nepali in perspective, international in standards.",
+      ],
+    },
+    founder: {
+      eyebrow: "The founder",
+      name: "Satish Acharya",
+      details: ["Founder, Authority", "Based in London, United Kingdom", "Speciality: Baas & Kapas"],
+      body: "Authority is being developed with a perspective shaped by Nepal and by international exposure.",
+      photo: "/founder.jpg",
+    },
+    future: {
+      eyebrow: "The long game",
+      heading: "Where we want to go.",
+      items: [
+        "A respected publication",
+        "A trusted private network",
+        "A calendar of cultural and industry events",
+        "A curated directory of people and places",
+        "Business and creative collaborations",
+        "Private experiences and member privileges",
+        "Recognition for Nepal's cultural industries",
+        "Opportunities for emerging talent",
+        "Links with international networks",
+      ],
+      note: "A direction, not a promise that everything launches at once.",
+    },
   },
 
   faq: {
@@ -321,8 +538,8 @@ export const copy = {
   },
 
   contact: {
-    heading: "Contact",
-    body: "For membership, partnerships and press, email us or message us on Instagram.",
+    heading: "Contact the team",
+    body: "For membership, the Founder Circle, partnerships and press, email the team or message us on Instagram.",
   },
 
   privacy: {

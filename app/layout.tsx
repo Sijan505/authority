@@ -44,6 +44,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-ivory focus:p-2 focus:text-ink">
           Skip to content
         </a>
+        {/* Without JS nothing would mark scroll reveals as shown, so show them outright. */}
+        <noscript>
+          <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <SiteHeader />
         <div id="main" className="flex-1">
           {children}

@@ -6,12 +6,12 @@ import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
 
 const publicLinks = [
-  { href: "/#experiences", label: copy.nav.experiences },
+  { href: "/platform", label: copy.nav.platform },
   { href: "/#divisions", label: copy.nav.divisions },
-  { href: "/#address-book", label: copy.nav.addressBook },
   { href: "/articles", label: copy.nav.articles },
   { href: "/#membership", label: copy.nav.membership },
-  { href: "/#about", label: copy.nav.about },
+  { href: "/founder-circle", label: copy.nav.founderCircle },
+  { href: "/about", label: copy.nav.about },
   { href: "/#faq", label: copy.nav.faq },
 ];
 
@@ -89,7 +89,7 @@ export function SiteFooter() {
           </li>
           <li>
             <Link href="/contact" className="hover:text-ink">
-              {copy.nav.contact}
+              {copy.home.join.contact}
             </Link>
           </li>
           <li>

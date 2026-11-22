@@ -5,8 +5,7 @@ export const site = {
   instagramHandle: "@authoritymag",
   instagramUrl: "https://instagram.com/authoritymag",
 
-  // TBC: real contact inbox
-  contactEmail: "hello@example.com",
+  contactEmail: "satishacharya741@gmail.com",
 
   // TBC: launch date
   launchDate: "TBC",

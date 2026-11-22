@@ -279,3 +279,109 @@ h3 {
     vertical-align: top;
   }
 }
+
+/* ---------- Motion: scroll reveals, intro loader, hero wordmark ---------- */
+
+/* Elements fade up when they scroll into view (components/Motion.tsx sets data-shown). */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal[data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Intro: a counter runs 000 → 100, the wordmark appears, then the curtain lifts. */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  /* CSS-only exit, so the page is never stuck behind the curtain even without JS. */
+  animation: intro-out 0.9s cubic-bezier(0.7, 0, 0.2, 1) 2.5s forwards;
+}
+.intro[hidden] {
+  display: none;
+}
+.intro-word {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.25rem, 10vw, 7.5rem);
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+.intro-word span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: intro-letter 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(1.1s + var(--i) * 70ms);
+}
+.intro-count {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 12vw, 9rem);
+  font-weight: 300;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+@keyframes intro-letter {
+  to {
+    transform: none;
+  }
+}
+@keyframes intro-out {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+/* Hero wordmark: letters rise in, then the word drifts, widens and fades as you scroll (--p: 0 → 1). */
+.hero-word {
+  --p: 0;
+  transform: translateY(calc(var(--p) * -60px)) scale(calc(1 - var(--p) * 0.06));
+  transform-origin: left bottom;
+  opacity: calc(1 - var(--p) * 0.75);
+  letter-spacing: calc(0.04em + var(--p) * 0.08em);
+  will-change: transform, opacity;
+}
+.hero-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.35em);
+  animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(0.15s + var(--i) * 60ms);
+}
+/* While the intro is playing, hold the hero letters back until the curtain lifts. */
+html:has(.intro:not([hidden])) .hero-letter {
+  animation-delay: calc(2.9s + var(--i) * 60ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .hero-letter {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+  .hero-word {
+    transform: none;
+    opacity: 1;
+    letter-spacing: 0.04em;
+  }
+  .intro {
+    display: none;
+  }
+}
