@@ -23,7 +23,6 @@ export async function completeOnboarding(_prev: ActionState, formData: FormData)
         city: formData.get("city"),
         contact: formData.get("contact"),
         perks: formData.getAll("perks"),
-        deposit: formData.get("deposit"),
         helpBuild: formData.get("helpBuild"),
         contribution: formData.get("contribution") ?? "",
       });
@@ -40,7 +39,6 @@ export async function completeOnboarding(_prev: ActionState, formData: FormData)
         city: v.city,
         contact,
         perks: v.perks,
-        deposit: v.deposit,
         helpBuild: v.helpBuild,
         contribution: v.contribution || null,
       };
@@ -68,7 +66,8 @@ export async function completeOnboarding(_prev: ActionState, formData: FormData)
     viewer.user.id,
   );
 
-  if (result.ok) redirect("/dashboard");
+  // Onboarding gives no access by itself: next step is paying for membership.
+  if (result.ok) redirect("/dashboard/membership");
   return result;
 }
 
@@ -97,7 +96,7 @@ export async function submitPayment(_prev: ActionState, formData: FormData): Pro
       await db.subscription.create({
         data: {
           userId: viewer.user.id,
-          package: "PRO", // Basic is free; only Pro is paid for
+          package: "PRO", // the one paid plan, shown as "Member"
           billingCycle: v.cycle,
           status: "PENDING_PAYMENT",
           payments: {

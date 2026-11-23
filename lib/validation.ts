@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { cities, contributionOptions, depositOptions, helpOptions, inquiryFields, inquirySources, perks, priceBands } from "@/config/site";
+import { cities, contributionOptions, helpOptions, inquiryFields, inquirySources, perks } from "@/config/site";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -27,7 +27,6 @@ export const onboardingSchema = z
       .min(1, "We need an email or WhatsApp number.")
       .refine((v) => parseContact(v) !== null, "Enter a valid email (name@example.com) or WhatsApp number (98XXXXXXXX)."),
     perks: z.array(z.enum(perks)).max(perks.length).default([]),
-    deposit: z.enum(depositOptions, { message: "Please choose an answer." }),
     helpBuild: z.enum(helpOptions, { message: "Please choose an answer." }),
     contribution: text(1000).optional().default(""),
   })
@@ -155,7 +154,7 @@ export const moderationSchema = z.object({
 export const inquiryRef = (id: string) => `AU-${id.slice(-6).toUpperCase()}`;
 
 /** Longest answer the inquiry accepts for each text field; the form uses the same limits. */
-export const INQUIRY_LIMITS = { name: 120, contact: 200 } as const;
+export const INQUIRY_LIMITS = { name: 120, contact: 200, craft: 300, about: 2000 } as const;
 
 export const inquirySchema = z
   .object({
@@ -165,9 +164,8 @@ export const inquirySchema = z
     contact: text(INQUIRY_LIMITS.contact)
       .min(1, "We need an email or WhatsApp number to send your invite.")
       .refine((v) => parseContact(v) !== null, "Enter a valid email (name@example.com) or WhatsApp number (98XXXXXXXX)."),
-    perks: z.array(z.enum(perks)).min(1, "Please choose at least one.").max(perks.length),
-    priceBand: z.enum(priceBands, { message: "Please choose one." }),
-    deposit: z.enum(depositOptions, { message: "Please choose an answer." }),
+    craft: text(INQUIRY_LIMITS.craft).min(1, "Please share at least one handle or link."),
+    about: text(INQUIRY_LIMITS.about).min(1, "Please tell us a little about yourself."),
     helpBuild: z.enum(helpOptions, { message: "Please choose an answer." }),
     contribution: z.array(z.enum(contributionOptions)).max(contributionOptions.length).default([]),
     source: z.enum(inquirySources).catch("Direct"),
@@ -181,7 +179,6 @@ export const inquirySchema = z
       contactType: c.type,
       // Only people who might help say how.
       contribution: v.helpBuild === helpOptions[2] ? [] : [...new Set(v.contribution)],
-      perks: [...new Set(v.perks)],
     };
   });
 

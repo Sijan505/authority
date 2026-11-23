@@ -61,10 +61,10 @@ export function MemberForm({
       </label>
       <label className="text-sm">
         Package
-        {/* Pro is granted by verifying a payment; here an admin can only end Pro early. */}
+        {/* Membership is granted by verifying a payment; here an admin can only end it early. */}
         <select name="package" defaultValue={hasPro ? "PRO" : "BASIC"} disabled={!hasPro} className="input mt-1 py-1 text-base">
-          <option value="BASIC">Basic (free)</option>
-          {hasPro && <option value="PRO">Pro</option>}
+          <option value="BASIC">{hasPro ? "End membership now" : "Not a member"}</option>
+          {hasPro && <option value="PRO">Member</option>}
         </select>
       </label>
       <label className="text-sm">

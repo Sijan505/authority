@@ -256,7 +256,7 @@ export async function updateMember(_prev: ActionState, formData: FormData): Prom
         const hasPro = await tx.subscription.findFirst({
           where: { userId: user.id, package: "PRO", status: "ACTIVE", startsAt: { lte: now }, expiresAt: { gt: now } },
         });
-        if (!hasPro) throw new AccessError("Pro starts when you verify the member's payment in Payments.");
+        if (!hasPro) throw new AccessError("Membership starts when you verify the member's payment in Payments.");
       }
     });
 

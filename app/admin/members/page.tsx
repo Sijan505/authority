@@ -84,11 +84,11 @@ export default async function AdminMembers({ searchParams }: PageProps<"/admin/m
               <p className="text-sm">
                 {u.email} {u.contact && u.contact !== u.email && <>· {u.contact}</>} · {u.city ?? "No city"} ·{" "}
                 {u.field?.name ?? "Not onboarded"} ·{" "}
-                {pro ? `Pro until ${formatDate(u.subscriptions[0].expiresAt)}` : u.onboardedAt ? "Basic (free)" : "No membership yet"}
+                {pro ? `Member until ${formatDate(u.subscriptions[0].expiresAt)}` : u.onboardedAt ? "Signed up, not a member" : "No membership yet"}
               </p>
               {u.application && (
                 <p className="text-sm">
-                  Deposit: {u.application.deposit} · Help build: {u.application.helpBuild}
+                  {u.application.deposit && <>Deposit: {u.application.deposit} · </>}Help build: {u.application.helpBuild}
                   {u.application.perks.length > 0 && <> · Perks: {u.application.perks.join(", ")}</>}
                 </p>
               )}

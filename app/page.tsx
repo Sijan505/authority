@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { SignInButton } from "@/components/AuthButtons";
 import { LOGO_PATH } from "@/components/Decor";
@@ -5,6 +6,7 @@ import { InquiryButton, InquiryPrompt } from "@/components/Inquiry";
 import { IntroLoader } from "@/components/IntroLoader";
 import { Reveal, ScrollWordmark } from "@/components/Motion";
 import { Eyebrow, Heading, Lede, Section, Wrap } from "@/components/Sections";
+import { formatNPR, packages, proPrices, proYearlyFullPrice } from "@/config/pricing";
 import { issueDrop, partners, partnerSlots } from "@/config/site";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
@@ -65,30 +67,44 @@ export default async function Home() {
         </Wrap>
       </section>
 
-      {/* 01 · The starting point */}
-      <Section>
-        <Heading eyebrow={home.start.eyebrow} title={home.start.heading} />
-        <Reveal>
-          <p className="mt-10 max-w-[62ch] text-lg">{home.start.body}</p>
-        </Reveal>
-      </Section>
-
-      {/* 02 · The opportunity */}
-      <Section>
-        <Heading eyebrow={home.opportunity.eyebrow} title={home.opportunity.heading} />
-        <div className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-3">
-          {home.opportunity.items.map((it, i) => (
-            <Reveal key={it.who} delay={i * 90}>
-              <div className="border-t border-ink pt-6">
-                <h3 className="mb-3 text-[1.875rem] font-light">{it.who}</h3>
-                <p>{it.what}</p>
+      {/* A note from the founder */}
+      <Section id="founder-note" className="bg-gold-pale/40">
+        <div className="grid gap-12 md:grid-cols-[minmax(0,17rem)_1fr] md:gap-20">
+          <Reveal>
+            <Eyebrow>{home.founderNote.eyebrow}</Eyebrow>
+            <div className="flex items-center gap-5 md:block">
+              <div className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden bg-gold-pale md:mt-2 md:w-full">
+                <Image src={copy.about.founder.photo} alt={home.founderNote.name} fill sizes="(min-width: 768px) 272px, 96px" className="object-cover" />
+              </div>
+              <div className="md:mt-5">
+                <p className="font-serif text-[1.5rem] leading-tight font-light">{home.founderNote.name}</p>
+                <p className="mt-1 text-sm text-mute">{home.founderNote.role}</p>
+              </div>
+            </div>
+          </Reveal>
+          <div>
+            <Reveal>
+              <div className="max-w-[40ch] space-y-6 font-serif text-[clamp(1.25rem,2.4vw,1.625rem)] leading-[1.45] font-light">
+                {home.founderNote.paragraphs.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
               </div>
             </Reveal>
-          ))}
+            <Reveal delay={150}>
+              <div className="mt-12 border-t border-ink pt-8 font-serif text-[clamp(1.875rem,4.6vw,3.25rem)] leading-[1.1] font-light">
+                <p>{home.founderNote.closing[0]}</p>
+                <p className="wordmark-gradient">{home.founderNote.closing[1]}</p>
+              </div>
+              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <InquiryButton className="btn" />
+                <span className="font-serif text-lg italic text-mute">— {home.founderNote.name}</span>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </Section>
 
-      {/* 03 · Gaas, Baas, Kapas */}
+      {/* 01 · Gaas, Baas, Kapas */}
       <Section id="divisions">
         <Heading eyebrow={home.divisions.eyebrow} title={home.divisions.heading} />
         <div className="mt-14 grid gap-x-12 gap-y-12 md:grid-cols-3">
@@ -111,7 +127,7 @@ export default async function Home() {
         </Reveal>
       </Section>
 
-      {/* 04 · One idea, six sides */}
+      {/* 02 · One idea, six sides */}
       <Section id="platform" panel>
         <Heading eyebrow={home.platform.eyebrow} title={home.platform.heading} />
         <div className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-3">
@@ -134,7 +150,7 @@ export default async function Home() {
         </Reveal>
       </Section>
 
-      {/* 05 · How it works */}
+      {/* 03 · How it works */}
       <Section id="how-it-works">
         <Heading eyebrow={home.how.eyebrow} title={home.how.heading} />
         <ol className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-3">
@@ -153,7 +169,7 @@ export default async function Home() {
         </Reveal>
       </Section>
 
-      {/* 06 · The first issue and The Issue Drop */}
+      {/* 04 · The first issue and The Issue Drop */}
       <Section id="issue" className="bg-gold-pale/40">
         <div className="grid items-center gap-14 md:grid-cols-[1fr_1.1fr] md:gap-20">
           <Reveal>
@@ -171,7 +187,7 @@ export default async function Home() {
         </div>
       </Section>
 
-      {/* 07 · Founding partners */}
+      {/* 05 · Founding partners */}
       <Section id="partners">
         <div className="grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end md:gap-16">
           <Heading eyebrow={home.partners.eyebrow} title={home.partners.heading} />
@@ -210,7 +226,7 @@ export default async function Home() {
         </Reveal>
       </Section>
 
-      {/* 08 · Point of view */}
+      {/* 06 · Point of view */}
       <section className="overflow-hidden py-24 md:py-40">
         <Wrap>
           <Reveal>
@@ -227,7 +243,7 @@ export default async function Home() {
         </Wrap>
       </section>
 
-      {/* 09 · Honest about what exists */}
+      {/* 07 · Honest about what exists */}
       <Section id="status">
         <Heading eyebrow={home.status.eyebrow} title={home.status.heading} />
         <div className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-3">
@@ -242,47 +258,55 @@ export default async function Home() {
         </div>
       </Section>
 
-      {/* 10 · Membership */}
+      {/* 08 · Membership: one paid plan */}
       <Section id="membership">
         <Heading eyebrow={home.tiers.eyebrow} title={home.tiers.heading} />
         <Reveal className="mt-14">
-          <div className="grid border border-ink md:grid-cols-3">
-            {home.tiers.items.map((t, i) => {
-              const feat = i === 1;
-              return (
-                <div
-                  key={t.name}
-                  className={`border-b border-ink px-7 py-9 last:border-b-0 md:border-r md:border-b-0 md:last:border-r-0 ${feat ? "bg-ink text-ivory" : ""}`}
-                >
-                  <h3 className="text-[1.75rem] font-light">{t.name}</h3>
-                  <p className="mt-1.5 text-sm opacity-75">{t.price}</p>
-                  <ul className="mt-4 list-disc space-y-2 pl-5">
-                    {t.features.map((f) => (
-                      <li key={f}>{f}</li>
-                    ))}
-                  </ul>
-                  <div className="mt-6">
-                    {i === 0 && join(home.tiers.readerCta, "btn btn-alt")}
-                    {i === 1 && (
-                      <Link href="/membership" className="btn btn-light hover:text-white">
-                        {home.tiers.memberCta}
-                      </Link>
-                    )}
-                    {i === 2 && (
-                      <Link href="/platform#perks" className="btn btn-alt">
-                        {home.tiers.innerCta}
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+          <div className="grid border border-ink md:grid-cols-[1fr_1.2fr]">
+            <div className="bg-ink px-7 py-9 text-ivory md:px-10 md:py-12">
+              <h3 className="text-[2rem] font-light">{home.tiers.name}</h3>
+              <p className="mt-6">
+                <span className="font-serif text-[2.5rem] leading-none font-light">{formatNPR(proPrices.MONTHLY)}</span>{" "}
+                <span className="text-sm opacity-75">{copy.membership.monthly}</span>
+              </p>
+              <p className="mt-3">
+                <span className="font-serif text-[1.5rem] font-light">{formatNPR(proPrices.YEARLY)}</span>{" "}
+                <span className="text-sm opacity-75">
+                  {copy.membership.yearly} · {copy.membership.yearlySaving(formatNPR(proYearlyFullPrice))}
+                </span>
+              </p>
+              <p className="mt-6 max-w-[40ch] opacity-85">{home.tiers.body}</p>
+            </div>
+            <div className="flex flex-col px-7 py-9 md:px-10 md:py-12">
+              <ul className="flex-1 space-y-3">
+                {packages.PRO.features.map((f) => (
+                  <li key={f} className="flex gap-3 border-b border-line pb-3">
+                    <span className="text-tika" aria-hidden="true">
+                      ✦
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-wrap gap-3">
+                {viewer ? (
+                  <Link href="/dashboard/membership" className="btn">
+                    {home.tiers.cta}
+                  </Link>
+                ) : (
+                  <SignInButton label={home.tiers.cta} callbackUrl="/dashboard/membership" className="btn" />
+                )}
+                <Link href="/platform#perks" className="btn btn-alt">
+                  {home.tiers.perks}
+                </Link>
+              </div>
+            </div>
           </div>
         </Reveal>
         <p className="mt-5 text-sm text-mute">{home.tiers.note}</p>
       </Section>
 
-      {/* 11 · Founder Circle */}
+      {/* 09 · Founder Circle */}
       <Section id="founder-circle" className="bg-gold-pale/40">
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr] md:items-end md:gap-16">
           <Heading eyebrow={home.founderCircle.eyebrow} title={home.founderCircle.heading} />

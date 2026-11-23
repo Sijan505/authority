@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 
 export type ProStatus = { state: "none" | "pending" | "rejected" | "expired" | "active"; note: string | null };
 
-/** What to tell a Basic member about their Pro upgrade (Basic itself is free and never expires). */
+/** What to tell a signed-in person about their membership: pending, rejected, ended, or none yet. */
 export async function proStatus(userId: string, hasPro: boolean): Promise<ProStatus> {
   if (hasPro) return { state: "active", note: null };
   const [lastPayment, everPro] = await Promise.all([

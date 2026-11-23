@@ -394,6 +394,16 @@ h3 {
     intro-in 0.7s ease-out 1s forwards,
     intro-fade 0.4s ease-in 1.6s forwards;
 }
+@media (max-width: 479px) {
+  .intro-foot {
+    justify-content: center;
+    letter-spacing: 0.22em;
+    white-space: nowrap;
+  }
+  .intro-foot span:last-child {
+    display: none;
+  }
+}
 @media (min-width: 768px) {
   .intro-foot {
     inset: auto 2.5rem 2rem;
@@ -548,5 +558,70 @@ html:has(.intro-wrap:not([hidden])) .hero-letter {
   .inq-next {
     opacity: 1;
     animation: none;
+  }
+}
+
+/* ---------- Mobile menu (components/MobileMenu.tsx) ---------- */
+.mobile-menu nav .nav-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 3.25rem;
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  color: var(--color-ink);
+  white-space: normal;
+}
+.mobile-menu nav .btn {
+  width: 100%;
+  margin-top: 1.25rem;
+  min-height: 3rem;
+}
+.mobile-menu[open] nav {
+  animation: inq-step-in 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mobile-menu-icon {
+  position: relative;
+  width: 14px;
+  height: 8px;
+}
+.mobile-menu-icon::before,
+.mobile-menu-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.25s ease, top 0.25s ease;
+}
+.mobile-menu-icon::before {
+  top: 0;
+}
+.mobile-menu-icon::after {
+  top: 7px;
+}
+.mobile-menu[open] .mobile-menu-icon::before {
+  top: 4px;
+  transform: rotate(45deg);
+}
+.mobile-menu[open] .mobile-menu-icon::after {
+  top: 4px;
+  transform: rotate(-45deg);
+}
+/* The page behind an open menu doesn't scroll. */
+@media (max-width: 1279px) {
+  html:has(.mobile-menu[open]) {
+    overflow: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu[open] nav {
+    animation: none;
+  }
+  .mobile-menu-icon::before,
+  .mobile-menu-icon::after {
+    transition: none;
   }
 }

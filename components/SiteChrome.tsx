@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import { Star } from "@/components/Decor";
 import { InquiryButton } from "@/components/Inquiry";
+import { MobileMenu } from "@/components/MobileMenu";
 import { site } from "@/config/site";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
@@ -38,11 +39,11 @@ export async function SiteHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-ivory">
-      <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between gap-6 px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Authority home">
-          <Star className="h-6 w-6" />
-          <span className="wordmark-gradient font-serif text-xl tracking-[0.32em]">{copy.brand.wordmark}</span>
+    <header className="sticky top-0 z-50 border-b border-line bg-ivory">
+      <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
+        <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5" aria-label="Authority home">
+          <Star className="h-5 w-5 sm:h-6 sm:w-6" />
+          <span className="wordmark-gradient font-serif text-lg tracking-[0.22em] min-[380px]:text-xl min-[380px]:tracking-[0.32em]">{copy.brand.wordmark}</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-5 xl:flex">
@@ -55,21 +56,14 @@ export async function SiteHeader() {
           {account}
         </nav>
 
-        {/* Mobile menu: native <details>, keyboard accessible without JS */}
-        <details className="relative xl:hidden">
-          <summary className="cursor-pointer list-none border border-line px-3 py-1 text-[0.9375rem] [&::-webkit-details-marker]:hidden">
-            {copy.nav.menu}
-          </summary>
-          <nav aria-label="Main" className="absolute right-0 z-20 mt-2 flex w-60 flex-col gap-3 border border-line bg-ivory p-5">
-            {publicLinks.map((l) => (
-              <Link key={l.href} href={l.href} className="nav-link">
-                {l.label}
-              </Link>
-            ))}
-            <hr className="border-line" />
-            {account}
-          </nav>
-        </details>
+        <MobileMenu label={copy.nav.menu}>
+          {publicLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="nav-link">
+              {l.label}
+            </Link>
+          ))}
+          <div className="mt-6 flex flex-col">{account}</div>
+        </MobileMenu>
       </div>
     </header>
   );
@@ -85,7 +79,7 @@ export function SiteFooter() {
             <span className="tracking-[0.2em] text-ink">{copy.brand.wordmark}</span>. {copy.brand.tagline}
           </span>
         </span>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2">
+        <ul className="flex flex-wrap items-center gap-x-5 gap-y-1 [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center sm:[&_a]:min-h-0">
           <li>
             <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
               {site.instagramHandle}

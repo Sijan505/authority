@@ -1,5 +1,5 @@
 import { formatDate } from "@/components/ArticleCard";
-import { cities, depositOptions, helpOptions, inquiryFields, inquirySources, perks, priceBands, successTarget, contributionOptions } from "@/config/site";
+import { cities, contributionOptions, helpOptions, inquiryFields, inquirySources, successTarget } from "@/config/site";
 import { requireAdmin } from "@/lib/access";
 import { db } from "@/lib/db";
 import { inquiryRef } from "@/lib/validation";
@@ -14,39 +14,29 @@ export default async function AdminInquiries() {
     // Only sign-ups from the current form have these answers.
     db.inquiry.findMany({
       where: { field: { not: null } },
-      select: { field: true, city: true, priceBand: true, deposit: true, helpBuild: true, source: true, perks: true, contribution: true },
+      select: { field: true, city: true, helpBuild: true, source: true, contribution: true },
     }),
   ]);
 
   const n = answers.length;
-  const count = (key: "field" | "city" | "priceBand" | "deposit" | "helpBuild" | "source", options: readonly string[]) =>
+  const count = (key: "field" | "city" | "helpBuild" | "source", options: readonly string[]) =>
     options.map((o) => ({ label: o, value: answers.filter((a) => a[key] === o).length }));
-  const countList = (key: "perks" | "contribution", options: readonly string[]) =>
+  const countList = (key: "contribution", options: readonly string[]) =>
     options.map((o) => ({ label: o, value: answers.filter((a) => a[key].includes(o)).length })).sort((a, b) => b.value - a.value);
 
-  const deposits = answers.filter((a) => a.deposit === depositOptions[0]).length;
-  const willing = answers.filter((a) => a.priceBand && a.priceBand !== priceBands[priceBands.length - 1]).length;
   const helpers = answers.filter((a) => a.helpBuild === helpOptions[0]).length;
+  const maybe = answers.filter((a) => a.helpBuild === helpOptions[1]).length;
   const targets = [
     { label: "Sign-ups", value: n, goal: successTarget.signups, show: `${n} / ${successTarget.signups}` },
-    {
-      label: "Named a price band",
-      value: n ? willing / n : 0,
-      goal: successTarget.willingToPayShare,
-      show: `${n ? Math.round((willing / n) * 100) : 0}% / ${Math.round(successTarget.willingToPayShare * 100)}%`,
-    },
-    { label: "Would put down a deposit", value: deposits, goal: successTarget.deposits, show: `${deposits} / ${successTarget.deposits}` },
-    { label: "Want to help build it", value: helpers, goal: 0, show: String(helpers) },
+    { label: "Want to help build it", value: helpers, goal: successTarget.helpers, show: `${helpers} / ${successTarget.helpers}` },
+    { label: "Maybe, tell me more", value: maybe, goal: 0, show: String(maybe) },
   ];
 
   const breakdowns = [
     { title: "By field", rows: count("field", inquiryFields) },
     { title: "By city", rows: count("city", cities) },
-    { title: "Would pay per year", rows: count("priceBand", priceBands) },
-    { title: "Founding deposit", rows: count("deposit", depositOptions) },
     { title: "Help build Authority", rows: count("helpBuild", helpOptions) },
     { title: "Where they found us", rows: count("source", inquirySources).sort((a, b) => b.value - a.value) },
-    { title: "Perks that matter most", rows: countList("perks", perks) },
     { title: "Could contribute", rows: countList("contribution", contributionOptions) },
   ];
 
@@ -67,7 +57,7 @@ export default async function AdminInquiries() {
           Against the success target
         </h2>
         <p className="hint">Targets are set in config/site.ts (successTarget). Results use the {n} sign-ups from the current form.</p>
-        <dl className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <dl className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
           {targets.map((x) => {
             const met = x.goal > 0 && x.value >= x.goal;
             return (
@@ -85,7 +75,7 @@ export default async function AdminInquiries() {
         <h2 id="results" className="text-2xl font-medium text-brown">
           Results
         </h2>
-        <div className="mt-2 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-2 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-3">
           {breakdowns.map((b) => (
             <div key={b.title}>
               <h3 className="mt-3 text-lg font-semibold text-brown">{b.title}</h3>
@@ -117,13 +107,15 @@ export default async function AdminInquiries() {
                   </a>
                 ) : null,
               ],
-              ["Perks", i.perks.join(", ")],
-              ["Would pay per year", i.priceBand],
-              ["Founding deposit", i.deposit],
+              ["Their craft", i.craft],
+              ["About them", i.about],
               ["Help build", i.helpBuild],
               ["Could contribute", i.contribution.join(", ")],
               ["Found us via", i.source && [i.source, i.sourceDetail].filter(Boolean).join(" · ")],
-              // First version of the form
+              // Earlier versions of the form
+              ["Perks", i.perks.join(", ")],
+              ["Would pay per year", i.priceBand],
+              ["Founding deposit", i.deposit],
               ["WhatsApp", i.whatsapp],
               ["World", i.world],
               ["Role", i.role],
@@ -140,7 +132,7 @@ export default async function AdminInquiries() {
                   <summary className="flex cursor-pointer flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                     <span>
                       <b className="font-semibold">{i.name}</b> <span className="text-mute">· {i.field ?? i.role ?? "First form"}</span>
-                      {i.deposit === depositOptions[0] && <span className="ml-2 rounded bg-gold/20 px-1.5 py-0.5 text-xs text-brown">Deposit: yes</span>}
+                      {i.helpBuild === helpOptions[0] && <span className="ml-2 rounded bg-gold/20 px-1.5 py-0.5 text-xs text-brown">Wants to help</span>}
                     </span>
                     <span className="text-sm text-mute">
                       {i.city} · {formatDate(i.createdAt)} · <span className="tabular-nums">{inquiryRef(i.id)}</span>

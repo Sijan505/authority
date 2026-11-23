@@ -3,15 +3,15 @@
 import { useRef, useState } from "react";
 import { completeOnboarding } from "@/app/actions/member";
 import { Chips, FieldError, FieldPicker, FormMessage, PendingButton, Req, useKeepValuesAction } from "@/components/forms";
-import { cities, depositOptions, helpOptions, perks } from "@/config/site";
+import { cities, helpOptions, perks } from "@/config/site";
 import { copy } from "@/content/copy";
 
 const t = copy.onboarding;
 const opts = (list: readonly string[]) => list.map((v) => ({ value: v, label: v }));
 
 // Which step each answer lives on, so server errors can jump back to it.
-const STEP_OF: Record<string, number> = { field: 0, name: 1, city: 1, contact: 1, perks: 2, deposit: 3, helpBuild: 4, contribution: 4 };
-const REQUIRED: string[][] = [["field"], ["name", "city", "contact"], [], ["deposit"], ["helpBuild"]];
+const STEP_OF: Record<string, number> = { field: 0, name: 1, city: 1, contact: 1, perks: 2, helpBuild: 3, contribution: 3 };
+const REQUIRED: string[][] = [["field"], ["name", "city", "contact"], [], ["helpBuild"]];
 
 export function OnboardingForm({
   fields,
@@ -145,19 +145,7 @@ export function OnboardingForm({
           <Chips name="perks" type="checkbox" legend={t.perks} hint={t.perksHint} options={opts(perks)} error={errors.perks} />
         </div>
 
-        <div hidden={step !== 3}>
-          <Chips
-            name="deposit"
-            legend={t.deposit}
-            hint={t.depositHint}
-            options={opts(depositOptions)}
-            required
-            error={errors.deposit}
-            onChange={() => clear("deposit")}
-          />
-        </div>
-
-        <div hidden={step !== 4} className="space-y-8">
+        <div hidden={step !== 3} className="space-y-8">
           <Chips
             name="helpBuild"
             legend={t.helpBuild}

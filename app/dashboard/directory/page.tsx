@@ -11,13 +11,14 @@ export default async function DirectoryPage() {
   const t = copy.directory;
 
   const [members, blocks] = await Promise.all([
-    // Names and fields only, for members of the viewer's field (Basic and Pro).
+    // Names and fields only, for active (paying) members of the viewer's field.
     db.user.findMany({
       where: {
         fieldId: viewer.user.fieldId,
         status: "ACTIVE",
         onboardedAt: { not: null },
         id: { not: viewer.user.id },
+        subscriptions: { some: { package: "PRO", status: "ACTIVE", startsAt: { lte: new Date() }, expiresAt: { gt: new Date() } } },
       },
       orderBy: { name: "asc" },
       take: 500,

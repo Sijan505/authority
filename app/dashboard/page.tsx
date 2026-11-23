@@ -15,9 +15,25 @@ export default async function DashboardPage() {
   const viewer = await requireOnboarded();
   const t = copy.dashboard;
 
+  const f = fieldConfig(viewer.user.field?.slug);
+
+  // Field content is for paying members (and admins). Everyone else sees how to join.
+  if (viewer.plan !== "PRO" && !viewer.isAdmin) {
+    const pro = await proStatus(viewer.user.id, false);
+    return (
+      <main className="mx-auto max-w-3xl space-y-10 px-4 py-12 sm:px-6">
+        <header className="text-center">
+          <p className="text-sm uppercase tracking-[0.25em] accent-text">{f.name}</p>
+          <h1 className="mt-2 text-4xl font-medium text-brown md:text-5xl">{f.heroTitle}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-lg">{f.heroText}</p>
+        </header>
+        <Notices viewer={viewer} pro={pro} />
+      </main>
+    );
+  }
+
   // Everything below is scoped to the member's own field.
   const fieldId = viewer.user.fieldId!;
-  const f = fieldConfig(viewer.user.field?.slug);
   const [articles, offers, pro] = await Promise.all([
     db.article.findMany({
       where: { ...publishedWhere(), fieldId },
@@ -143,7 +159,8 @@ export default async function DashboardPage() {
 
 function Notices({ viewer, pro }: { viewer: Viewer; pro: ProStatus }) {
   const t = copy.dashboard;
-  if (!viewer.showRenewal && viewer.plan !== "BASIC") return null;
+  const member = viewer.plan === "PRO";
+  if (!viewer.showRenewal && member) return null;
   const status = {
     pending: [t.pendingHeading, t.pendingBody],
     rejected: [t.rejectedHeading, t.rejectedBody],
@@ -175,7 +192,7 @@ function Notices({ viewer, pro }: { viewer: Viewer; pro: ProStatus }) {
           </Link>
         </div>
       )}
-      {viewer.plan === "BASIC" && pro.state !== "pending" && (
+      {!member && pro.state !== "pending" && (
         <div className="card flex flex-col gap-3 border-2 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "var(--accent)" }}>
           <div>
             <p className="text-2xl font-medium text-brown">{t.upgradeHeading}</p>

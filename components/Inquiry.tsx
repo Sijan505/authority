@@ -1,14 +1,14 @@
 "use client";
 
 // "Register your interest": a full-screen form that asks one question at a time, as
-// set out in the landing-page workplan (field, name, city, email or WhatsApp, perks,
-// price band, deposit, help build). It is mounted once in the root layout and opened by
+// field, name, city, email or WhatsApp, where we can see their craft, about them, and
+// whether they would help build it. It is mounted once in the root layout and opened by
 // <InquiryButton>, by the <InquiryPrompt> card that slides in after the home-page
 // intro, or by a #inquire link.
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitInquiry } from "@/app/actions/inquiry";
 import { LOGO_PATH } from "@/components/Decor";
-import { cities, contributionOptions, depositOptions, helpOptions, inquiryFields, perks, priceBands, site } from "@/config/site";
+import { cities, contributionOptions, helpOptions, inquiryFields, site } from "@/config/site";
 import { copy } from "@/content/copy";
 import { INQUIRY_LIMITS, parseContact } from "@/lib/validation";
 
@@ -77,21 +77,21 @@ type Answers = {
   name: string;
   city: string;
   contact: string;
-  perks: string[];
-  priceBand: string;
-  deposit: string;
+  craft: string;
+  about: string;
   helpBuild: string;
   contribution: string[];
 };
 type Key = keyof Answers;
-type ListKey = "perks" | "contribution";
+type ListKey = "contribution";
 type TextKey = Exclude<Key, ListKey>;
 
-const EMPTY: Answers = { field: "", name: "", city: "", contact: "", perks: [], priceBand: "", deposit: "", helpBuild: "", contribution: [] };
+const EMPTY: Answers = { field: "", name: "", city: "", contact: "", craft: "", about: "", helpBuild: "", contribution: [] };
 
 type Step =
   | { kind: "intro" }
   | { kind: "text"; key: TextKey; title: string; hint?: string; placeholder?: string; type?: "text" | "email"; check?: (v: string) => string | null }
+  | { kind: "long"; key: TextKey; title: string; hint?: string; placeholder?: string }
   | { kind: "choice"; key: TextKey; title: string; hint?: string; options: readonly string[] }
   | { kind: "multi"; key: ListKey; title: string; hint?: string; options: readonly string[]; optional?: boolean };
 type Question = Exclude<Step, { kind: "intro" }>;
@@ -112,16 +112,15 @@ function buildSteps(a: Answers): Step[] {
       ...q.contact,
       check: (v) => (parseContact(v) ? null : q.contact.invalid),
     },
-    { kind: "multi", key: "perks", title: q.perks.title, options: perks },
-    { kind: "choice", key: "priceBand", ...q.priceBand, options: priceBands },
-    { kind: "choice", key: "deposit", ...q.deposit, options: depositOptions },
+    { kind: "text", key: "craft", ...q.craft },
+    { kind: "long", key: "about", ...q.about },
     { kind: "choice", key: "helpBuild", title: q.helpBuild.title, options: helpOptions },
     ...(wantsToHelp(a) ? [{ kind: "multi", key: "contribution", title: q.contribution.title, hint: t.optional, options: contributionOptions, optional: true } as Step] : []),
   ];
 }
 
-/** The eight numbered questions; the contribution follow-up shares number 08. */
-const QUESTION_COUNT = 8;
+/** The seven numbered questions; the contribution follow-up shares number 07. */
+const QUESTION_COUNT = 7;
 
 const LETTERS = "ABCDEFGHIJ";
 
@@ -150,11 +149,35 @@ export function InquiryPrompt() {
     const intro = document.getElementById("intro");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const introPlaying = intro && !intro.hidden && !reduced;
-    const timer = window.setTimeout(() => setShow(true), introPlaying ? 3400 : 1600);
-    const hide = () => setShow(false);
+    // On phones the card would cover the hero's own buttons, so it also waits until
+    // the visitor has scrolled past most of the first screen.
+    const phone = window.matchMedia("(max-width: 639px)").matches;
+    let ready = false;
+    let cancelled = false; // the form was opened: don't pop the card up afterwards
+    const scrolledEnough = () => !phone || window.scrollY > window.innerHeight * 0.7;
+    const onScroll = () => {
+      if (ready && !cancelled && scrolledEnough()) {
+        setShow(true);
+        window.removeEventListener("scroll", onScroll);
+      }
+    };
+    const timer = window.setTimeout(
+      () => {
+        ready = true;
+        if (cancelled) return;
+        if (scrolledEnough()) setShow(true);
+        else window.addEventListener("scroll", onScroll, { passive: true });
+      },
+      introPlaying ? 3400 : 1600,
+    );
+    const hide = () => {
+      cancelled = true;
+      setShow(false);
+    };
     window.addEventListener(OPEN_EVENT, hide);
     return () => {
       window.clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener(OPEN_EVENT, hide);
     };
   }, []);
@@ -166,17 +189,25 @@ export function InquiryPrompt() {
   };
 
   return (
-    <aside aria-label={t.prompt.heading} className="inq-prompt fixed inset-x-4 bottom-4 z-40 bg-ink p-6 text-ivory shadow-2xl sm:right-6 sm:bottom-6 sm:left-auto sm:w-[360px]">
-      <button type="button" onClick={dismiss} aria-label={t.prompt.dismiss} className="absolute top-3 right-4 text-xl leading-none opacity-60 hover:opacity-100">
+    <aside
+      aria-label={t.prompt.heading}
+      className="inq-prompt fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 bg-ink p-4 pr-12 text-ivory shadow-2xl sm:right-6 sm:bottom-6 sm:left-auto sm:w-[360px] sm:p-6 sm:pr-12"
+    >
+      <button
+        type="button"
+        onClick={dismiss}
+        aria-label={t.prompt.dismiss}
+        className="absolute top-1 right-1 grid h-11 w-11 place-items-center text-xl leading-none opacity-60 hover:opacity-100"
+      >
         ×
       </button>
-      <p className="pr-6 font-serif text-[1.625rem] leading-tight font-light">{t.prompt.heading}</p>
-      <p className="mt-2 text-[0.9375rem] opacity-80">{t.prompt.body}</p>
-      <div className="mt-5 flex items-center gap-4">
-        <button type="button" onClick={openInquiry} className="btn btn-light">
+      <p className="font-serif text-[1.25rem] leading-tight font-light sm:text-[1.625rem]">{t.prompt.heading}</p>
+      <p className="mt-2 hidden text-[0.9375rem] opacity-80 sm:block">{t.prompt.body}</p>
+      <div className="mt-3 flex items-center gap-2 sm:mt-5 sm:gap-4">
+        <button type="button" onClick={openInquiry} className="btn btn-light btn-sm sm:px-[1.6rem] sm:py-[0.8rem] sm:text-[0.9375rem]">
           {t.prompt.cta} →
         </button>
-        <button type="button" onClick={dismiss} className="text-sm opacity-70 hover:opacity-100">
+        <button type="button" onClick={dismiss} className="min-h-11 px-2 text-sm opacity-70 hover:opacity-100">
           {t.prompt.dismiss}
         </button>
       </div>
@@ -201,7 +232,6 @@ function Received({
   const d = t.done;
   const first = answers.name.trim().split(/\s+/)[0] ?? "";
   const contact = parseContact(answers.contact);
-  const mightDeposit = answers.deposit === depositOptions[0] || answers.deposit === depositOptions[1];
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-6">
@@ -229,7 +259,6 @@ function Received({
               {contact.type === "email" ? d.replyEmail : d.replyWhatsApp} <span className="text-ink">{contact.normalized}</span>.
             </p>
           )}
-          {mightDeposit && !repeat && <p className="mt-4 max-w-[48ch] border-l-2 border-gold pl-4 text-[0.9375rem] text-mute">{d.deposit}</p>}
           <div className="mt-10 flex flex-wrap gap-3">
             <a href="/platform" onClick={onClose} className="btn">
               {d.explore}
@@ -282,7 +311,7 @@ export function InquiryForm() {
   const [reference, setReference] = useState<string | undefined>();
   const [repeat, setRepeat] = useState(false);
   const [pending, startTransition] = useTransition();
-  const fieldRef = useRef<HTMLInputElement>(null);
+  const fieldRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const advanceTimer = useRef<number | undefined>(undefined);
   const opener = useRef<HTMLElement | null>(null); // gets focus back on close
@@ -369,8 +398,7 @@ export function InquiryForm() {
 
   const submit = () => {
     const fd = new FormData();
-    (["field", "name", "city", "contact", "priceBand", "deposit", "helpBuild"] as const).forEach((k) => fd.set(k, answers[k]));
-    answers.perks.forEach((p) => fd.append("perks", p));
+    (["field", "name", "city", "contact", "craft", "about", "helpBuild"] as const).forEach((k) => fd.set(k, answers[k]));
     if (wantsToHelp(answers)) answers.contribution.forEach((c) => fd.append("contribution", c));
     const src = readSource();
     fd.set("source", src.source);
@@ -447,7 +475,9 @@ export function InquiryForm() {
     if (done || pending) return;
     const target = e.target as HTMLElement;
     // Enter moves on from a text field or the dialog itself; on a button it just presses that button.
-    if (e.key === "Enter" && (target.tagName === "INPUT" || target === dialogRef.current)) {
+    // In the long answer, Shift+Enter adds a line; on touch screens Enter always does.
+    const newlineInTextarea = target.tagName === "TEXTAREA" && (e.shiftKey || window.matchMedia("(pointer: coarse)").matches);
+    if (e.key === "Enter" && !newlineInTextarea && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target === dialogRef.current)) {
       e.preventDefault();
       return next();
     }
@@ -491,7 +521,7 @@ export function InquiryForm() {
               {pad(number)} / {pad(QUESTION_COUNT)}
             </span>
           )}
-          <button type="button" onClick={close} className="text-sm text-mute hover:text-ink">
+          <button type="button" onClick={close} className="-mr-2 min-h-11 px-2 text-sm text-mute hover:text-ink">
             {t.close} ✕
           </button>
         </div>
@@ -533,16 +563,35 @@ export function InquiryForm() {
                     type={step.type ?? "text"}
                     inputMode={step.type === "email" ? "email" : undefined}
                     autoComplete={step.key === "name" ? "name" : step.key === "contact" ? "email" : "off"}
-                    autoCapitalize={step.key === "contact" ? "none" : undefined}
-                    spellCheck={step.key === "contact" ? false : undefined}
+                    autoCapitalize={step.key === "contact" || step.key === "craft" ? "none" : undefined}
+                    autoCorrect={step.key === "contact" || step.key === "craft" ? "off" : undefined}
+                    spellCheck={step.key === "contact" || step.key === "craft" ? false : undefined}
                     value={answers[step.key]}
                     onChange={(e) => set(step.key, e.target.value)}
                     placeholder={step.placeholder}
-                    maxLength={step.key === "contact" ? INQUIRY_LIMITS.contact : INQUIRY_LIMITS.name}
+                    maxLength={step.key === "contact" ? INQUIRY_LIMITS.contact : step.key === "craft" ? INQUIRY_LIMITS.craft : INQUIRY_LIMITS.name}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? "inquiry-error" : undefined}
                     className="w-full border-b border-ink/30 bg-transparent pb-3 font-serif text-[clamp(1.5rem,3.5vw,2.25rem)] font-light outline-none placeholder:text-ink/25 focus:border-ink"
                   />
+                )}
+                {step.kind === "long" && (
+                  <>
+                    <textarea
+                      ref={fieldRef}
+                      rows={4}
+                      value={answers[step.key]}
+                      onChange={(e) => set(step.key, e.target.value)}
+                      placeholder={step.placeholder}
+                      maxLength={INQUIRY_LIMITS.about}
+                      aria-invalid={error ? true : undefined}
+                      aria-describedby={error ? "inquiry-error" : undefined}
+                      className="w-full resize-none border-b border-ink/30 bg-transparent pb-3 font-serif text-[clamp(1.25rem,2.8vw,1.75rem)] leading-snug font-light outline-none placeholder:text-ink/25 focus:border-ink"
+                    />
+                    <p className="mt-2 text-right text-xs text-mute tabular-nums" aria-hidden="true">
+                      {answers[step.key].length} / {INQUIRY_LIMITS.about}
+                    </p>
+                  </>
                 )}
                 {(step.kind === "choice" || step.kind === "multi") && (
                   <div role={step.kind === "multi" ? "group" : "radiogroup"} aria-labelledby={titleId} className="grid max-w-[560px] gap-2.5">
@@ -578,7 +627,7 @@ export function InquiryForm() {
                   {pending ? t.submitting : isLast ? t.submit : t.next}
                 </button>
                 {!pending && <span className="hidden text-xs text-mute sm:inline">{t.pressEnter}</span>}
-                <button type="button" onClick={back} className="ml-auto text-sm text-mute hover:text-ink">
+                <button type="button" onClick={back} className="ml-auto min-h-11 px-2 text-sm text-mute hover:text-ink">
                   ← {t.back}
                 </button>
               </div>

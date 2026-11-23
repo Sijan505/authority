@@ -9,7 +9,8 @@ import { db } from "@/lib/db";
 // Every access decision is made here, on the server, from the database.
 // Pages, server actions and API routes all call these helpers.
 
-export type Plan = "BASIC" | "PRO";
+/** The one paid plan, shown on the site as "Member" (stored as PRO). There is no free plan. */
+export type Plan = "PRO";
 
 const ADMIN_PASSWORD_SESSION_HOURS = 8;
 
@@ -34,10 +35,10 @@ export const getViewer = cache(async () => {
 
   const suspended = user.status === "SUSPENDED";
   const onboarded = !!user.onboardedAt && !!user.fieldId;
-  // Basic is free: every onboarded, non-suspended member has it. Pro needs a verified payment.
-  const plan: Plan | null = suspended || !onboarded ? null : hasPro ? "PRO" : "BASIC";
+  // Membership needs a verified payment; signing in and onboarding alone give no access.
+  const plan: Plan | null = suspended || !onboarded || !hasPro ? null : "PRO";
 
-  // Latest Pro expiry across the current period and already-paid renewals.
+  // Latest membership expiry across the current period and already-paid renewals.
   const proExpiresAt = plan === "PRO" ? (active[0]?.expiresAt ?? null) : null;
   const daysLeft = proExpiresAt ? Math.ceil((proExpiresAt.getTime() - now.getTime()) / 86_400_000) : null;
 
@@ -57,14 +58,14 @@ export const getViewer = cache(async () => {
   };
 });
 
-/** Viewer can read full articles of this field. */
+/** Viewer can read full articles of this field: active members of that field, and admins. */
 export function canReadField(viewer: Viewer | null, fieldId: string) {
   if (!viewer) return false;
   if (viewer.isAdmin) return true;
-  return viewer.plan !== null && viewer.user.fieldId === fieldId;
+  return viewer.plan === "PRO" && viewer.user.fieldId === fieldId;
 }
 
-/** Viewer can use Pro features (comments, feed, directory) in this field. */
+/** Viewer can use member features (comments, feed, directory) in this field. */
 export function canUsePro(viewer: Viewer | null, fieldId: string) {
   if (!viewer) return false;
   return viewer.plan === "PRO" && viewer.onboarded && viewer.user.fieldId === fieldId;
@@ -116,7 +117,7 @@ export async function assertOnboarded() {
 
 export async function assertPro() {
   const viewer = await assertOnboarded();
-  if (viewer.plan !== "PRO") throw new AccessError("This needs an active Pro membership.");
+  if (viewer.plan !== "PRO") throw new AccessError("This needs an active membership.");
   return viewer;
 }
 

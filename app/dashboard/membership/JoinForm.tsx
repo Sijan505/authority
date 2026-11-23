@@ -8,7 +8,7 @@ import { copy } from "@/content/copy";
 
 const t = copy.join;
 
-/** Pro payment form. Basic is free, so there is no package choice. */
+/** Membership payment form. There is one plan, so there is no package choice. */
 export function JoinForm() {
   const [state, onSubmit, pending] = useKeepValuesAction(submitPayment);
   const [cycle, setCycle] = useState<CycleId>("YEARLY");

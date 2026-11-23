@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { depositOptions, helpOptions, perks } from "@/config/site";
+import { helpOptions, perks } from "@/config/site";
 import { requireAdmin } from "@/lib/access";
 import { db } from "@/lib/db";
 import { BarList, DailyBars } from "./charts";
@@ -32,7 +32,6 @@ export default async function AdminDashboard() {
     byField,
     byCity,
     fields,
-    deposit,
     helpBuild,
     perkRows,
     comments30,
@@ -56,7 +55,6 @@ export default async function AdminDashboard() {
     db.user.groupBy({ by: ["fieldId"], _count: { _all: true }, where: { onboardedAt: { not: null } } }),
     db.user.groupBy({ by: ["city"], _count: { _all: true }, where: { onboardedAt: { not: null } } }),
     db.field.findMany({ orderBy: { position: "asc" } }),
-    db.application.groupBy({ by: ["deposit"], _count: { _all: true } }),
     db.application.groupBy({ by: ["helpBuild"], _count: { _all: true } }),
     db.$queryRaw<{ perk: string; n: number }[]>`
       SELECT unnest(perks) AS perk, count(*)::int AS n FROM applications GROUP BY 1`,
@@ -81,10 +79,9 @@ export default async function AdminDashboard() {
   const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
   const trend = new7 - newPrev7;
   const fieldCount = new Map(byField.map((r) => [r.fieldId, r._count._all]));
-  const depositMap = new Map(deposit.map((r) => [r.deposit, r._count._all]));
   const helpMap = new Map(helpBuild.map((r) => [r.helpBuild, r._count._all]));
   const perkMap = new Map(perkRows.map((r) => [r.perk, r.n]));
-  const applications = deposit.reduce((s, r) => s + r._count._all, 0);
+  const applications = helpBuild.reduce((s, r) => s + r._count._all, 0);
 
   const stats = [
     { label: "Total members", value: totalUsers.toLocaleString(), note: `${onboarded} finished setup (${pct(onboarded, totalUsers)}%)` },
@@ -93,8 +90,8 @@ export default async function AdminDashboard() {
       value: new7.toLocaleString(),
       note: trend === 0 ? "Same as last week" : `${trend > 0 ? "▲" : "▼"} ${Math.abs(trend)} vs last week`,
     },
-    { label: "Active Pro", value: proActive.toLocaleString(), note: `${pct(proActive, onboarded)}% of set-up members` },
-    { label: "Verified revenue, 30 days", value: npr(revenue30._sum.amount ?? 0), note: "From verified Pro payments" },
+    { label: "Active members", value: proActive.toLocaleString(), note: `${pct(proActive, onboarded)}% of people who finished setup` },
+    { label: "Verified revenue, 30 days", value: npr(revenue30._sum.amount ?? 0), note: "From verified membership payments" },
   ];
 
   const attention = [
@@ -105,9 +102,9 @@ export default async function AdminDashboard() {
 
   const funnel = [
     { label: "Signed in with Google", value: totalUsers },
-    { label: "Finished setup (Basic)", value: onboarded },
-    { label: "Started Pro (payment sent or pending)", value: proPending + proActive },
-    { label: "Active Pro", value: proActive },
+    { label: "Finished setup", value: onboarded },
+    { label: "Paid or payment sent", value: proPending + proActive },
+    { label: "Active members", value: proActive },
   ];
 
   return (
@@ -219,11 +216,7 @@ export default async function AdminDashboard() {
           Founding-member signals
         </h2>
         <p className="hint">Answers from the setup questions, across {applications} member{applications === 1 ? "" : "s"}.</p>
-        <div className="mt-2 grid gap-8 md:grid-cols-3">
-          <div>
-            <h3 className="mt-3 text-lg font-semibold text-brown">Would put down a deposit</h3>
-            <BarList rows={depositOptions.map((o) => ({ label: o, value: depositMap.get(o) ?? 0 }))} total={applications} />
-          </div>
+        <div className="mt-2 grid gap-8 md:grid-cols-2">
           <div>
             <h3 className="mt-3 text-lg font-semibold text-brown">Wants to help build</h3>
             <BarList rows={helpOptions.map((o) => ({ label: o, value: helpMap.get(o) ?? 0 }))} total={applications} />

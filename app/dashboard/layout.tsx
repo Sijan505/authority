@@ -9,6 +9,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
   const links = [
     { href: "/dashboard", label: t.home },
     { href: "/dashboard/membership", label: t.membership },
+    // Members only.
     ...(viewer.plan === "PRO"
       ? [
           { href: "/dashboard/discussion", label: t.discussion },
@@ -27,11 +28,9 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
               {l.label}
             </Link>
           ))}
-          {viewer.plan && (
-            <span className="ml-auto text-sm">
-              {t.plan}: <strong className="text-brown">{viewer.plan === "PRO" ? "Pro" : "Basic"}</strong>
-            </span>
-          )}
+          <span className="ml-auto text-sm">
+            {t.plan}: <strong className="text-brown">{viewer.plan === "PRO" ? t.member : t.notMember}</strong>
+          </span>
         </nav>
       </div>
       {children}

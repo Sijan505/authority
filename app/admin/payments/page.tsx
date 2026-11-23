@@ -32,7 +32,7 @@ export default async function AdminPayments() {
       <p className="mt-2">
         Check each payment in eSewa, Khalti or the bank statement before verifying. Verifying activates the membership
         (monthly = 30 days, yearly = 365 days). A renewal starts when the member&apos;s current period of the same package
-        ends; an upgrade to Pro starts immediately.
+        ends; a first payment starts the membership immediately.
       </p>
 
       <h2 className="mt-10 text-2xl font-medium text-brown">Pending ({pending.length})</h2>

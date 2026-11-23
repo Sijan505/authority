@@ -52,22 +52,21 @@ export const copy = {
       secondary: "Explore the platform",
       scroll: "Scroll",
     },
-    start: {
-      eyebrow: "01 · The starting point",
-      heading: "There are so many interesting people doing things in Nepal.",
-      body: "Chefs, hoteliers, designers, makers, founders. They are building real things, but they don't always have a common place to be discovered, connected and introduced to one another.",
-    },
-    opportunity: {
-      eyebrow: "02 · The opportunity",
-      heading: "Connections are waiting to happen.",
-      items: [
-        { who: "A hotelier", what: "might never meet the person building a fashion label they would love to work with." },
-        { who: "A designer", what: "has an idea for a hotel collaboration and doesn't know who to approach." },
-        { who: "A young entrepreneur", what: "has something brilliant to offer but lacks the right introductions." },
+    founderNote: {
+      eyebrow: "A note from the founder",
+      paragraphs: [
+        "Living almost two decades in Nepal and a year in London, there are very interesting characters and visionaries I've met and keep getting introduced to.",
+        "A chef in Chitwan who could cook anywhere. A designer in Kathmandu reworking dhaka for a new generation. A hotelier opening a property in Jhapa. A model walking in Asia and back at her day job by Monday.",
+        "Different industries on paper. Somehow, they all want the same thing: to be around people who get it.",
+        "Authority is where those people meet. A members club for Nepal's tastemakers in fashion, hospitality, food and the arts.",
+        "We're testing this before we build it. Register your interest, and tell us if you'd help build it.",
       ],
+      closing: ["Nepal never lacked talent.", "It lacked rooms where that talent could meet."],
+      name: "Satish Acharya",
+      role: "Founder, Authority",
     },
     divisions: {
-      eyebrow: "03 · Our editorial identity",
+      eyebrow: "01 · Our editorial identity",
       heading: "Three Nepali words.",
       items: [
         {
@@ -94,21 +93,21 @@ export const copy = {
         "Founders, creatives, entrepreneurs, artists and thinkers contributing to the country's cultural landscape. We want to find the ones who deserve more attention and give emerging talent the same curiosity as established names. We are not here to tell people what matters.",
     },
     platform: {
-      eyebrow: "04 · The platform",
+      eyebrow: "02 · The platform",
       heading: "One idea, six sides.",
       cta: "See the whole platform",
     },
     how: {
-      eyebrow: "05 · How it works",
+      eyebrow: "03 · How it works",
       heading: "Three steps to a founding seat.",
       steps: [
-        { title: "Register your interest", body: "Eight short questions, about a minute. Tell us your field, your city and what you would want." },
+        { title: "Register your interest", body: "Seven short questions, about two minutes. Tell us your field, your city and where we can see your work." },
         { title: "Get invited as a founding member", body: "Founding members are invited first, by email or WhatsApp, before membership opens to everyone." },
         { title: "Join the first drop", body: "Your first night with Authority: The Issue Drop, at a partner venue, with the first issue in hand." },
       ],
     },
     issue: {
-      eyebrow: "06 · The first issue",
+      eyebrow: "04 · The first issue",
       heading: "A monthly magazine, in print and in person.",
       body: "Every month, Authority publishes an issue on the people, places and ideas shaping Nepal's food, stay and clothes. Members get it first.",
       cover: { issue: "Issue 01", lines: ["Gaas · Baas · Kapas", "The tastemakers of contemporary Nepal"], soon: "Coming soon" },
@@ -122,7 +121,7 @@ export const copy = {
       },
     },
     partners: {
-      eyebrow: "07 · Founding partners",
+      eyebrow: "05 · Founding partners",
       heading: "The venues and brands we start with.",
       body: "Restaurants, hotels and labels who host members, open their kitchens and studios, and offer perks you can't buy.",
       soon: "Coming soon",
@@ -130,12 +129,12 @@ export const copy = {
       cta: "Become a founding partner",
     },
     pov: {
-      eyebrow: "08 · Our point of view",
+      eyebrow: "06 · Our point of view",
       lines: ["Luxury is not the product.", "Taste is the product."],
       body: "We care about curiosity, character and knowledge, not just money or status.",
     },
     status: {
-      eyebrow: "09 · Where we are",
+      eyebrow: "07 · Where we are",
       heading: "Honest about what exists.",
       columns: [
         { title: "Today", body: "The website and membership sign-in, and the Gaas, Baas and Kapas identity." },
@@ -147,28 +146,16 @@ export const copy = {
       ],
     },
     tiers: {
-      eyebrow: "10 · Membership",
-      heading: "Three ways to belong",
-      items: [
-        { name: "The Reader", price: "Free", features: ["Updates on new experiences", "Public events, when announced", "The Journal, when it launches"] },
-        {
-          name: "The Member",
-          price: "Price to be confirmed",
-          features: ["Everything in The Reader", "Member experiences and event booking", "The member Network", "Selected partner perks"],
-        },
-        {
-          name: "The Inner Circle",
-          price: "Price to be confirmed",
-          features: ["Everything in The Member", "Priority invitations", "Curated introductions", "The Request Desk, when it launches"],
-        },
-      ],
-      readerCta: "Sign in with Google",
-      memberCta: "Join now",
-      innerCta: "See member perks",
-      note: "These tiers are proposed. Your existing payment setup continues to apply until pricing and benefits are confirmed.",
+      eyebrow: "08 · Membership",
+      heading: "One membership.",
+      name: "The Member",
+      body: "Everything Authority offers in your field is for members: the full articles, partner offers, the discussion feed and the member directory.",
+      cta: "Become a member",
+      perks: "See member perks",
+      note: "Your membership starts once our team has verified your payment.",
     },
     founderCircle: {
-      eyebrow: "11 · The Founder Circle",
+      eyebrow: "09 · The Founder Circle",
       heading: "The first people who help shape it.",
       body: "The Founder Circle is the initial group who will share their knowledge, challenge our ideas and help turn the vision into something real. It isn't about putting names on a website.",
       cta: "About the Founder Circle",
@@ -179,10 +166,10 @@ export const copy = {
       items: [
         {
           q: "Who can join?",
-          a: "Anyone can read. Membership is aimed at people working in or serious about Nepal's food, hospitality, fashion, design and creative fields, including students. You don't need to be wealthy or established.",
+          a: "Anyone can read the previews. Membership is aimed at people working in or serious about Nepal's food, hospitality, fashion, design and creative fields, including students. You don't need to be wealthy or established.",
           flag: "To confirm: whether applications are reviewed.",
         },
-        { q: "What does it cost?", a: "The Reader is free.", flag: "To confirm: Member and Inner Circle pricing and billing period." },
+        { q: "What does it cost?", a: "Membership is NPR 1,000 a month or NPR 9,600 a year (20% off NPR 12,000).", flag: "" },
         {
           q: "How do I pay or cancel?",
           a: "Payment runs through the existing payment setup: eSewa, Khalti or bank transfer.",
@@ -215,7 +202,7 @@ export const copy = {
 
   platform: {
     heading: "The platform",
-    intro: "One idea, six sides. Each part is marked honestly, so you know what exists today and what is still to come.",
+    intro: "Each part is marked honestly, so you know what exists today and what is still to come.",
     sides: [
       {
         id: "journal",
@@ -322,7 +309,7 @@ export const copy = {
         { title: "Early booking", body: "First access to seats at hosted experiences." },
         { title: "A welcome touch", body: "A drink, a dish or a small gift on arrival." },
       ],
-      note: "These perks are proposed. Each depends on an agreement with the partner, and availability will vary. Which perks come with The Member and which with The Inner Circle is still to be decided.",
+      note: "These perks are proposed. Each depends on an agreement with the partner, and availability will vary. They come with membership.",
     },
   },
 
@@ -378,7 +365,7 @@ export const copy = {
     cta: "Register your interest",
     prompt: {
       heading: "Founding members are invited first.",
-      body: "Eight short questions, about a minute. Tell us who you are and what you would want from Authority.",
+      body: "Seven short questions, about two minutes. Tell us who you are and where we can see your craft.",
       cta: "Register your interest",
       dismiss: "Not now",
     },
@@ -394,9 +381,9 @@ export const copy = {
     intro: {
       eyebrow: "Founding membership",
       heading: "Register your interest.",
-      body: "Eight short questions, about a minute. Your answers decide where Authority starts and who is invited first. Nothing is charged.",
+      body: "We're testing this before we build it. Register your interest, and tell us if you'd help build it. Seven short questions, about two minutes.",
       start: "Begin",
-      time: "About 1 minute",
+      time: "About 2 minutes",
     },
     questions: {
       field: { title: "Which field are you in?" },
@@ -408,11 +395,15 @@ export const copy = {
         placeholder: "name@example.com or 98XXXXXXXX",
         invalid: "Enter a valid email (name@example.com) or WhatsApp number (98XXXXXXXX).",
       },
-      perks: { title: "Which perks matter most to you?" },
-      priceBand: { title: "What would you pay for a year of membership?", hint: "A guide for us only. Nothing is charged." },
-      deposit: {
-        title: "Would you put down a small deposit to hold a founding spot?",
-        hint: "Just yes, maybe or no for now. Nothing is charged, and we would explain the terms before asking.",
+      craft: {
+        title: "Where can we see your craft?",
+        hint: "Your Instagram, TikTok or X handle, a website or a portfolio. Add as many as you like.",
+        placeholder: "@yourhandle",
+      },
+      about: {
+        title: "Tell us about yourself, and what change you hope to bring to this space in Nepal.",
+        hint: "A few lines is plenty.",
+        placeholder: "In your own words",
       },
       helpBuild: { title: "Are you experienced in your field, and would you like to help build Authority with us?" },
       contribution: { title: "What could you contribute?" },
@@ -426,7 +417,6 @@ export const copy = {
       repeatBody: "This email or number is already on our list, so we kept your original sign-up. There is nothing more you need to do.",
       replyEmail: "We will write to",
       replyWhatsApp: "We will message you on WhatsApp at",
-      deposit: "You said you might hold a founding spot. Nothing has been charged. We will explain how it works before asking for anything.",
       nextHeading: "How it works",
       next: [
         { title: "Register your interest", body: "Done. Your answers tell us which fields and cities to start with." },
@@ -455,11 +445,13 @@ export const copy = {
     copyLink: "Copy link",
     copied: "Link copied",
     lockedHeading: "Members only",
-    lockedSignedOut: "Sign in to join for free and read the full article if it's in your field.",
-    lockedOnboarding: "Finish setting up your account to read articles from your field.",
+    lockedSignedOut: "Full articles are for members. Sign in and become a member to read pieces from your field.",
+    lockedOnboarding: "Finish setting up your account, then become a member to read articles from your field.",
+    lockedNotMember: "Full articles are for members. Become a member to read every piece from your field.",
+    memberCta: "Become a member",
     lockedOtherField: "This article is for members in another field. Your membership covers your own field.",
     onboardingCta: "Finish setup",
-    signInCta: "Sign in to join free",
+    signInCta: "Sign in to join",
   },
 
   comments: {
@@ -467,27 +459,26 @@ export const copy = {
     label: "Add a comment",
     submit: "Post comment",
     empty: "No comments yet.",
-    proOnly: "Pro members in this field can read and post comments.",
+    proOnly: "Members in this field can read and post comments.",
     removed: "[removed by a moderator]",
   },
 
   membership: {
     heading: "Membership",
-    intro: "Every membership covers your own field. Basic is free. Pro is paid by eSewa, Khalti or bank transfer and verified by our team.",
-    free: "Free",
-    freeNote: "Starts as soon as you sign in and choose your field.",
+    intro: "One membership, for the people shaping your field. Paid by eSewa, Khalti or bank transfer and verified by our team before it starts.",
     monthly: "per month",
     yearly: "per year",
     yearlySaving: (full: string) => `20% off ${full}`,
     signInToJoin: "Sign in to join",
-    choosePro: "Get Pro",
-    payWith: "Pro payments:",
+    choosePro: "Become a member",
+    payWith: "Pay by",
+    note: "Members only. Articles, offers, the discussion feed and the directory are open to active members.",
   },
 
   onboarding: {
     heading: "Welcome to Authority",
     intro: "A few short questions so we can set up your field. Required fields are marked *.",
-    steps: ["Your field", "About you", "Perks", "Founding spot", "Build with us"],
+    steps: ["Your field", "About you", "Perks", "Build with us"],
     field: "Choose your field",
     fieldHint: "Your field decides which articles, offers and member discussions you see.",
     name: "Name",
@@ -496,8 +487,6 @@ export const copy = {
     contactHint: "For invites and receipts. WhatsApp numbers can be local (98XXXXXXXX) or with +977.",
     perks: "Which perks matter most?",
     perksHint: "Choose as many as you like.",
-    deposit: "Would you put down a small deposit for a founding spot?",
-    depositHint: "This is only a signal. Nothing is charged.",
     helpBuild: "Are you experienced in this field and would you like to help build Authority?",
     contribution: "What could you contribute?",
     contributionHint: "Writing, photography, venues, brand connections, styling, other.",
@@ -509,18 +498,20 @@ export const copy = {
   },
 
   dashboard: {
-    pendingHeading: "Pro payment pending",
-    pendingBody: "We've received your payment details. Pro starts as soon as our team verifies it.",
-    rejectedHeading: "Pro payment not verified",
+    pendingHeading: "Payment pending",
+    pendingBody: "We've received your payment details. Your membership starts as soon as our team verifies it.",
+    rejectedHeading: "Payment not verified",
     rejectedBody: "We couldn't verify your last payment. Please check the note and submit again.",
-    expiredHeading: "Your Pro membership has ended",
-    expiredBody: "You're on Basic now. Renew Pro to comment, post and see the member directory again.",
-    renewHeading: (days: number) => `Your Pro membership ends in ${days} day${days === 1 ? "" : "s"}`,
-    renewBody: "Renew now so you don't lose Pro features.",
-    renewCta: "Renew Pro",
-    upgradeHeading: "Upgrade to Pro",
-    upgradeBody: "Comment on articles, post in your field's discussion feed and see the member directory.",
-    upgradeCta: "Upgrade to Pro",
+    expiredHeading: "Your membership has ended",
+    expiredBody: "Renew to read articles, see offers, post in the discussion feed and see the member directory again.",
+    renewHeading: (days: number) => `Your membership ends in ${days} day${days === 1 ? "" : "s"}`,
+    renewBody: "Renew now so you keep your access.",
+    renewCta: "Renew membership",
+    upgradeHeading: "Become a member",
+    upgradeBody: "Your field's articles, partner offers, discussion feed and member directory are for members only.",
+    upgradeCta: "Become a member",
+    notMember: "Not a member yet",
+    member: "Member",
     articles: "Latest in your field",
     noArticles: "No articles in your field yet.",
     venues: "Partner venues",
@@ -539,9 +530,9 @@ export const copy = {
   join: {
     heading: "Membership",
     current: "Current membership",
-    basicCurrent: "Basic (free): articles, field home and offers for your field.",
-    upgradePro: "Upgrade to Pro",
-    renewPro: "Renew Pro",
+    basicCurrent: "You are not a member yet.",
+    upgradePro: "Become a member",
+    renewPro: "Renew membership",
     chooseCycle: "Billing period",
     chooseMethod: "Payment method",
     amount: "Amount to pay",
@@ -560,7 +551,7 @@ export const copy = {
 
   discussion: {
     heading: "Discussion",
-    intro: "Share your point of view with members in your field. Only Pro members in your field can see this feed.",
+    intro: "Share your point of view with members in your field. Only members in your field can see this feed.",
     label: "Share your point of view",
     submit: "Post",
     reply: "Reply",
@@ -631,9 +622,9 @@ export const copy = {
   faq: {
     heading: "FAQ",
     items: [
-      { q: "How much does membership cost?", a: "Basic is free. Pro is NPR 1,000 a month or NPR 9,600 a year (20% off NPR 12,000)." },
+      { q: "How much does membership cost?", a: "Membership is NPR 1,000 a month or NPR 9,600 a year (20% off NPR 12,000)." },
       { q: "Who can join?", a: "TBC. People working in fashion, food, hospitality, travel and luxury, plus creators and students." },
-      { q: "How do I pay for Pro?", a: "TBC. By eSewa, Khalti or bank transfer. Our team verifies each payment before Pro starts." },
+      { q: "How do I pay?", a: "TBC. By eSewa, Khalti or bank transfer. Our team verifies each payment before your membership starts." },
       { q: "When does Authority launch?", a: `TBC. Launch date: ${site.launchDate}.` },
       { q: "Which cities?", a: "Kathmandu, Chitwan and Pokhara to begin with. TBC." },
       { q: "Can I change my field?", a: "TBC. Contact us and our team can move you to another field." },
@@ -649,10 +640,10 @@ export const copy = {
     heading: "Privacy note",
     body: [
       "When you sign in with Google we receive your name, email address and profile picture.",
-      "During onboarding we collect your field, name, city, email or WhatsApp number, and your answers about perks, a founding deposit and helping build Authority. We use these to run your membership, send invites and receipts, and understand what members want.",
-      "If you register your interest, we store your answers (field, name, city, email or WhatsApp number, the perks you want, a price band, your deposit and help-build answers) and where you found us, so we can invite founding members and decide where to start. Nothing is charged.",
+      "During onboarding we collect your field, name, city, email or WhatsApp number, and your answers about perks and helping build Authority. We use these to run your membership, send invites and receipts, and understand what members want.",
+      "If you register your interest, we store your answers (field, name, city, email or WhatsApp number, where we can see your work, what you tell us about yourself, and your help-build answers) and where you found us, so we can invite founding members and decide where to start. Nothing is charged.",
       "When you pay, we store the package, amount, payment method, reference and any screenshot you upload, so our team can verify the payment.",
-      "Comments and posts you write are visible only to Pro members in your field and to our moderators.",
+      "Comments and posts you write are visible only to members in your field and to our moderators.",
       "We do not sell your data. To see, correct or delete your data, contact us. TBC: full privacy policy.",
     ],
   },

@@ -109,18 +109,25 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[slug
 
 function Locked({ viewer }: { viewer: Viewer | null }) {
   const t = copy.articles;
-  const message = !viewer ? t.lockedSignedOut : viewer.plan ? t.lockedOtherField : t.lockedOnboarding;
+  const message = !viewer ? t.lockedSignedOut : !viewer.onboarded ? t.lockedOnboarding : viewer.plan ? t.lockedOtherField : t.lockedNotMember;
+  const action = !viewer
+    ? null
+    : !viewer.onboarded
+      ? { href: "/onboarding", label: t.onboardingCta }
+      : viewer.plan
+        ? { href: "/dashboard", label: copy.nav.dashboard }
+        : { href: "/dashboard/membership", label: t.memberCta };
   return (
     <div className="card mt-8 text-center">
       <h2 className="text-2xl font-medium text-brown">{t.lockedHeading}</h2>
       <p className="mt-2">{message}</p>
       <div className="mt-5">
-        {viewer ? (
-          <Link href={viewer.plan ? "/dashboard" : "/onboarding"} className="btn btn-sm">
-            {viewer.plan ? copy.nav.dashboard : t.onboardingCta}
+        {action ? (
+          <Link href={action.href} className="btn btn-sm">
+            {action.label}
           </Link>
         ) : (
-          <SignInButton label={t.signInCta} className="btn btn-sm" />
+          <SignInButton label={t.signInCta} callbackUrl="/dashboard/membership" className="btn btn-sm" />
         )}
       </div>
     </div>

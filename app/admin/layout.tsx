@@ -20,10 +20,12 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
     <div>
       <div className="border-b border-gold/30 bg-paper">
-        <nav aria-label="Admin" className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
-          <span className="text-sm uppercase tracking-[0.2em] text-gold-dark">Admin</span>
+        {/* One row; on phones it scrolls sideways instead of wrapping into a cramped block. */}
+        <nav aria-label="Admin" className="mx-auto flex max-w-6xl items-center gap-x-6 overflow-x-auto px-4 sm:flex-wrap sm:px-6">
+          <span className="shrink-0 text-sm uppercase tracking-[0.2em] text-gold-dark">Admin</span>
           {links.map(([href, label]) => (
-            <Link key={href} href={href} className="nav-link">
+            <Link key={href} href={href} className="nav-link inline-flex min-h-12 shrink-0 items-center">
+
               {label}
             </Link>
           ))}

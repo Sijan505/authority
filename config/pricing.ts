@@ -1,7 +1,8 @@
 // Membership packages, prices (NPR) and payment instructions.
-// Basic is free and starts automatically after onboarding. Only Pro is paid.
-// Pro prices are read on the server when a member submits a payment, so changing
-// them here changes what new members are asked to pay.
+// There is one plan, shown on the site as "Member". It is paid, and it starts once
+// an admin verifies the payment. Internally (database, code) it is still called PRO.
+// Prices are read on the server when a member submits a payment, so changing them
+// here changes what new members are asked to pay. BASIC is retired: there is no free plan.
 
 export type PackageId = "BASIC" | "PRO";
 export type CycleId = "MONTHLY" | "YEARLY";
@@ -13,18 +14,12 @@ export const CYCLE_DAYS: Record<CycleId, number> = {
 };
 
 export const packages: Record<PackageId, { name: string; features: string[] }> = {
-  BASIC: {
-    name: "Basic",
-    features: [
-      "Articles from your field",
-      "Your field's home page",
-      "Offers and partner venue discounts for your field",
-    ],
-  },
+  BASIC: { name: "Basic (retired)", features: [] },
   PRO: {
-    name: "Pro",
+    name: "Member",
     features: [
-      "Everything in Basic",
+      "Full articles from your field",
+      "Your field's home page and partner venue offers",
       "Comment on articles in your field",
       "Share your point of view in your field's discussion feed",
       "Your field's member directory",
@@ -32,7 +27,7 @@ export const packages: Record<PackageId, { name: string; features: string[] }> =
   },
 };
 
-/** Pro prices in NPR. Yearly is 20% off 12 × monthly. */
+/** Membership prices in NPR. Yearly is 20% off 12 × monthly. */
 export const proPrices: Record<CycleId, number> = { MONTHLY: 1000, YEARLY: 9600 };
 export const proYearlyFullPrice = 12000;
 

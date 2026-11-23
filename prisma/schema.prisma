@@ -112,7 +112,7 @@ model Application {
   city         String
   contact      String
   perks        String[]
-  deposit      String // Yes / Maybe / No: signal only, nothing is charged
+  deposit      String? // Yes / Maybe / No; no longer asked (Nov 2026), kept for earlier answers
   helpBuild    String   @map("help_build")
   contribution String?
   status       String   @default("SUBMITTED")
@@ -307,9 +307,11 @@ model Inquiry {
   field        String?
   contact      String?  @unique // normalised email or +977… WhatsApp; one sign-up each
   contactType  String?  @map("contact_type") // "email" | "whatsapp"
-  perks        String[] @default([])
-  priceBand    String?  @map("price_band")
-  deposit      String? // Yes / Maybe / No: a signal only, nothing is charged
+  perks        String[] @default([]) // no longer asked
+  priceBand    String?  @map("price_band") // no longer asked
+  craft        String? // where we can see their work: Instagram, TikTok, X handles or links
+  about        String? // about them, and the change they hope to bring
+  deposit      String? // Yes / Maybe / No (no longer asked)
   helpBuild    String?  @map("help_build")
   contribution String[] @default([])
   source       String? // Instagram, TikTok, Referral… (config/site.ts inquirySources)

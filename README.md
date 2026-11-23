@@ -2,12 +2,11 @@
 
 **Live site:** https://authority-five.vercel.app
 
-Authority is a Nepal article publisher for fashion, hospitality and luxury. Members get its articles by field (industry), plus offers from partner venues, and Pro members can comment, post and see their field's member directory.
+Authority is a Nepal article publisher for fashion, hospitality and luxury. There is one paid plan, **Member**: members get full articles in their field (industry), offers from partner venues, comments, the discussion feed and their field's member directory. There is no free plan.
 
 | Package | Price | Includes |
 | --- | --- | --- |
-| **Basic** | Free, starts automatically after onboarding, never expires | Articles, field home, offers and partner venues for your own field (read-only) |
-| **Pro** | NPR 1,000 / month or NPR 9,600 / year (20% off 12,000) | Basic + comments, discussion feed, member directory in your field |
+| **Member** (stored as `PRO`) | NPR 1,000 / month or NPR 9,600 / year (20% off 12,000) | Full articles, field home, offers, comments, discussion feed and member directory in your own field |
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · PostgreSQL · Prisma 7 · NextAuth.js 4 (Google)
 
@@ -57,18 +56,18 @@ Only `NEXT_PUBLIC_ANALYTICS_ID` is exposed to the browser. Everything else stays
 
 All checks live in [`lib/access.ts`](lib/access.ts) and run in every page, server action and API route; the UI only hides what the server would refuse anyway.
 
-| | Public | Signed in, not onboarded | Basic (free) | Pro | Admin |
-| --- | --- | --- | --- | --- | --- |
-| Article titles + excerpts (all fields) | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Full article body | | | own field | own field | all |
-| Field home, offers, partner venues | | | own field | own field | |
-| Comments (read + write) | | | | own field | moderate |
-| Discussion feed, report, block | | | | own field | moderate |
-| Member directory (names + fields) | | | | own field | |
-| Admin panel | | | | | ✓ |
+| | Public | Signed in (not a member) | Member | Admin |
+| --- | --- | --- | --- | --- |
+| Article titles + excerpts (all fields) | ✓ | ✓ | ✓ | ✓ |
+| Full article body | | | own field | all |
+| Field home, offers, partner venues | | | own field | ✓ |
+| Comments (read + write) | | | own field | moderate |
+| Discussion feed, report, block | | | own field | moderate |
+| Member directory (active members only) | | | own field | |
+| Admin panel | | | | ✓ |
 
-- **Basic** = any onboarded, non-suspended member. No payment or approval.
-- **Pro** = a Pro subscription an admin has verified (`ACTIVE`), whose start date has passed and whose expiry date hasn't. Expiry is checked on every request, so when Pro ends the member drops back to Basic automatically. No cron job is needed.
+- **Member** = a membership (`PRO` subscription) an admin has verified (`ACTIVE`), whose start date has passed and whose expiry date hasn't. Expiry is checked on every request, so when it ends access stops automatically. No cron job is needed.
+- Signing in and onboarding alone give no access: people see a "Become a member" page until a payment is verified.
 - A **suspended** user has no access, can't use member actions and can't sign in.
 - **Blocking** hides both members' Pro content from each other.
 - Full article bodies are never sent to the browser unless the access check passes.
@@ -77,11 +76,11 @@ All checks live in [`lib/access.ts`](lib/access.ts) and run in every page, serve
 ### Sign-in and onboarding
 
 - Google sign-in creates the user record on first sign-in. `users.email` is unique, so one Google email = one account; a different Google account claiming the same email is refused.
-- After first sign-in, members complete a 5-step onboarding (field; name, city, email/WhatsApp; perks; deposit signal; help build + contribution). Answers are stored in `applications`. Member pages redirect to onboarding until it's done. Finishing onboarding gives free Basic access straight away.
+- After first sign-in, people complete a 4-step onboarding (field; name, city, email/WhatsApp; perks; help build + contribution). Answers are stored in `applications`. There is no free plan: field content (full articles, offers, discussion, directory) needs an active paid membership ("Member", stored as PRO), which starts when an admin verifies the payment.
 
-### Pro payment flow (no live gateway)
+### Payment flow (no live gateway)
 
-Basic is free, so payments are for Pro only.
+There is one paid plan, so every payment is for membership.
 
 1. Member opens **My field → Membership**, picks monthly or yearly, sees the amount (from `config/pricing.ts`, never from the browser) and the instructions for eSewa, Khalti or bank transfer.
 2. Member pays outside the site, then submits the reference and/or a screenshot (JPG/PNG/WebP/PDF, ≤ 2 MB, stored in Postgres). Status becomes **Payment pending**. Only one pending payment at a time.
@@ -105,7 +104,7 @@ Pro members see a renewal reminder on their dashboard from 7 days before Pro exp
 - **Payments**: verify/reject with a note.
 - **Articles**: create, edit, publish/unpublish, field and tags. Excerpt is public; body is members-only (plain text, blank line between paragraphs).
 - **Offers**: partner venue offers per field (name, venue, discount text, validity, active).
-- **Members**: search/filter, change field, move a Pro member to Basic (ends Pro now), suspend/reinstate. Pro is granted only by verifying a payment.
+- **Members**: search/filter, change field, end a membership early, suspend/reinstate. Membership is granted only by verifying a payment.
 - **Moderation**: open reports with the reported text; remove content, remove + suspend the author, or dismiss.
 
 Audit log entries are written for payment verification, admin role grants/revocations (from `ADMIN_EMAILS`), field/package/status changes and moderation actions.
@@ -148,9 +147,9 @@ Adding a new field: add it to `content/fields.ts` and run `npm run db:seed`.
 
 - [ ] Google sign-in creates one account only (sign out and back in; check `users` has one row for the email).
 - [ ] Onboarding saves all answers (check `applications` and Admin → Members).
-- [ ] Finishing onboarding gives free Basic access to the member's own field.
-- [ ] Basic user cannot see Pro features or other fields (no Discussion/Directory links; `/dashboard/discussion` redirects; other-field articles show the locked card; comment box absent).
-- [ ] Pro user can comment only in own field (comment box appears on own-field articles only; posting to another field's article is refused by the server).
+- [ ] Finishing onboarding goes to the membership page and gives no access by itself.
+- [ ] A signed-in non-member sees no field content (dashboard shows "Become a member"; no Discussion/Directory links; `/dashboard/discussion` redirects; articles show the locked card; comment box absent).
+- [ ] A member can comment only in own field (comment box appears on own-field articles only; posting to another field's article is refused by the server).
 - [ ] Pro payment stays pending until admin verifies (still Basic while pending; Pro after Verify).
 - [ ] Expired Pro subscription removes Pro access (set `expires_at` in the past in `subscriptions`; the member is back on Basic on the next request).
 - [ ] Mobile, tablet and desktop layouts work.
