@@ -90,7 +90,7 @@ export default async function AppHome() {
           </section>
         )}
         {viewer && !member && (
-          <section className="mb-8 border border-gold/40 bg-gold-pale/30 p-6 text-ink">
+          <section className="mb-8 app-panel border border-gold/40 bg-gold-pale/30 p-6 text-ink">
             <h2 className="font-serif text-[1.5rem] font-light">{a.join.heading}</h2>
             <p className="mt-2 opacity-80">{a.join.body}</p>
             <Link href="/dashboard/membership" className="btn mt-5">
@@ -146,7 +146,7 @@ export default async function AppHome() {
         </div>
 
         <h2 className="mt-10 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">{a.radar}</h2>
-        <details className="group mt-5 border border-gold/40 bg-paper/70 text-ink">
+        <details className="app-panel group mt-5 border border-gold/40 bg-paper/70 text-ink">
           <summary className="flex cursor-pointer list-none gap-4 p-5 [&::-webkit-details-marker]:hidden">
             <span className="app-tile-art grid h-20 w-20 shrink-0 place-items-center">
               <svg viewBox="0 0 48 48" className="h-8 w-8 text-tika" fill="none" aria-hidden="true">

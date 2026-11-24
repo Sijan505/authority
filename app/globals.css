@@ -807,3 +807,63 @@ body:has(.app-tabbar) .inq-prompt {
 .app-update {
   bottom: calc(4.75rem + env(safe-area-inset-bottom));
 }
+
+/*
+ * ---------- App dark mode ----------
+ * The app's previous look: brand-brown header, tab bar, panels, tiles and intro, with
+ * ivory content. Chosen in Account → Appearance (components/AppTheme.tsx), which sets
+ * <html data-app-theme="dark">. Inside the brown areas the colour tokens are flipped,
+ * so every utility (text, borders, buttons) turns light-on-brown with no extra classes.
+ */
+html[data-app-theme="dark"] .app-header,
+html[data-app-theme="dark"] .app-tabbar,
+html[data-app-theme="dark"] .app-panel {
+  --color-ivory: #3b1a12;
+  --color-paper: #4a2418;
+  --color-ink: #fcfbf0;
+  --color-brown: #fcfbf0;
+  --color-mute: rgb(252 251 240 / 0.72);
+  --color-line: rgb(239 223 178 / 0.18);
+  --color-tika: #c8962a;
+  --color-gold-pale: rgb(239 223 178 / 0.12);
+  color: #fcfbf0;
+}
+html[data-app-theme="dark"] .app-header {
+  background: #3b1a12;
+  border-color: transparent;
+}
+html[data-app-theme="dark"] .app-header .wordmark-gradient {
+  background: linear-gradient(90deg, #efdfb2 0%, #c8962a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+html[data-app-theme="dark"] .app-tabbar {
+  background: #3b1a12;
+  border-color: rgb(200 150 42 / 0.25);
+}
+/* Badge numbers stay dark on gold. */
+html[data-app-theme="dark"] .app-tabbar .bg-gold {
+  color: #3b1a12;
+}
+html[data-app-theme="dark"] .app-panel {
+  background: #3b1a12;
+  border-color: transparent;
+}
+html[data-app-theme="dark"] .app-tile-art {
+  --color-tika: #c8962a;
+  background:
+    radial-gradient(120% 90% at 85% 10%, rgba(200, 150, 42, 0.35), transparent 60%),
+    linear-gradient(160deg, #4a2418 0%, #3b1a12 55%, #2c130d 100%);
+}
+html[data-app-theme="dark"] .app-intro {
+  background: radial-gradient(120% 80% at 50% 35%, #4a2418 0%, #3b1a12 55%, #24100b 100%);
+}
+html[data-app-theme="dark"] .app-intro-card {
+  box-shadow:
+    0 40px 80px -30px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 4px rgba(252, 251, 240, 0.9),
+    inset 0 0 0 5px rgba(200, 150, 42, 0.25);
+}
+html[data-app-theme="dark"] .app-intro-tagline {
+  color: rgba(239, 223, 178, 0.75);
+}

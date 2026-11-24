@@ -529,6 +529,7 @@ export const copy = {
     tabs: { home: "Home", members: "Members", messages: "Messages", discover: "Discover", concierge: "Concierge", forum: "Forum", account: "Account" },
     intro: { guest: "By the tastemaker, for the tastemaker.", card: "Membership card" },
     update: { ready: "A new version of Authority is ready.", refresh: "Refresh" },
+    theme: { heading: "Appearance", light: "Light", dark: "Dark", auto: "Match phone" },
     card: {
       heading: "Your membership card",
       hint: "Show the QR code at partner venues. Scanning it confirms your membership.",

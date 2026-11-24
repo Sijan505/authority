@@ -6,6 +6,7 @@ import { InstallApp } from "@/components/InstallApp";
 import { MemberCard } from "@/components/MemberCard";
 import { PhotoUpload } from "@/components/PhotoUpload";
 import { PushToggle } from "@/components/PushToggle";
+import { ThemeSwitch } from "@/components/AppTheme";
 import { site } from "@/config/site";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
@@ -84,6 +85,13 @@ export default async function AccountPage() {
             <SignInButton label={copy.app.guest.signIn} callbackUrl="/app" className="btn mt-4" />
           </div>
         )}
+
+        <section aria-labelledby="theme-h" className="mt-8">
+          <h2 id="theme-h" className="mb-4 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">
+            {a.theme.heading}
+          </h2>
+          <ThemeSwitch />
+        </section>
 
         {viewer && (
           <div className="mt-8">

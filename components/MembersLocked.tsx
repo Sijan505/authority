@@ -6,7 +6,7 @@ import { copy } from "@/content/copy";
 export function MembersLocked({ signedIn, callbackUrl }: { signedIn: boolean; callbackUrl: string }) {
   return (
     <div className="mx-auto max-w-xl px-5 pt-8 pb-10">
-      <div className="border border-gold/40 bg-gold-pale/30 p-6 text-ink">
+      <div className="app-panel border border-gold/40 bg-gold-pale/30 p-6 text-ink">
         <p className="opacity-85">{copy.social.locked}</p>
         <div className="mt-5">
           {signedIn ? (

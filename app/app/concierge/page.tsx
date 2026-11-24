@@ -47,7 +47,7 @@ export default async function ConciergePage({ searchParams }: PageProps<"/app/co
             <ConciergeForm key={initial} initialCategory={initial} />
           </div>
         ) : (
-          <div className="mt-8 border border-gold/40 bg-gold-pale/30 p-6 text-ink">
+          <div className="mt-8 app-panel border border-gold/40 bg-gold-pale/30 p-6 text-ink">
             <p className="opacity-85">{t.locked}</p>
             <div className="mt-5">
               {viewer ? (

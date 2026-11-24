@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { AppIntro } from "@/components/AppIntro";
 import { getViewer } from "@/lib/access";
+import { themeScript } from "@/lib/app-theme";
 import { cardFor } from "@/lib/member-card";
 
 export const metadata: Metadata = { title: { default: "App", template: "%s · Authority" } };
@@ -14,6 +15,8 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
 
   return (
     <div className="app-shell min-h-svh bg-ivory">
+      {/* Light or dark, before anything is drawn (components/AppTheme.tsx). */}
+      <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       <AppIntro card={card} />
       {children}
     </div>
