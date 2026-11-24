@@ -13,6 +13,8 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     ["/admin/inquiries", n.inquiries],
     ["/admin/requests", n.requests],
     ["/admin/payments", n.payments],
+    ["/admin/revenue", n.revenue],
+    ["/admin/shareholders", n.shareholders],
     ["/admin/articles", n.articles],
     ["/admin/offers", n.offers],
     ["/admin/members", n.members],

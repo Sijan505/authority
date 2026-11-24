@@ -51,6 +51,16 @@ enum ArticleStatus {
   PUBLISHED
 }
 
+enum ShareholderRole {
+  OWNER
+  TECHNICAL_PARTNER
+}
+
+enum PeriodStatus {
+  OPEN
+  FINALIZED
+}
+
 enum ConnectionStatus {
   PENDING
   ACCEPTED
@@ -398,6 +408,58 @@ model PushSubscription {
 
   @@index([userId])
   @@map("push_subscriptions")
+}
+
+// ---- Shareholder revenue share (admin only; lib/revenue.ts) ----
+
+// An owner or the technical partner, with a fixed ownership share.
+model Shareholder {
+  id          String          @id @default(cuid())
+  name        String
+  role        ShareholderRole
+  basisPoints Int             @map("basis_points") // ownership in hundredths of a percent: 35.50% = 3550
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  allocations RevenueAllocation[]
+
+  @@map("shareholders")
+}
+
+// A calendar month (Nepal time) once an admin has finalised it. Open months are
+// calculated live and have no row, or a row with status OPEN after a reopen.
+model RevenuePeriod {
+  id            String       @id @default(cuid())
+  month         String       @unique // "YYYY-MM"
+  status        PeriodStatus @default(OPEN)
+  netSalesPaisa BigInt       @map("net_sales_paisa") // verified payments in the month, in paisa
+  paymentCount  Int          @map("payment_count")
+  finalizedAt   DateTime?    @map("finalized_at")
+  finalizedById String?      @map("finalized_by")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  allocations RevenueAllocation[]
+
+  @@map("revenue_periods")
+}
+
+// One shareholder's amount for a finalised month. Name, role and share are copied
+// at finalising, so later changes (or deleting the shareholder) never alter it.
+model RevenueAllocation {
+  id            String          @id @default(cuid())
+  periodId      String          @map("period_id")
+  shareholderId String?         @map("shareholder_id")
+  name          String
+  role          ShareholderRole
+  basisPoints   Int             @map("basis_points")
+  amountPaisa   BigInt          @map("amount_paisa")
+
+  period      RevenuePeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  shareholder Shareholder?  @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
+
+  @@unique([periodId, shareholderId])
+  @@map("revenue_allocations")
 }
 
 // Fixed-window counters for rate limiting, shared across server instances.

@@ -836,6 +836,8 @@ export const copy = {
       moderation: "Moderation",
       inquiries: "Interest",
       requests: "Requests",
+      shareholders: "Shareholders",
+      revenue: "Revenue share",
     },
   },
 

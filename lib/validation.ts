@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parsePercent } from "@/lib/allocate";
 import { cities, conciergeCategories, contributionOptions, helpOptions, inquiryFields, inquirySources, perks } from "@/config/site";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -219,6 +220,26 @@ export const pushSubscriptionSchema = z.object({
   endpoint: z.string().url().max(1000),
   keys: z.object({ p256dh: z.string().min(1).max(200), auth: z.string().min(1).max(100) }),
 });
+
+// ---- Shareholder revenue share (admin) ----
+
+export const shareholderSchema = z.object({
+  id: id.optional(),
+  name: text(120).min(1, "Enter the shareholder's name."),
+  role: z.enum(["OWNER", "TECHNICAL_PARTNER"], { message: "Choose a role." }),
+  percent: z
+    .string()
+    .transform((v, ctx) => {
+      const bp = parsePercent(v);
+      if (bp === null) {
+        ctx.addIssue({ code: "custom", message: "Enter a percentage from 0.01 to 100, with at most two decimals." });
+        return z.NEVER;
+      }
+      return bp;
+    }),
+});
+
+export const monthSchema = z.object({ month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Invalid month.") });
 
 export function fieldErrors(error: z.ZodError) {
   const out: Record<string, string> = {};
