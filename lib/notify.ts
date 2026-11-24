@@ -2,7 +2,7 @@ import "server-only";
 import webpush from "web-push";
 import { db } from "@/lib/db";
 
-export type NotificationType = "connect.request" | "connect.accepted" | "message" | "concierge.reply";
+export type NotificationType = "connect.request" | "connect.accepted" | "message" | "concierge.reply" | "concierge.member_reply";
 
 const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 const privateKey = process.env.VAPID_PRIVATE_KEY;

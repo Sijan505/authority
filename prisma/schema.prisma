@@ -324,23 +324,43 @@ model AuditLog {
 
 // The Request Desk: a member asks, a person on the team replies (app/app/concierge).
 model ConciergeRequest {
-  id        String        @id @default(cuid())
-  userId    String        @map("user_id")
-  category  String // config/site.ts conciergeCategories
-  details   String
-  city      String?
-  date      String? // as the member wrote it, e.g. "Sat 6 Dec" or "this weekend"
-  people    Int?
-  status    RequestStatus @default(NEW)
-  reply     String? // the team's answer, shown to the member
-  createdAt DateTime      @default(now()) @map("created_at")
-  updatedAt DateTime      @updatedAt @map("updated_at")
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  category      String // config/site.ts conciergeCategories
+  details       String
+  city          String?
+  date          String? // as the member wrote it, e.g. "Sat 6 Dec" or "this weekend"
+  people        Int?
+  status        RequestStatus @default(NEW)
+  reply         String? // first-version single reply; now copied into messages and no longer written
+  needsTeam     Boolean       @default(true) @map("needs_team") // the member wrote last; waiting for the team
+  memberUnread  Boolean       @default(false) @map("member_unread") // the team wrote; the member hasn't opened it
+  repliesLocked Boolean       @default(false) @map("replies_locked") // the team closed it to further member replies
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ConciergeMessage[]
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
   @@map("concierge_requests")
+}
+
+// The conversation on a Request Desk request: the member and the team, in turn.
+model ConciergeMessage {
+  id        String    @id @default(cuid())
+  requestId String    @map("request_id")
+  fromTeam  Boolean   @map("from_team")
+  authorId  String?   @map("author_id") // the member, or the admin who replied
+  body      String
+  editedAt  DateTime? @map("edited_at") // set when an admin edits the message
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  request ConciergeRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, createdAt])
+  @@map("concierge_messages")
 }
 
 // Members connecting with each other: one row per pair, created by the requester.

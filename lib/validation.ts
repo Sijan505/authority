@@ -205,10 +205,21 @@ export const conciergeSchema = z.object({
     .refine((n) => n === null || (Number.isInteger(n) && n >= 1 && n <= 50), "Enter a number from 1 to 50."),
 });
 
+/** The team's update on a request: a status, and optionally a message to the member. */
 export const conciergeReplySchema = z.object({
   id,
   status: z.enum(["NEW", "IN_PROGRESS", "DONE", "DECLINED"]),
-  reply: optionalText(2000),
+  message: optionalText(2000),
+});
+
+/** Admin edits to a request, and to one message in its conversation. */
+export const conciergeEditSchema = conciergeSchema.extend({ id });
+export const conciergeMessageEditSchema = z.object({ messageId: id, body: text(2000).min(1, "A message can't be empty. Delete it instead.") });
+
+/** A member writing back on their own request. */
+export const conciergeMemberReplySchema = z.object({
+  requestId: id,
+  body: text(2000).min(1, "Write a reply first."),
 });
 
 // ---- Members connecting and messaging ----

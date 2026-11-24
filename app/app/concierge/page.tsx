@@ -26,7 +26,12 @@ export default async function ConciergePage({ searchParams }: PageProps<"/app/co
   const initial = conciergeCategories.find((x) => x === c) ?? conciergeCategories[0];
 
   const requests = member
-    ? await db.conciergeRequest.findMany({ where: { userId: viewer!.user.id }, orderBy: { createdAt: "desc" }, take: 30 })
+    ? await db.conciergeRequest.findMany({
+        where: { userId: viewer!.user.id },
+        orderBy: { updatedAt: "desc" },
+        take: 30,
+        include: { messages: { orderBy: { createdAt: "desc" }, take: 1 } },
+      })
     : [];
 
   return (
@@ -71,21 +76,23 @@ export default async function ConciergePage({ searchParams }: PageProps<"/app/co
             ) : (
               <ul className="mt-4 divide-y divide-line border-y border-line">
                 {requests.map((r) => (
-                  <li key={r.id} className="py-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-[0.75rem] font-semibold tracking-[0.14em] uppercase">{r.category}</span>
-                      <span className={`border px-2 py-0.5 text-[0.6875rem] tracking-[0.1em] uppercase ${tone[r.status]}`}>{t.status[r.status]}</span>
-                    </div>
-                    <p className="mt-2 whitespace-pre-line">{r.details}</p>
-                    <p className="mt-1 text-sm text-mute">
-                      {[r.city, r.date, r.people ? `${r.people} ${r.people === 1 ? "person" : "people"}` : null, formatDate(r.createdAt)].filter(Boolean).join(" · ")}
-                    </p>
-                    {r.reply && (
-                      <div className="mt-3 border-l-2 border-gold bg-paper/60 px-4 py-3">
-                        <p className="text-[0.6875rem] font-semibold tracking-[0.2em] text-tika uppercase">{t.reply}</p>
-                        <p className="mt-1 whitespace-pre-line">{r.reply}</p>
+                  <li key={r.id}>
+                    <Link href={`/app/concierge/${r.id}`} className="block py-5 transition-colors hover:bg-gold-pale/20">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="flex items-center gap-2 text-[0.75rem] font-semibold tracking-[0.14em] uppercase">
+                          {r.memberUnread && <span className="h-2 w-2 rounded-full bg-tika" aria-label={t.newReply} />}
+                          {r.category}
+                        </span>
+                        <span className={`border px-2 py-0.5 text-[0.6875rem] tracking-[0.1em] uppercase ${tone[r.status]}`}>{t.status[r.status]}</span>
                       </div>
-                    )}
+                      <p className={`mt-2 line-clamp-2 ${r.memberUnread ? "font-medium" : ""}`}>
+                        {r.messages[0] ? `${r.messages[0].fromTeam ? `${t.team}: ` : `${copy.social.you}: `}${r.messages[0].body}` : r.details}
+                      </p>
+                      <p className="mt-1 flex items-center justify-between text-sm text-mute">
+                        <span>{formatDate(r.updatedAt)}</span>
+                        <span className="text-tika">{t.open} ›</span>
+                      </p>
+                    </Link>
                   </li>
                 ))}
               </ul>
