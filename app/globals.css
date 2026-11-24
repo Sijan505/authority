@@ -799,3 +799,7 @@ body:has(.app-tabbar) .inq-prompt {
   width: 100%;
   height: 100%;
 }
+/* "New version" bar, just above the app's tab bar. */
+.app-update {
+  bottom: calc(4.75rem + env(safe-area-inset-bottom));
+}

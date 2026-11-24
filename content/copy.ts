@@ -518,6 +518,7 @@ export const copy = {
     },
     tabs: { home: "Home", members: "Members", messages: "Messages", discover: "Discover", concierge: "Concierge", forum: "Forum", account: "Account" },
     intro: { guest: "By the tastemaker, for the tastemaker.", card: "Membership card" },
+    update: { ready: "A new version of Authority is ready.", refresh: "Refresh" },
     card: {
       heading: "Your membership card",
       hint: "Show the QR code at partner venues. Scanning it confirms your membership.",
@@ -545,6 +546,12 @@ export const copy = {
       removed: "Photo removed.",
       choose: "Choose a photo first.",
       invalid: "That file isn't a photo we can use. Try a JPG or PNG.",
+      adjust: "Adjust your photo",
+      adjustHint: "Drag to move. Pinch or use the slider to zoom.",
+      zoom: "Zoom",
+      rotate: "Rotate",
+      cancel: "Cancel",
+      save: "Save photo",
     },
     discover: {
       heading: "Discover",

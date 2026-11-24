@@ -5,6 +5,7 @@ import { Analytics } from "@/components/Analytics";
 import { AppTabBar } from "@/components/AppTabBar";
 import { InquiryForm } from "@/components/Inquiry";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
+import { UpdateBanner } from "@/components/UpdateBanner";
 import { copy } from "@/content/copy";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </div>
         <SiteFooter />
         <AppTabBar />
+        <UpdateBanner version={process.env.VERCEL_DEPLOYMENT_ID ?? "dev"} />
         <InquiryForm />
         <Analytics />
         <VercelAnalytics />
