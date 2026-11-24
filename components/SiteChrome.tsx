@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import { Star } from "@/components/Decor";
 import { InquiryButton } from "@/components/Inquiry";
+import { InstallApp } from "@/components/InstallApp";
 import { MobileMenu } from "@/components/MobileMenu";
 import { site } from "@/config/site";
 import { copy } from "@/content/copy";
@@ -63,6 +64,7 @@ export async function SiteHeader() {
             </Link>
           ))}
           <div className="mt-6 flex flex-col">{account}</div>
+          <InstallApp className="btn btn-alt" />
         </MobileMenu>
       </div>
     </header>
@@ -89,6 +91,9 @@ export function SiteFooter() {
             <Link href="/contact" className="hover:text-ink">
               {copy.home.join.contact}
             </Link>
+          </li>
+          <li>
+            <InstallApp className="inline-flex min-h-11 items-center hover:text-ink sm:min-h-0" />
           </li>
           <li>
             <Link href="/privacy" className="hover:text-ink">
