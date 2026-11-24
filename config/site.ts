@@ -46,3 +46,14 @@ export const partnerSlots = 6;
 
 /** TBC: success targets for the interest test, set before launch (shown in admin). */
 export const successTarget = { signups: 200, helpers: 20 };
+
+/** The Request Desk (concierge) in the app. The server validates against this list. */
+export const conciergeCategories = [
+  "Dining",
+  "Stays",
+  "Experiences",
+  "Fashion and finds",
+  "Travel and itineraries",
+  "Introductions",
+  "Something else",
+] as const;

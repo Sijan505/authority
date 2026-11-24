@@ -12,9 +12,9 @@ export function SignInButton({ label = copy.signIn.google, callbackUrl = "/dashb
   );
 }
 
-export function SignOutButton({ className = "link" }) {
+export function SignOutButton({ className = "link", callbackUrl = "/" }) {
   return (
-    <button type="button" onClick={() => signOut({ callbackUrl: "/" })} className={className}>
+    <button type="button" onClick={() => signOut({ callbackUrl })} className={className}>
       {copy.nav.signOut}
     </button>
   );

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { cities, contributionOptions, helpOptions, inquiryFields, inquirySources, perks } from "@/config/site";
+import { cities, conciergeCategories, contributionOptions, helpOptions, inquiryFields, inquirySources, perks } from "@/config/site";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -181,6 +181,34 @@ export const inquirySchema = z
       contribution: v.helpBuild === helpOptions[2] ? [] : [...new Set(v.contribution)],
     };
   });
+
+// ---- The Request Desk ----
+
+const optionalText = (max: number) =>
+  text(max)
+    .optional()
+    .default("")
+    .transform((v) => v || null);
+
+export const conciergeSchema = z.object({
+  category: z.enum(conciergeCategories, { message: "Please choose what it is about." }),
+  details: text(2000).min(1, "Tell us what you would like."),
+  city: optionalText(80),
+  date: optionalText(80),
+  people: z
+    .string()
+    .trim()
+    .optional()
+    .default("")
+    .transform((v) => (v ? Number(v) : null))
+    .refine((n) => n === null || (Number.isInteger(n) && n >= 1 && n <= 50), "Enter a number from 1 to 50."),
+});
+
+export const conciergeReplySchema = z.object({
+  id,
+  status: z.enum(["NEW", "IN_PROGRESS", "DONE", "DECLINED"]),
+  reply: optionalText(2000),
+});
 
 export function fieldErrors(error: z.ZodError) {
   const out: Record<string, string> = {};

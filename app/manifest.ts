@@ -12,12 +12,13 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Authority",
     short_name: "Authority",
     description: copy.meta.description,
-    start_url: "/",
+    start_url: "/app",
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#fcfbf0",
-    theme_color: "#fcfbf0",
+    // Brand brown, so the splash screen flows straight into the app intro.
+    background_color: "#3b1a12",
+    theme_color: "#3b1a12",
     categories: ["lifestyle", "news", "social"],
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
@@ -26,9 +27,9 @@ export default function manifest(): MetadataRoute.Manifest {
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
     shortcuts: [
-      { name: "My field", url: "/dashboard" },
-      { name: "Articles", url: "/articles" },
-      { name: "Register your interest", url: "/#inquire" },
+      { name: "Concierge", url: "/app/concierge" },
+      { name: "Discover", url: "/app/discover" },
+      { name: "Forum", url: "/app/forum" },
     ],
   };
 }

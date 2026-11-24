@@ -51,6 +51,13 @@ enum ArticleStatus {
   PUBLISHED
 }
 
+enum RequestStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  DECLINED
+}
+
 enum ReportStatus {
   OPEN
   RESOLVED
@@ -84,6 +91,7 @@ model User {
   blocking         UserBlock[]      @relation("Blocker")
   blockedBy        UserBlock[]      @relation("Blocked")
   auditLogs        AuditLog[]
+  requests         ConciergeRequest[]
 
   @@index([fieldId])
   @@map("users")
@@ -286,6 +294,27 @@ model AuditLog {
 
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// The Request Desk: a member asks, a person on the team replies (app/app/concierge).
+model ConciergeRequest {
+  id        String        @id @default(cuid())
+  userId    String        @map("user_id")
+  category  String // config/site.ts conciergeCategories
+  details   String
+  city      String?
+  date      String? // as the member wrote it, e.g. "Sat 6 Dec" or "this weekend"
+  people    Int?
+  status    RequestStatus @default(NEW)
+  reply     String? // the team's answer, shown to the member
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@map("concierge_requests")
 }
 
 // Fixed-window counters for rate limiting, shared across server instances.

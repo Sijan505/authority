@@ -11,6 +11,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const links = [
     ["/admin", n.dashboard],
     ["/admin/inquiries", n.inquiries],
+    ["/admin/requests", n.requests],
     ["/admin/payments", n.payments],
     ["/admin/articles", n.articles],
     ["/admin/offers", n.offers],

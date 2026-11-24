@@ -40,7 +40,7 @@ export async function SiteHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-ivory">
+    <header className="site-header sticky top-0 z-50 border-b border-line bg-ivory">
       <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
         <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5" aria-label="Authority home">
           <Star className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -73,7 +73,7 @@ export async function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-line py-12 text-[0.9375rem] text-mute">
+    <footer className="site-footer mt-auto border-t border-line py-12 text-[0.9375rem] text-mute">
       <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-6 px-6">
         <span className="flex items-center gap-2.5">
           <Star className="h-5 w-5" />
