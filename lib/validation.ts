@@ -221,6 +221,39 @@ export const pushSubscriptionSchema = z.object({
   keys: z.object({ p256dh: z.string().min(1).max(200), auth: z.string().min(1).max(100) }),
 });
 
+// ---- Admin: member account settings ----
+
+export const adminProfileSchema = z.object({
+  userId: id,
+  name: text(120).min(1, "Enter a name."),
+  fieldId: z.string().trim().max(40).optional().default(""),
+  city: z.union([z.enum(cities), z.literal("")], { message: "Choose a city." }).default(""),
+  contact: text(200)
+    .default("")
+    .refine((v) => v === "" || parseContact(v) !== null, "Enter a valid email or WhatsApp number, or leave it empty.")
+    .transform((v) => (v ? parseContact(v)!.normalized : null)),
+  status: z.enum(["ACTIVE", "SUSPENDED"]),
+  role: z.enum(["MEMBER", "ADMIN"]),
+});
+
+export const adminMembershipSchema = z
+  .object({
+    userId: id,
+    mode: z.enum(["set", "end"]),
+    until: z.string().trim().optional().default(""),
+  })
+  .transform((v, ctx) => {
+    if (v.mode === "end") return { ...v, until: null };
+    // A date (YYYY-MM-DD) means the end of that day in Nepal (UTC+5:45).
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v.until);
+    const date = m ? new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + 1) - (5 * 60 + 45) * 60 * 1000) : null;
+    if (!date || isNaN(date.getTime()) || date.getTime() <= Date.now()) {
+      ctx.addIssue({ code: "custom", path: ["until"], message: "Choose a date after today." });
+      return z.NEVER;
+    }
+    return { ...v, until: date };
+  });
+
 // ---- Shareholder revenue share (admin) ----
 
 export const shareholderSchema = z.object({

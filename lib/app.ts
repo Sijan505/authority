@@ -33,3 +33,18 @@ export async function memberNumberOf(userId: string) {
 }
 
 export const firstName = (name: string | null | undefined) => (name ?? "").trim().split(/\s+/)[0] ?? "";
+
+/**
+ * The user holding member number `n` (the order people first became members), or
+ * null. Mirrors memberNumberOf: earliest verified membership start decides the order.
+ */
+export async function userIdByMemberNumber(n: number) {
+  if (!Number.isInteger(n) || n < 1) return null;
+  const firsts = await db.subscription.groupBy({
+    by: ["userId"],
+    where: { package: "PRO", status: "ACTIVE", startsAt: { not: null } },
+    _min: { startsAt: true },
+  });
+  firsts.sort((a, b) => (a._min.startsAt?.getTime() ?? 0) - (b._min.startsAt?.getTime() ?? 0));
+  return firsts[n - 1]?.userId ?? null;
+}
