@@ -23,16 +23,16 @@ export default async function ForumPage() {
         </FieldTheme>
       ) : (
         <div className="mx-auto max-w-xl px-5 pt-8 pb-10">
-          <div className="bg-ink p-6 text-ivory">
+          <div className="border border-gold/40 bg-gold-pale/30 p-6 text-ink">
             <h2 className="font-serif text-[1.5rem] font-light">{t.lockedHeading}</h2>
             <p className="mt-2 opacity-80">{t.lockedBody}</p>
             <div className="mt-5">
               {viewer ? (
-                <Link href="/dashboard/membership" className="btn btn-light">
+                <Link href="/dashboard/membership" className="btn">
                   {copy.app.join.cta}
                 </Link>
               ) : (
-                <SignInButton label={copy.app.guest.signIn} callbackUrl="/app/forum" className="btn btn-light" />
+                <SignInButton label={copy.app.guest.signIn} callbackUrl="/app/forum" className="btn" />
               )}
             </div>
           </div>

@@ -472,12 +472,22 @@ export const copy = {
       denied: "Notifications are blocked for this site. Turn them on in your phone's settings for Chrome.",
       unsupported: "This browser can't show notifications. Install the app from Chrome to use them.",
     },
+    // Each notice has a title (bold line on the phone) and text (the line under it, and the in-app list).
     notice: {
-      request: (name: string) => `${name} wants to connect with you`,
-      accepted: (name: string) => `${name} accepted your connection request`,
-      message: (name: string) => `${name} sent you a message`,
-      concierge: (category: string) => `The Request Desk replied to your ${category.toLowerCase()} request`,
+      request: (name: string) => ({ title: "New connection request", text: `${name} wants to connect with you.` }),
+      accepted: (name: string) => ({ title: "Connection accepted", text: `${name} accepted your request. You can now message each other.` }),
+      message: (name: string) => ({ title: name, text: "Sent you a message" }),
+      concierge: (category: string) => ({ title: "The Request Desk", text: `We've replied to your ${category.toLowerCase()} request.` }),
     },
+    // Small label above each item in the notifications list.
+    noticeLabel: {
+      "connect.request": "Connection request",
+      "connect.accepted": "Connection accepted",
+      message: "Message",
+      "concierge.reply": "Request Desk",
+    } as Record<string, string>,
+    today: "Today",
+    earlier: "Earlier",
     locked: "Connecting and messaging are for members. Become a member to meet the people shaping Nepal's fields.",
   },
 

@@ -32,7 +32,7 @@ export default async function ConciergePage({ searchParams }: PageProps<"/app/co
   return (
     <main>
       <AppHeader label={t.eyebrow} title={t.heading}>
-        <ul className="mt-4 space-y-1 font-serif text-[1.0625rem] italic text-gold/90">
+        <ul className="mt-4 space-y-1 font-serif text-[1.0625rem] italic text-tika">
           {t.lines.map((l) => (
             <li key={l}>{l}</li>
           ))}
@@ -47,15 +47,15 @@ export default async function ConciergePage({ searchParams }: PageProps<"/app/co
             <ConciergeForm key={initial} initialCategory={initial} />
           </div>
         ) : (
-          <div className="mt-8 bg-ink p-6 text-ivory">
+          <div className="mt-8 border border-gold/40 bg-gold-pale/30 p-6 text-ink">
             <p className="opacity-85">{t.locked}</p>
             <div className="mt-5">
               {viewer ? (
-                <Link href="/dashboard/membership" className="btn btn-light">
+                <Link href="/dashboard/membership" className="btn">
                   {copy.app.join.cta}
                 </Link>
               ) : (
-                <SignInButton label={copy.app.guest.signIn} callbackUrl="/app/concierge" className="btn btn-light" />
+                <SignInButton label={copy.app.guest.signIn} callbackUrl="/app/concierge" className="btn" />
               )}
             </div>
           </div>

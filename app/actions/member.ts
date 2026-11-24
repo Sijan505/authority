@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { copy } from "@/content/copy";
-import { proPriceOf } from "@/config/pricing";
+import { paymentMethods, proPriceOf } from "@/config/pricing";
 import { assertOnboarded, assertViewer } from "@/lib/access";
 import { runAction } from "@/lib/action";
 import { db } from "@/lib/db";
@@ -87,6 +87,7 @@ export async function submitPayment(_prev: ActionState, formData: FormData): Pro
       });
       if (!parsed.success) return { errors: fieldErrors(parsed.error), message: "Please check the highlighted fields." };
       const v = parsed.data;
+      if (!paymentMethods[v.method].available) return { errors: { method: "Please choose eSewa or Khalti." } };
 
       const pending = await db.payment.findFirst({ where: { userId: viewer.user.id, status: "PENDING" } });
       if (pending) return { message: copy.join.pendingBlock };

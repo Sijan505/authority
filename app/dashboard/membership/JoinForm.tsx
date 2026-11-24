@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { submitPayment } from "@/app/actions/member";
 import { Chips, FieldError, FormMessage, PendingButton, useKeepValuesAction } from "@/components/forms";
-import { cycleLabels, formatNPR, paymentMethods, proPriceOf, type CycleId, type MethodId } from "@/config/pricing";
+import { availableMethods, cycleLabels, formatNPR, paymentMethods, proPriceOf, type CycleId, type MethodId } from "@/config/pricing";
 import { copy } from "@/content/copy";
 
 const t = copy.join;
@@ -43,7 +43,7 @@ export function JoinForm() {
         legend={t.chooseMethod}
         required
         defaultValue={method}
-        options={(Object.keys(paymentMethods) as MethodId[]).map((id) => ({ value: id, label: paymentMethods[id].name }))}
+        options={availableMethods().map((id) => ({ value: id, label: paymentMethods[id].name }))}
         onChange={(v) => setMethod(v as MethodId)}
         error={state.errors?.method}
       />

@@ -7,7 +7,7 @@ const skipIfSeen = `try{var k="authority-app-intro";if(sessionStorage.getItem(k)
 
 /**
  * The app's opening (timings in globals.css, "App intro"), different from the
- * website's curtain: on the brand brown, the member's own membership card (photo,
+ * website's curtain: on soft ivory, the member's own membership card (photo,
  * name, number, QR) rises and tilts into place, the star draws itself, a gold light
  * passes across, and it lifts away into the dashboard. Pure CSS, so the app is never
  * stuck behind it; reduced-motion visitors skip it.

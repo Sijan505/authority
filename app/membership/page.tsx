@@ -54,6 +54,7 @@ export default async function MembershipPage() {
       <p className="mt-10 text-center">
         {t.payWith}{" "}
         {Object.values(paymentMethods)
+          .filter((m) => m.available)
           .map((m) => m.name)
           .join(" · ")}
       </p>

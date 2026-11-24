@@ -641,19 +641,23 @@ body:has(.app-tabbar) {
 body:has(.app-tabbar) .inq-prompt {
   bottom: calc(4.75rem + env(safe-area-inset-bottom));
 }
+/* App screens are light like the website: ivory, with gold-pale tints and brown type. */
+.app-header {
+  background: linear-gradient(180deg, #fffdf4 0%, #fcfbf0 55%, rgba(239, 223, 178, 0.35) 100%);
+}
 .app-tile-art {
   background:
-    radial-gradient(120% 90% at 85% 10%, rgba(200, 150, 42, 0.35), transparent 60%),
-    linear-gradient(160deg, #4a2418 0%, #3b1a12 55%, #2c130d 100%);
+    radial-gradient(110% 90% at 85% 10%, rgba(200, 150, 42, 0.28), transparent 60%),
+    linear-gradient(160deg, #fbf3dc 0%, #f4e7c4 60%, #efdfb2 100%);
 }
 
 /*
  * App intro (about 3.2s, once per app session), different from the website's curtain:
- *   0.0s  on the brand brown, an ivory membership card rises and tilts into place
+ *   0.0s  on soft ivory, the membership card rises and tilts into place
  *   0.5s  the star draws itself; 0.9s AUTHORITY settles and a gold rule draws
  *   1.35s the member's name and number appear
  *   1.8s  a gold light passes across the card
- *   2.5s  the card lifts away and the brown fades into the dashboard
+ *   2.5s  the card lifts away and the backdrop fades into the dashboard
  */
 .app-intro {
   position: fixed;
@@ -664,7 +668,7 @@ body:has(.app-tabbar) .inq-prompt {
   align-items: center;
   justify-content: center;
   gap: 2rem;
-  background: radial-gradient(120% 80% at 50% 35%, #4a2418 0%, #3b1a12 55%, #24100b 100%);
+  background: radial-gradient(120% 80% at 50% 35%, #fffdf4 0%, #fcfbf0 50%, #f1e6c6 100%);
   perspective: 900px;
   animation:
     app-intro-out 0.6s ease-in 2.6s forwards,
@@ -686,7 +690,7 @@ body:has(.app-tabbar) .inq-prompt {
   border: 1px solid rgba(200, 150, 42, 0.55);
   background: linear-gradient(150deg, #fffdf4 0%, #fcfbf0 45%, #f4ecd2 100%);
   box-shadow:
-    0 40px 80px -30px rgba(0, 0, 0, 0.7),
+    0 40px 80px -30px rgba(59, 26, 18, 0.45),
     inset 0 0 0 4px rgba(252, 251, 240, 0.9),
     inset 0 0 0 5px rgba(200, 150, 42, 0.25);
   transform: translateY(55vh) rotateX(38deg) rotateZ(-7deg) scale(0.88);
@@ -715,7 +719,7 @@ body:has(.app-tabbar) .inq-prompt {
   animation: intro-in 0.6s ease-out 1.2s forwards;
 }
 .app-intro-tagline {
-  color: rgba(239, 223, 178, 0.75);
+  color: var(--color-mute);
   font-size: 1rem;
   animation-delay: 1.5s;
 }

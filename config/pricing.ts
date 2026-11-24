@@ -36,27 +36,31 @@ export const cycleLabels: Record<CycleId, string> = {
   YEARLY: "Yearly",
 };
 
-export const paymentMethods: Record<MethodId, { name: string; instructions: string[] }> = {
+// `available: false` hides a method from members until its details are filled in.
+export const paymentMethods: Record<MethodId, { name: string; available: boolean; instructions: string[] }> = {
   ESEWA: {
     name: "eSewa",
+    available: true,
     instructions: [
-      "Open eSewa and choose Send Money / Pay.",
-      "eSewa ID: [TBC]", // TBC: eSewa merchant / wallet ID
-      "Account name: [TBC]", // TBC
+      "Open eSewa and choose Send Money.",
+      "eSewa ID: 9826204197",
+      "Account name: SIJAN KC",
       "Put your registered email or WhatsApp number in the remarks.",
     ],
   },
   KHALTI: {
     name: "Khalti",
+    available: true,
     instructions: [
-      "Open Khalti and choose Send Money / Pay.",
-      "Khalti ID: [TBC]", // TBC: Khalti merchant / wallet ID
-      "Account name: [TBC]", // TBC
+      "Open Khalti and choose Send Money.",
+      "Khalti ID: 9826204197",
+      "Account name: SIJAN KC",
       "Put your registered email or WhatsApp number in the remarks.",
     ],
   },
   BANK_TRANSFER: {
     name: "Bank transfer",
+    available: false, // TBC: set to true once the bank details below are filled in
     instructions: [
       "Bank: [TBC]", // TBC
       "Account name: [TBC]", // TBC
@@ -70,6 +74,9 @@ export const paymentMethods: Record<MethodId, { name: string; instructions: stri
 export function formatNPR(amount: number) {
   return `NPR ${amount.toLocaleString("en-IN")}`;
 }
+
+/** Methods members can choose right now. */
+export const availableMethods = () => (Object.keys(paymentMethods) as MethodId[]).filter((id) => paymentMethods[id].available);
 
 export function proPriceOf(cycle: CycleId) {
   return proPrices[cycle];

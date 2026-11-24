@@ -14,13 +14,19 @@ if (pushReady) webpush.setVapidDetails(process.env.VAPID_SUBJECT ?? "mailto:hell
  * notifications on for. Push failures never fail the action that caused them;
  * phones that have unsubscribed (404/410) are forgotten.
  */
-export async function notify(userId: string, n: { type: NotificationType; text: string; link: string; actorId?: string | null }) {
+export async function notify(userId: string, n: { type: NotificationType; title: string; text: string; link: string; actorId?: string | null }) {
   await db.notification.create({ data: { userId, type: n.type, text: n.text, link: n.link, actorId: n.actorId ?? null } });
   if (!pushReady) return;
 
   const subs = await db.pushSubscription.findMany({ where: { userId } });
   // The lock screen shows only who and what, never message text.
-  const payload = JSON.stringify({ title: "Authority", body: n.text, url: n.link, tag: n.type === "message" ? `message:${n.actorId}` : n.type });
+  const payload = JSON.stringify({
+    title: n.title,
+    body: n.text,
+    url: n.link,
+    tag: n.type === "message" ? `message:${n.actorId}` : `${n.type}:${Date.now()}`,
+    timestamp: Date.now(),
+  });
   await Promise.all(
     subs.map(async (s) => {
       try {

@@ -16,9 +16,9 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    // Brand brown, so the splash screen flows straight into the app intro.
-    background_color: "#3b1a12",
-    theme_color: "#3b1a12",
+    // Ivory like the website, so the splash screen flows straight into the app intro.
+    background_color: "#fcfbf0",
+    theme_color: "#fcfbf0",
     categories: ["lifestyle", "news", "social"],
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

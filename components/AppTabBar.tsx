@@ -92,7 +92,7 @@ export function AppTabBar() {
   if (!shown) return null;
 
   return (
-    <nav aria-label="App" className="app-tabbar fixed inset-x-0 bottom-0 z-40 border-t border-gold/25 bg-ink text-ivory">
+    <nav aria-label="App" className="app-tabbar fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 text-ink backdrop-blur">
       <ul className="mx-auto grid max-w-xl grid-cols-5">
         {tabs.map((tab) => {
           const active = tab.href === "/app" ? pathname === "/app" : pathname.startsWith(tab.href);
@@ -102,7 +102,7 @@ export function AppTabBar() {
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
                 className={`relative flex min-h-16 flex-col items-center justify-center gap-1 text-[0.625rem] tracking-[0.14em] uppercase transition-colors ${
-                  active ? "text-gold" : "text-ivory/65 hover:text-ivory"
+                  active ? "text-tika" : "text-mute hover:text-ink"
                 }`}
               >
                 <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -115,7 +115,7 @@ export function AppTabBar() {
                     <span className="sr-only"> new</span>
                   </span>
                 )}
-                {active && <span className="absolute inset-x-5 bottom-1.5 h-px bg-gold" aria-hidden="true" />}
+                {active && <span className="absolute inset-x-5 bottom-1.5 h-px bg-tika" aria-hidden="true" />}
               </Link>
             </li>
           );

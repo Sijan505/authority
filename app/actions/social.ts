@@ -10,7 +10,7 @@ import { areConnected, blockedEitherWay, connectionBetween, isActiveMember } fro
 import { messageSchema, pushSubscriptionSchema, respondSchema, userIdSchema, type ActionState } from "@/lib/validation";
 
 const t = copy.social;
-const firstName = (name: string | null) => (name ?? "A member").trim().split(/\s+/)[0];
+const displayName = (name: string | null) => (name ?? "").trim() || "An Authority member";
 
 /** Both people must be active members and must not have blocked each other. */
 async function assertCanReach(viewerId: string, otherId: string) {
@@ -33,19 +33,19 @@ export async function connect(_prev: ActionState, formData: FormData): Promise<A
     await assertCanReach(viewer.user.id, otherId);
 
     const existing = await connectionBetween(viewer.user.id, otherId);
-    const name = firstName(viewer.user.name);
+    const name = displayName(viewer.user.name);
     if (existing?.status === "ACCEPTED") return { ok: true };
     if (existing?.status === "PENDING" && existing.addresseeId === viewer.user.id) {
       // They asked first: connecting now accepts their request.
       await db.connection.update({ where: { id: existing.id }, data: { status: "ACCEPTED", respondedAt: new Date() } });
-      await notify(otherId, { type: "connect.accepted", text: t.notice.accepted(name), link: `/app/members/${viewer.user.id}`, actorId: viewer.user.id });
+      await notify(otherId, { type: "connect.accepted", ...t.notice.accepted(name), link: `/app/members/${viewer.user.id}`, actorId: viewer.user.id });
     } else if (existing?.status === "PENDING") {
       return { ok: true };
     } else {
       // New request; a declined one can be asked again, by either side.
       if (existing) await db.connection.delete({ where: { id: existing.id } });
       await db.connection.create({ data: { requesterId: viewer.user.id, addresseeId: otherId } });
-      await notify(otherId, { type: "connect.request", text: t.notice.request(name), link: "/app/members?tab=requests", actorId: viewer.user.id });
+      await notify(otherId, { type: "connect.request", ...t.notice.request(name), link: "/app/members?tab=requests", actorId: viewer.user.id });
     }
     refresh(otherId);
     return { ok: true };
@@ -68,7 +68,7 @@ export async function respond(_prev: ActionState, formData: FormData): Promise<A
     if (accept) {
       await notify(c.requesterId, {
         type: "connect.accepted",
-        text: t.notice.accepted(firstName(viewer.user.name)),
+        ...t.notice.accepted(displayName(viewer.user.name)),
         link: `/app/members/${viewer.user.id}`,
         actorId: viewer.user.id,
       });
@@ -105,7 +105,7 @@ export async function sendMessage(_prev: ActionState, formData: FormData): Promi
     // One unread "new message" notice per conversation, not one per message.
     const already = await db.notification.findFirst({ where: { userId: to, actorId: viewer.user.id, type: "message", readAt: null } });
     if (already) await db.notification.update({ where: { id: already.id }, data: { createdAt: new Date() } });
-    else await notify(to, { type: "message", text: t.notice.message(firstName(viewer.user.name)), link: `/app/messages/${viewer.user.id}`, actorId: viewer.user.id });
+    else await notify(to, { type: "message", ...t.notice.message(displayName(viewer.user.name)), link: `/app/messages/${viewer.user.id}`, actorId: viewer.user.id });
     revalidatePath(`/app/messages/${to}`);
     revalidatePath("/app/messages");
     return { ok: true };

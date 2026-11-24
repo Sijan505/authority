@@ -69,14 +69,14 @@ export default async function MembersPage({ searchParams }: PageProps<"/app/memb
   return (
     <main>
       <AppHeader label={t.members} title={t.members}>
-        <p className="mt-2 text-sm text-ivory/75">{t.membersIntro}</p>
+        <p className="mt-2 text-sm text-mute">{t.membersIntro}</p>
         <nav aria-label={t.members} className="mt-5 flex gap-2">
           {(["all", "requests", "connected"] as Tab[]).map((key) => (
             <Link
               key={key}
               href={tabLink(key)}
               aria-current={tab === key ? "page" : undefined}
-              className={`relative border px-3.5 py-1.5 text-[0.75rem] tracking-[0.12em] uppercase ${tab === key ? "border-gold bg-gold text-ink" : "border-ivory/30 text-ivory/80"}`}
+              className={`relative border px-3.5 py-1.5 text-[0.75rem] tracking-[0.12em] uppercase ${tab === key ? "border-ink bg-ink text-ivory" : "border-ink/25 text-mute hover:border-ink"}`}
             >
               {t.tabs[key]}
               {key === "requests" && pendingIn > 0 && <span className="ml-1.5 font-semibold">{pendingIn}</span>}

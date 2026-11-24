@@ -57,7 +57,7 @@ export default async function MessagesPage() {
     <main>
       <LiveRefresh every={8000} />
       <AppHeader label={t.messages} title={t.messages}>
-        <p className="mt-2 text-sm text-ivory/75">{t.messagesIntro}</p>
+        <p className="mt-2 text-sm text-mute">{t.messagesIntro}</p>
       </AppHeader>
       <div className="mx-auto max-w-xl px-5 pt-6 pb-10">
         {rows.length === 0 ? (

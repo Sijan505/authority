@@ -52,7 +52,7 @@ export default async function ConversationPage({ params }: PageProps<"/app/messa
   return (
     <main className="pb-24">
       <LiveRefresh />
-      <header className="sticky top-0 z-20 bg-ink px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 text-ivory">
+      <header className="app-header sticky top-0 z-20 border-b border-line px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 text-ink">
         <div className="mx-auto flex max-w-xl items-center gap-3">
           <Link href="/app/messages" aria-label={t.messages} className="grid h-11 w-11 place-items-center text-xl">
             ‹
@@ -61,7 +61,7 @@ export default async function ConversationPage({ params }: PageProps<"/app/messa
             <Avatar name={person.name} image={photoUrl(person)} size={40} />
             <span className="min-w-0">
               <span className="block truncate font-serif text-[1.125rem]">{person.name}</span>
-              <span className="block truncate text-xs text-ivory/65">{person.field?.name}</span>
+              <span className="block truncate text-xs text-mute">{person.field?.name}</span>
             </span>
           </Link>
         </div>

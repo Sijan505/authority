@@ -49,7 +49,7 @@ export async function replyToRequest(_prev: ActionState, formData: FormData): Pr
     ]);
     // Tell the member when there is a new reply or the status moves on.
     if (reply !== before.reply || status !== before.status) {
-      await notify(before.userId, { type: "concierge.reply", text: copy.social.notice.concierge(before.category), link: "/app/concierge#requests" });
+      await notify(before.userId, { type: "concierge.reply", ...copy.social.notice.concierge(before.category), link: "/app/concierge#requests" });
     }
     revalidatePath("/admin/requests");
     revalidatePath("/app/concierge");

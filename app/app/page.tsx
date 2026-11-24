@@ -31,7 +31,7 @@ export default async function AppHome() {
   const right = (
     <div className="flex shrink-0 items-center gap-3">
       {viewer && (
-        <Link href="/app/notifications" aria-label={copy.social.notifications} className="relative grid h-11 w-11 place-items-center text-ivory/85 hover:text-ivory">
+        <Link href="/app/notifications" aria-label={copy.social.notifications} className="relative grid h-11 w-11 place-items-center text-ink/70 hover:text-ink">
           <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" />
           </svg>
@@ -42,13 +42,13 @@ export default async function AppHome() {
           )}
         </Link>
       )}
-      <Link href="/app/account" aria-label={a.tabs.account} className="block h-14 w-14 overflow-hidden rounded-full border border-gold/50 bg-ivory/10">
+      <Link href="/app/account" aria-label={a.tabs.account} className="block h-14 w-14 overflow-hidden rounded-full border border-gold/60 bg-gold-pale/40">
         {avatar ? (
           // Uploaded or Google profile photos; next/image would need their host configured.
           // eslint-disable-next-line @next/next/no-img-element
           <img src={avatar} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
         ) : (
-          <span className="grid h-full w-full place-items-center font-serif text-xl text-gold">{firstName(viewer?.user.name).charAt(0) || "A"}</span>
+          <span className="grid h-full w-full place-items-center font-serif text-xl text-tika">{firstName(viewer?.user.name).charAt(0) || "A"}</span>
         )}
       </Link>
     </div>
@@ -60,11 +60,11 @@ export default async function AppHome() {
         <div className="mt-6 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
           <h1 className="font-serif text-[1.75rem] leading-tight font-light">{a.greeting(partOfDay(), firstName(viewer?.user.name))}</h1>
           <div className="text-right text-[0.6875rem] tracking-[0.2em] uppercase">
-            <p className="text-gold">{tier}</p>
-            {number && <p className="mt-1 text-ivory/80">{a.memberNo(number)}</p>}
+            <p className="text-tika">{tier}</p>
+            {number && <p className="mt-1 text-mute">{a.memberNo(number)}</p>}
           </div>
         </div>
-        <p className="mt-3 text-ivory/75">{a.prompt}</p>
+        <p className="mt-3 text-mute">{a.prompt}</p>
       </AppHeader>
 
       <div className="mx-auto max-w-xl px-5 pt-8 pb-10">
@@ -90,10 +90,10 @@ export default async function AppHome() {
           </section>
         )}
         {viewer && !member && (
-          <section className="mb-8 bg-ink p-6 text-ivory">
+          <section className="mb-8 border border-gold/40 bg-gold-pale/30 p-6 text-ink">
             <h2 className="font-serif text-[1.5rem] font-light">{a.join.heading}</h2>
             <p className="mt-2 opacity-80">{a.join.body}</p>
-            <Link href="/dashboard/membership" className="btn btn-light mt-5">
+            <Link href="/dashboard/membership" className="btn mt-5">
               {a.join.cta}
             </Link>
           </section>
@@ -109,11 +109,11 @@ export default async function AppHome() {
               >
                 <div className={`app-tile-art relative grid place-items-center ${i < 3 ? "aspect-square" : "aspect-[16/9]"}`}>
                   {tile.deva ? (
-                    <span lang="ne" className="font-deva text-[1.75rem] text-gold/90">
+                    <span lang="ne" className="font-deva text-[1.75rem] text-tika">
                       {tile.deva}
                     </span>
                   ) : (
-                    <svg viewBox="0 0 48 48" className="h-8 w-8 text-gold/90" fill="none" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" className="h-8 w-8 text-tika" fill="none" aria-hidden="true">
                       <path d={LOGO_PATH} stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
                     </svg>
                   )}
@@ -146,34 +146,34 @@ export default async function AppHome() {
         </div>
 
         <h2 className="mt-10 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">{a.radar}</h2>
-        <details className="group mt-5 bg-ink text-ivory">
+        <details className="group mt-5 border border-gold/40 bg-paper/70 text-ink">
           <summary className="flex cursor-pointer list-none gap-4 p-5 [&::-webkit-details-marker]:hidden">
             <span className="app-tile-art grid h-20 w-20 shrink-0 place-items-center">
-              <svg viewBox="0 0 48 48" className="h-8 w-8 text-gold" fill="none" aria-hidden="true">
+              <svg viewBox="0 0 48 48" className="h-8 w-8 text-tika" fill="none" aria-hidden="true">
                 <path d={LOGO_PATH} stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
               </svg>
             </span>
             <span className="min-w-0">
               <span className="block text-[0.75rem] font-semibold tracking-[0.14em] uppercase">{e.name}</span>
               <span className="mt-1 block text-sm opacity-80">{issueDrop.venue}</span>
-              <span className="mt-3 inline-block text-[0.6875rem] font-semibold tracking-[0.16em] text-gold uppercase">
+              <span className="mt-3 inline-block text-[0.6875rem] font-semibold tracking-[0.16em] text-tika uppercase">
                 <span className="group-open:hidden">{a.viewEvent} ›</span>
                 <span className="hidden group-open:inline">{a.hideEvent}</span>
               </span>
             </span>
           </summary>
-          <div className="border-t border-ivory/15 px-5 pt-4 pb-5">
+          <div className="border-t border-line px-5 pt-4 pb-5">
             <p className="opacity-85">{e.body}</p>
             <p className="mt-3 text-sm tracking-[0.12em] uppercase opacity-70">
               {issueDrop.reserved === null ? e.seatsSoon(issueDrop.seats) : e.seatsOf(Math.min(issueDrop.reserved, issueDrop.seats), issueDrop.seats)}
             </p>
             <div className="mt-4">
               {member ? (
-                <Link href={`/app/concierge?c=${encodeURIComponent("Experiences")}`} className="btn btn-light btn-sm">
+                <Link href={`/app/concierge?c=${encodeURIComponent("Experiences")}`} className="btn btn-sm">
                   {copy.app.concierge.submit}
                 </Link>
               ) : (
-                <InquiryButton className="btn btn-light btn-sm">{e.cta}</InquiryButton>
+                <InquiryButton className="btn btn-sm">{e.cta}</InquiryButton>
               )}
             </div>
           </div>

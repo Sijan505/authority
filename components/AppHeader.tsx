@@ -1,14 +1,14 @@
 import { copy } from "@/content/copy";
 
-/** The brown band at the top of each app screen: wordmark, a small label and a title. */
+/** The ivory band at the top of each app screen: wordmark, a small label and a title. */
 export function AppHeader({ label, title, right, children }: { label: string; title?: string; right?: React.ReactNode; children?: React.ReactNode }) {
   return (
-    <header className="bg-ink px-5 pt-[calc(env(safe-area-inset-top)+1.5rem)] pb-7 text-ivory">
+    <header className="app-header border-b border-line px-5 pt-[calc(env(safe-area-inset-top)+1.5rem)] pb-7 text-ink">
       <div className="mx-auto max-w-xl">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="app-wordmark font-serif text-[1.75rem] leading-none font-light tracking-[0.22em]">{copy.brand.wordmark}</p>
-            <p className="mt-2 text-[0.6875rem] tracking-[0.3em] text-ivory/70 uppercase">{label}</p>
+            <p className="wordmark-gradient font-serif text-[1.75rem] leading-none font-light tracking-[0.22em]">{copy.brand.wordmark}</p>
+            <p className="mt-2 text-[0.6875rem] tracking-[0.3em] text-mute uppercase">{label}</p>
           </div>
           {right}
         </div>
