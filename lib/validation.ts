@@ -210,6 +210,16 @@ export const conciergeReplySchema = z.object({
   reply: optionalText(2000),
 });
 
+// ---- Members connecting and messaging ----
+
+export const userIdSchema = z.object({ userId: id });
+export const respondSchema = z.object({ connectionId: id, decision: z.enum(["accept", "decline"]) });
+export const messageSchema = z.object({ to: id, body: text(2000).min(1, "Write a message first.") });
+export const pushSubscriptionSchema = z.object({
+  endpoint: z.string().url().max(1000),
+  keys: z.object({ p256dh: z.string().min(1).max(200), auth: z.string().min(1).max(100) }),
+});
+
 export function fieldErrors(error: z.ZodError) {
   const out: Record<string, string> = {};
   for (const issue of error.issues) {

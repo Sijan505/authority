@@ -3,10 +3,15 @@ import { formatDate } from "@/components/ArticleCard";
 import { AppHeader } from "@/components/AppHeader";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import { InstallApp } from "@/components/InstallApp";
+import { MemberCard } from "@/components/MemberCard";
+import { PhotoUpload } from "@/components/PhotoUpload";
+import { PushToggle } from "@/components/PushToggle";
 import { site } from "@/config/site";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
 import { memberNumber } from "@/lib/app";
+import { cardFor } from "@/lib/member-card";
+import { photoUrl } from "@/lib/photo";
 
 export const metadata = { title: "Account" };
 
@@ -14,7 +19,8 @@ export const metadata = { title: "Account" };
 export default async function AccountPage() {
   const viewer = await getViewer();
   const t = copy.app.account;
-  const number = await memberNumber(viewer);
+  const [number, card] = await Promise.all([memberNumber(viewer), cardFor(viewer)]);
+  const a = copy.app;
 
   const links = [
     { href: "/dashboard/membership", label: t.links.membership, show: !!viewer },
@@ -28,6 +34,32 @@ export default async function AccountPage() {
     <main>
       <AppHeader label={t.heading} title={viewer?.user.name ?? copy.app.guest.heading} />
       <div className="mx-auto max-w-xl px-5 pt-8 pb-10">
+        {viewer && card && (
+          <section id="card" aria-labelledby="card-h" className="mb-10 scroll-mt-6">
+            <h2 id="card-h" className="mb-4 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">
+              {a.card.heading}
+            </h2>
+            <MemberCard card={card} />
+            {card.qr && (
+              // A large copy of the QR, easy for a venue to scan off the screen.
+              <div
+                className="card-qr mx-auto mt-6 h-56 w-56 rounded-xl bg-white p-4 shadow-[inset_0_0_0_1px_rgba(200,150,42,0.35)]"
+                role="img"
+                aria-label={a.card.qrLabel}
+                dangerouslySetInnerHTML={{ __html: card.qr }}
+              />
+            )}
+            <p className="mt-3 text-center text-sm text-mute">{card.qr ? a.card.hint : a.card.notMember}</p>
+          </section>
+        )}
+        {viewer && (
+          <section aria-labelledby="photo-h" className="mb-10">
+            <h2 id="photo-h" className="mb-4 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">
+              {a.photo.heading}
+            </h2>
+            <PhotoUpload name={viewer.user.name} current={photoUrl(viewer.user)} hasUploaded={!!viewer.user.photoUpdatedAt} />
+          </section>
+        )}
         {viewer ? (
           <dl className="grid grid-cols-[8rem_1fr] gap-y-3 border-y border-line py-5">
             <dt className="text-sm text-mute">{t.field}</dt>
@@ -50,6 +82,12 @@ export default async function AccountPage() {
           <div className="border border-ink p-6">
             <p>{t.signedOut}</p>
             <SignInButton label={copy.app.guest.signIn} callbackUrl="/app" className="btn mt-4" />
+          </div>
+        )}
+
+        {viewer && (
+          <div className="mt-8">
+            <PushToggle />
           </div>
         )}
 

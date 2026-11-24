@@ -11,7 +11,7 @@
     "db:seed": "prisma db seed",
     "db:sync-fields": "tsx prisma/seed-fields.ts",
     "admin:password": "node scripts/set-admin-password.mjs",
-    "ship":"git push && vercel deploy --prod --yes",
+    "ship": "git push && vercel deploy --prod --yes",
     "vercel-build": "prisma migrate deploy && tsx prisma/seed-fields.ts && next build"
   },
   "dependencies": {
@@ -21,9 +21,11 @@
     "next": "16.4.6",
     "next-auth": "^4.24.15",
     "pg": "^8.23.1",
+    "qrcode": "1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
+    "web-push": "3.6.7",
     "zod": "^4.6.7"
   },
   "overrides": {
@@ -33,8 +35,10 @@
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
+    "@types/qrcode": "1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "3.6.4",
     "dotenv": "^18.0.10",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",

@@ -51,6 +51,12 @@ enum ArticleStatus {
   PUBLISHED
 }
 
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
 enum RequestStatus {
   NEW
   IN_PROGRESS
@@ -65,33 +71,43 @@ enum ReportStatus {
 }
 
 model User {
-  id          String     @id @default(cuid())
-  email       String     @unique // one account per Google email
-  googleId    String?    @unique @map("google_id")
-  name        String?
-  image       String?
-  role        Role       @default(MEMBER)
-  status      UserStatus @default(ACTIVE)
-  fieldId     String?    @map("field_id")
-  city        String?
-  contact     String?
-  onboardedAt DateTime?  @map("onboarded_at")
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
+  id             String     @id @default(cuid())
+  email          String     @unique // one account per Google email
+  googleId       String?    @unique @map("google_id")
+  name           String?
+  image          String?
+  photo          Bytes? // uploaded profile photo (JPEG, ~512px square); left out of queries by default (lib/db.ts)
+  photoUpdatedAt DateTime?  @map("photo_updated_at")
+  memberCode     String?    @unique @map("member_code") // secret code in the membership card QR (/verify/[code])
+  role           Role       @default(MEMBER)
+  status         UserStatus @default(ACTIVE)
+  fieldId        String?    @map("field_id")
+  city           String?
+  contact        String?
+  onboardedAt    DateTime?  @map("onboarded_at")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
 
-  field            Field?           @relation(fields: [fieldId], references: [id])
-  application      Application?
-  subscriptions    Subscription[]
-  payments         Payment[]        @relation("PaymentUser")
-  verifiedPayments Payment[]        @relation("PaymentVerifier")
-  comments         Comment[]
-  posts            DiscussionPost[]
-  reports          Report[]         @relation("Reporter")
-  resolvedReports  Report[]         @relation("Resolver")
-  blocking         UserBlock[]      @relation("Blocker")
-  blockedBy        UserBlock[]      @relation("Blocked")
-  auditLogs        AuditLog[]
-  requests         ConciergeRequest[]
+  field               Field?             @relation(fields: [fieldId], references: [id])
+  application         Application?
+  subscriptions       Subscription[]
+  payments            Payment[]          @relation("PaymentUser")
+  verifiedPayments    Payment[]          @relation("PaymentVerifier")
+  comments            Comment[]
+  posts               DiscussionPost[]
+  reports             Report[]           @relation("Reporter")
+  resolvedReports     Report[]           @relation("Resolver")
+  blocking            UserBlock[]        @relation("Blocker")
+  blockedBy           UserBlock[]        @relation("Blocked")
+  auditLogs           AuditLog[]
+  requests            ConciergeRequest[]
+  sentConnections     Connection[]       @relation("ConnectionRequester")
+  receivedConnections Connection[]       @relation("ConnectionAddressee")
+  sentMessages        Message[]          @relation("MessageSender")
+  receivedMessages    Message[]          @relation("MessageRecipient")
+  notifications       Notification[]     @relation("NotificationUser")
+  causedNotifications Notification[]     @relation("NotificationActor")
+  pushSubscriptions   PushSubscription[]
 
   @@index([fieldId])
   @@map("users")
@@ -152,19 +168,19 @@ model Subscription {
 }
 
 model Payment {
-  id               String        @id @default(cuid())
-  subscriptionId   String        @map("subscription_id")
-  userId           String        @map("user_id")
-  amount           Int // NPR
-  method           PaymentMethod
-  reference        String
-  screenshot       Bytes?
-  screenshotType   String?       @map("screenshot_type")
-  status           PaymentStatus @default(PENDING)
-  note             String?
-  verifiedById     String?       @map("verified_by")
-  verifiedAt       DateTime?     @map("verified_at")
-  createdAt        DateTime      @default(now()) @map("created_at")
+  id             String        @id @default(cuid())
+  subscriptionId String        @map("subscription_id")
+  userId         String        @map("user_id")
+  amount         Int // NPR
+  method         PaymentMethod
+  reference      String
+  screenshot     Bytes?
+  screenshotType String?       @map("screenshot_type")
+  status         PaymentStatus @default(PENDING)
+  note           String?
+  verifiedById   String?       @map("verified_by")
+  verifiedAt     DateTime?     @map("verified_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
 
   subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
   user         User         @relation("PaymentUser", fields: [userId], references: [id], onDelete: Cascade)
@@ -315,6 +331,73 @@ model ConciergeRequest {
   @@index([userId, createdAt])
   @@index([status, createdAt])
   @@map("concierge_requests")
+}
+
+// Members connecting with each other: one row per pair, created by the requester.
+model Connection {
+  id          String           @id @default(cuid())
+  requesterId String           @map("requester_id")
+  addresseeId String           @map("addressee_id")
+  status      ConnectionStatus @default(PENDING)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  respondedAt DateTime?        @map("responded_at")
+
+  requester User @relation("ConnectionRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee User @relation("ConnectionAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+  @@index([addresseeId, status])
+  @@map("connections")
+}
+
+// Private messages between two connected members.
+model Message {
+  id          String    @id @default(cuid())
+  senderId    String    @map("sender_id")
+  recipientId String    @map("recipient_id")
+  body        String
+  readAt      DateTime? @map("read_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  sender    User @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient User @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([senderId, recipientId, createdAt])
+  @@index([recipientId, readAt])
+  @@map("messages")
+}
+
+// In-app notifications; each new one is also pushed to the member's phones.
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  actorId   String?   @map("actor_id")
+  type      String // connect.request | connect.accepted | message | concierge.reply
+  text      String
+  link      String
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user  User  @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
+  actor User? @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
+}
+
+// A phone or browser that agreed to receive push notifications.
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 // Fixed-window counters for rate limiting, shared across server instances.

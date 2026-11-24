@@ -8,6 +8,7 @@ import { FieldTheme } from "@/components/FieldTheme";
 import { copy } from "@/content/copy";
 import { canReadField, canUsePro, getViewer, hiddenUserIds, type Viewer } from "@/lib/access";
 import { db } from "@/lib/db";
+import { siteUrl } from "@/lib/site-url";
 import { articleSummarySelect, publishedWhere } from "@/lib/queries";
 
 async function findArticle(slug: string, viewer: Viewer | null) {
@@ -39,7 +40,7 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[slug
     ? (await db.article.findUniqueOrThrow({ where: { id: article.id }, select: { body: true } })).body
     : null;
 
-  const url = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/articles/${article.slug}`;
+  const url = `${siteUrl()}/articles/${article.slug}`;
 
   return (
     <FieldTheme slug={article.field.slug}>

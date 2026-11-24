@@ -5,8 +5,11 @@ import { LOGO_PATH } from "@/components/Decor";
 import { InquiryButton } from "@/components/Inquiry";
 import { issueDrop } from "@/config/site";
 import { copy } from "@/content/copy";
+import { MemberCard } from "@/components/MemberCard";
 import { getViewer } from "@/lib/access";
 import { firstName, memberNumber, partOfDay } from "@/lib/app";
+import { cardFor } from "@/lib/member-card";
+import { photoUrl } from "@/lib/photo";
 import { db } from "@/lib/db";
 
 export const metadata = { title: "Home" };
@@ -16,28 +19,34 @@ export default async function AppHome() {
   const viewer = await getViewer();
   const a = copy.app;
   const member = viewer?.plan === "PRO";
-  const [number, replies] = await Promise.all([
+  const [number, unread, card] = await Promise.all([
     memberNumber(viewer),
-    member ? db.conciergeRequest.count({ where: { userId: viewer!.user.id, reply: { not: null }, status: { in: ["IN_PROGRESS", "DONE", "DECLINED"] } } }) : 0,
+    viewer ? db.notification.count({ where: { userId: viewer.user.id, readAt: null } }) : 0,
+    cardFor(viewer),
   ]);
+  const avatar = viewer ? photoUrl(viewer.user) : null;
   const tier = !viewer ? a.tierGuest : member ? a.tierMember : a.tierNotMember;
   const e = copy.home.issue.event;
 
   const right = (
     <div className="flex shrink-0 items-center gap-3">
       {viewer && (
-        <Link href="/app/concierge#requests" aria-label={a.notifications} className="relative grid h-11 w-11 place-items-center text-ivory/85 hover:text-ivory">
+        <Link href="/app/notifications" aria-label={copy.social.notifications} className="relative grid h-11 w-11 place-items-center text-ivory/85 hover:text-ivory">
           <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" />
           </svg>
-          {replies > 0 && <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-gold" aria-hidden="true" />}
+          {unread > 0 && (
+            <span className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-gold px-1 text-[0.5625rem] font-semibold text-ink">
+              {unread > 9 ? "9+" : unread}
+            </span>
+          )}
         </Link>
       )}
       <Link href="/app/account" aria-label={a.tabs.account} className="block h-14 w-14 overflow-hidden rounded-full border border-gold/50 bg-ivory/10">
-        {viewer?.user.image ? (
-          // Google profile photos; next/image would need their host configured.
+        {avatar ? (
+          // Uploaded or Google profile photos; next/image would need their host configured.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={viewer.user.image} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+          <img src={avatar} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
         ) : (
           <span className="grid h-full w-full place-items-center font-serif text-xl text-gold">{firstName(viewer?.user.name).charAt(0) || "A"}</span>
         )}
@@ -59,6 +68,17 @@ export default async function AppHome() {
       </AppHeader>
 
       <div className="mx-auto max-w-xl px-5 pt-8 pb-10">
+        {card && (
+          <section aria-labelledby="card-h" className="mb-10">
+            <h2 id="card-h" className="mb-4 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">
+              {a.card.heading}
+            </h2>
+            <Link href="/app/account#card" className="block" aria-label={a.card.heading}>
+              <MemberCard card={card} />
+            </Link>
+            <p className="mt-3 text-center text-sm text-mute">{card.qr ? a.card.hint : a.card.notMember}</p>
+          </section>
+        )}
         {!viewer && (
           <section className="mb-8 border border-ink p-6">
             <h2 className="font-serif text-[1.5rem] font-light">{a.guest.heading}</h2>
@@ -109,6 +129,21 @@ export default async function AppHome() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          {[
+            { href: "/app/discover", label: a.tabs.discover, body: a.readBody },
+            { href: "/app/forum", label: a.tabs.forum, body: a.forumBody },
+          ].map((l) => (
+            <Link key={l.href} href={l.href} className="flex items-center justify-between gap-3 border border-ink px-4 py-4 transition-colors hover:bg-ink hover:text-ivory">
+              <span>
+                <span className="block text-[0.75rem] font-semibold tracking-[0.14em] uppercase">{l.label}</span>
+                <span className="mt-1 block text-[0.75rem] opacity-70">{l.body}</span>
+              </span>
+              <span aria-hidden="true">›</span>
+            </Link>
+          ))}
+        </div>
 
         <h2 className="mt-10 font-serif text-[0.9375rem] tracking-[0.28em] text-tika uppercase">{a.radar}</h2>
         <details className="group mt-5 bg-ink text-ivory">

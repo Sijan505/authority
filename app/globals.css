@@ -678,9 +678,9 @@ body:has(.app-tabbar) .inq-prompt {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: min(340px, 84vw);
+  width: min(360px, 86vw);
   aspect-ratio: 1.586;
-  padding: 1.375rem 1.5rem;
+  padding: 1.25rem;
   overflow: hidden;
   border-radius: 1rem;
   border: 1px solid rgba(200, 150, 42, 0.55);
@@ -776,4 +776,26 @@ body:has(.app-tabbar) .inq-prompt {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+/* The message box sits just above the app's tab bar. */
+.app-composer {
+  bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
+/* ---------- Membership card (components/MemberCard.tsx) ---------- */
+.member-card {
+  border: 1px solid rgba(200, 150, 42, 0.55);
+  background: linear-gradient(150deg, #fffdf4 0%, #fcfbf0 45%, #f4ecd2 100%);
+  box-shadow:
+    0 24px 50px -28px rgba(59, 26, 18, 0.55),
+    inset 0 0 0 4px rgba(252, 251, 240, 0.9),
+    inset 0 0 0 5px rgba(200, 150, 42, 0.25);
+}
+.card-rule {
+  background: linear-gradient(90deg, #c8962a, rgba(200, 150, 42, 0.15));
+}
+.card-qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

@@ -102,11 +102,24 @@ export async function toggleBlock(_prev: ActionState, formData: FormData): Promi
     const existing = await db.userBlock.findUnique({ where: key });
     if (existing) await db.userBlock.delete({ where: key });
     else {
-      const target = await db.user.findFirst({ where: { id: parsed.data.userId, fieldId: viewer.user.fieldId } });
+      // Members can connect across fields in the app, so blocking works for any member.
+      const target = await db.user.findUnique({ where: { id: parsed.data.userId }, select: { id: true } });
       if (!target) throw new AccessError(copy.errors.forbidden);
-      await db.userBlock.create({ data: { blockerId: viewer.user.id, blockedId: target.id } });
+      await db.$transaction([
+        db.userBlock.create({ data: { blockerId: viewer.user.id, blockedId: target.id } }),
+        // Blocking also ends any connection or pending request between the two.
+        db.connection.deleteMany({
+          where: {
+            OR: [
+              { requesterId: viewer.user.id, addresseeId: target.id },
+              { requesterId: target.id, addresseeId: viewer.user.id },
+            ],
+          },
+        }),
+      ]);
     }
     revalidatePath("/dashboard", "layout");
+    revalidatePath("/app", "layout");
     revalidatePath("/articles/[slug]", "page");
     return { ok: true };
   });

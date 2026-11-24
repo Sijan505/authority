@@ -14,8 +14,13 @@ export function partOfDay(now = new Date()) {
  */
 export async function memberNumber(viewer: Viewer | null) {
   if (!viewer || viewer.plan !== "PRO") return null;
+  return memberNumberOf(viewer.user.id);
+}
+
+/** The same number for any user id (the caller checks they are a member). */
+export async function memberNumberOf(userId: string) {
   const mine = await db.subscription.findFirst({
-    where: { userId: viewer.user.id, package: "PRO", status: "ACTIVE", startsAt: { not: null } },
+    where: { userId, package: "PRO", status: "ACTIVE", startsAt: { not: null } },
     orderBy: { startsAt: "asc" },
     select: { startsAt: true },
   });
@@ -24,7 +29,7 @@ export async function memberNumber(viewer: Viewer | null) {
     by: ["userId"],
     where: { package: "PRO", status: "ACTIVE", startsAt: { lt: mine.startsAt } },
   });
-  return earlier.filter((r) => r.userId !== viewer.user.id).length + 1;
+  return earlier.filter((r) => r.userId !== userId).length + 1;
 }
 
 export const firstName = (name: string | null | undefined) => (name ?? "").trim().split(/\s+/)[0] ?? "";

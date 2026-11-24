@@ -5,6 +5,8 @@ import { assertAdmin, assertPro } from "@/lib/access";
 import { runAction } from "@/lib/action";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
+import { notify } from "@/lib/notify";
+import { copy } from "@/content/copy";
 import { conciergeReplySchema, conciergeSchema, fieldErrors, type ActionState } from "@/lib/validation";
 
 /** A member sends a request to the Request Desk. Members only. */
@@ -39,10 +41,16 @@ export async function replyToRequest(_prev: ActionState, formData: FormData): Pr
     if (!parsed.success) return { errors: fieldErrors(parsed.error), message: "Please check the form." };
     const { id, status, reply } = parsed.data;
 
+    const before = await db.conciergeRequest.findUnique({ where: { id }, select: { userId: true, status: true, reply: true, category: true } });
+    if (!before) return { message: "This request no longer exists." };
     await db.$transaction([
       db.conciergeRequest.update({ where: { id }, data: { status, reply } }),
       audit(db, { actorId: admin.user.id, action: "concierge.reply", targetType: "concierge_request", targetId: id, details: { status } }),
     ]);
+    // Tell the member when there is a new reply or the status moves on.
+    if (reply !== before.reply || status !== before.status) {
+      await notify(before.userId, { type: "concierge.reply", text: copy.social.notice.concierge(before.category), link: "/app/concierge#requests" });
+    }
     revalidatePath("/admin/requests");
     revalidatePath("/app/concierge");
     return { ok: true, message: "Saved." };

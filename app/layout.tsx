@@ -6,6 +6,7 @@ import { AppTabBar } from "@/components/AppTabBar";
 import { InquiryForm } from "@/components/Inquiry";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { copy } from "@/content/copy";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -31,7 +32,7 @@ const tiro = Tiro_Devanagari_Hindi({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteUrl()),
   title: { default: copy.meta.title, template: "%s · Authority" },
   description: copy.meta.description,
   openGraph: { title: copy.meta.title, description: copy.meta.description, siteName: "Authority", type: "website" },

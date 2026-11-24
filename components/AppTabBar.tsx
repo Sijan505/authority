@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { registerServiceWorker } from "@/components/PushToggle";
 import { copy } from "@/content/copy";
 
 const t = copy.app.tabs;
@@ -22,7 +23,13 @@ const icons: Record<string, React.ReactNode> = {
       <path d="M3.5 20h17" />
     </>
   ),
-  forum: <path d="M4.5 5.5h15v10h-8l-4 3.5v-3.5h-3z" />,
+  members: (
+    <>
+      <circle cx="9" cy="9" r="3" />
+      <path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M15.5 6.2a3 3 0 0 1 0 5.6M17.5 14.8c1.6.6 2.6 2 3 4.2" />
+    </>
+  ),
+  messages: <path d="M4.5 5.5h15v10h-8l-4 3.5v-3.5h-3z" />,
   account: (
     <>
       <circle cx="12" cy="8.5" r="3.5" />
@@ -33,11 +40,13 @@ const icons: Record<string, React.ReactNode> = {
 
 const tabs = [
   { key: "home", href: "/app", label: t.home },
-  { key: "discover", href: "/app/discover", label: t.discover },
+  { key: "members", href: "/app/members", label: t.members },
+  { key: "messages", href: "/app/messages", label: t.messages },
   { key: "concierge", href: "/app/concierge", label: t.concierge },
-  { key: "forum", href: "/app/forum", label: t.forum },
   { key: "account", href: "/app/account", label: t.account },
 ];
+
+type Badges = { messages: number; requests: number; notifications: number };
 
 /**
  * The app's bottom tab bar. It shows on /app pages, and on every page when the site
@@ -46,6 +55,9 @@ const tabs = [
 export function AppTabBar() {
   const pathname = usePathname();
   const [standalone, setStandalone] = useState(false);
+  const [badges, setBadges] = useState<Badges>({ messages: 0, requests: 0, notifications: 0 });
+  const inApp = pathname === "/app" || pathname.startsWith("/app/");
+  const shown = (inApp || standalone) && !pathname.startsWith("/admin");
 
   useEffect(() => {
     const mq = window.matchMedia("(display-mode: standalone)");
@@ -55,9 +67,29 @@ export function AppTabBar() {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const inApp = pathname === "/app" || pathname.startsWith("/app/");
-  if (!inApp && !standalone) return null;
-  if (pathname.startsWith("/admin")) return null;
+  // Badge counts: on each screen change, when the app comes back, and every 30 seconds.
+  useEffect(() => {
+    if (!shown) return;
+    registerServiceWorker();
+    let alive = true;
+    const load = () =>
+      fetch("/api/app/badges", { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((b: Badges | null) => alive && b && setBadges(b))
+        .catch(() => {});
+    load();
+    const id = window.setInterval(load, 30_000);
+    const onVisible = () => document.visibilityState === "visible" && load();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      alive = false;
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [shown, pathname]);
+
+  const count: Record<string, number> = { members: badges.requests, messages: badges.messages };
+  if (!shown) return null;
 
   return (
     <nav aria-label="App" className="app-tabbar fixed inset-x-0 bottom-0 z-40 border-t border-gold/25 bg-ink text-ivory">
@@ -77,6 +109,12 @@ export function AppTabBar() {
                   {icons[tab.key]}
                 </svg>
                 {tab.label}
+                {count[tab.key] > 0 && (
+                  <span className="absolute top-2 left-[calc(50%+6px)] grid h-4 min-w-4 place-items-center rounded-full bg-gold px-1 text-[0.5625rem] font-semibold tracking-normal text-ink">
+                    {count[tab.key] > 9 ? "9+" : count[tab.key]}
+                    <span className="sr-only"> new</span>
+                  </span>
+                )}
                 {active && <span className="absolute inset-x-5 bottom-1.5 h-px bg-gold" aria-hidden="true" />}
               </Link>
             </li>
