@@ -867,3 +867,34 @@ html[data-app-theme="dark"] .app-intro-card {
 html[data-app-theme="dark"] .app-intro-tagline {
   color: rgba(239, 223, 178, 0.75);
 }
+
+/* ---------- App home: editorial world cards (app/app/page.tsx) ---------- */
+/* Each card sets --tile-accent and --tile-tint from the website's field palette. */
+.world-card {
+  color: var(--tile-accent);
+  background:
+    radial-gradient(120% 80% at 90% 0%, rgb(255 255 255 / 0.55), transparent 55%),
+    linear-gradient(165deg, var(--tile-tint) 0%, color-mix(in srgb, var(--tile-tint) 82%, var(--tile-accent)) 100%);
+  border: 1px solid color-mix(in srgb, var(--tile-accent) 22%, transparent);
+  box-shadow: 0 18px 40px -26px color-mix(in srgb, var(--tile-accent) 70%, transparent);
+}
+.world-rule {
+  background: currentColor;
+  opacity: 0.6;
+}
+/* Swipe rows scroll sideways without a visible scrollbar. */
+.swipe-rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.swipe-rail::-webkit-scrollbar {
+  display: none;
+}
+/* Dark mode: deep versions of each world's colour, with the light tint as type. */
+html[data-app-theme="dark"] .world-card {
+  color: var(--tile-tint);
+  background:
+    radial-gradient(120% 80% at 90% 0%, rgb(200 150 42 / 0.28), transparent 55%),
+    linear-gradient(165deg, var(--tile-accent) 0%, color-mix(in srgb, var(--tile-accent) 55%, #1a0b07) 100%);
+  border-color: rgb(200 150 42 / 0.25);
+}

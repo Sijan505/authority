@@ -84,17 +84,20 @@ export default async function Home() {
           </Reveal>
           <div>
             <Reveal>
-              <div className="max-w-[40ch] space-y-6 font-serif text-[clamp(1.25rem,2.4vw,1.625rem)] leading-[1.45] font-light">
+              <h2 className="max-w-[22ch] font-serif text-[clamp(1.875rem,4.6vw,3.25rem)] leading-[1.1] font-light">{home.founderNote.headline}</h2>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="mt-10 max-w-[44ch] space-y-6 border-t border-ink pt-8 font-serif text-[clamp(1.1875rem,2.2vw,1.5rem)] leading-[1.5] font-light">
                 {home.founderNote.paragraphs.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+                <p className="wordmark-gradient font-normal">{home.founderNote.emphasis}</p>
+                {home.founderNote.after.map((p) => (
                   <p key={p}>{p}</p>
                 ))}
               </div>
             </Reveal>
             <Reveal delay={150}>
-              <div className="mt-12 border-t border-ink pt-8 font-serif text-[clamp(1.875rem,4.6vw,3.25rem)] leading-[1.1] font-light">
-                <p>{home.founderNote.closing[0]}</p>
-                <p className="wordmark-gradient">{home.founderNote.closing[1]}</p>
-              </div>
               <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
                 <InquiryButton className="btn" />
                 <span className="font-serif text-lg italic text-mute">— {home.founderNote.name}</span>

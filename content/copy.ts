@@ -54,14 +54,16 @@ export const copy = {
     },
     founderNote: {
       eyebrow: "A note from the founder",
+      // The founder's own words (24 November 2026); only spelling and capitals were tidied.
+      headline: "Nepal never lacked talent, it lacked a place where those could get recognized.",
       paragraphs: [
-        "Living almost two decades in Nepal and a year in London, there are very interesting characters and visionaries I've met and keep getting introduced to.",
-        "A chef in Chitwan who could cook anywhere. A designer in Kathmandu reworking dhaka for a new generation. A hotelier opening a property in Jhapa. A model walking in Asia and back at her day job by Monday.",
-        "Different industries on paper. Somehow, they all want the same thing: to be around people who get it.",
-        "Authority is where those people meet. A members club for Nepal's tastemakers in fashion, hospitality, food and the arts.",
-        "We're testing this before we build it. Register your interest, and tell us if you'd help build it.",
+        "Living almost two decades in Nepal and a year in London, I've met lots of interesting characters and visionaries: a chef that translates emotions to a dish, a model who walks in another country and gets back to her regular job by Monday, a Nepali designer working for the most reputable fashion brand in the world, a finance bro with a Patagonia vest who's saving for his IB exit to pursue his business, a nepo baby ousted by her family who now runs a small curated café.",
+        "These are all different industries on paper, but all of them want the same thing:",
       ],
-      closing: ["Nepal never lacked talent.", "It lacked rooms where that talent could meet."],
+      emphasis: "To be around people who get them.",
+      after: [
+        "And that's how Authority was born. Authority is a private members club based in Nepal. It gives creatives from different fields a place to connect, collaborate and work with people alike.",
+      ],
       name: "Satish Acharya",
       role: "Founder, Authority",
     },
@@ -498,6 +500,8 @@ export const copy = {
   app: {
     dashboard: "Member dashboard",
     greeting: (part: string, first: string) => (first ? `Good ${part}, ${first}` : `Good ${part}`),
+    greetingPart: (part: string) => `Good ${part}`,
+    readHeading: "Read and discuss",
     prompt: "Which one today?",
     tierMember: "Member",
     tierNotMember: "Not a member yet",
@@ -512,11 +516,11 @@ export const copy = {
     hideEvent: "Close",
     notifications: "Replies from the Request Desk",
     tiles: [
-      { key: "dining", title: "Dining", body: "Remarkable dining, curated for our members.", category: "Dining", deva: "गाँस" },
-      { key: "stays", title: "Stays", body: "Exceptional stays in extraordinary places.", category: "Stays", deva: "बास" },
-      { key: "invitation", title: "The Invitation", body: "Curated experiences and private gatherings.", category: "Experiences", deva: "" },
-      { key: "first-look", title: "The First Look", body: "Early access to what's next.", category: "Fashion and finds", deva: "कपास" },
-      { key: "good-life", title: "The Good Life", body: "A more inspired way of living.", category: "Travel and itineraries", deva: "" },
+      { key: "dining", kicker: "Gaas", title: "Dining", body: "Remarkable dining, curated for our members.", category: "Dining", deva: "गाँस" },
+      { key: "stays", kicker: "Baas", title: "Stays", body: "Exceptional stays in extraordinary places.", category: "Stays", deva: "बास" },
+      { key: "invitation", kicker: "Experiences", title: "The Invitation", body: "Curated experiences and private gatherings.", category: "Experiences", deva: "" },
+      { key: "first-look", kicker: "Kapas", title: "The First Look", body: "Early access to what's next.", category: "Fashion and finds", deva: "कपास" },
+      { key: "good-life", kicker: "Living", title: "The Good Life", body: "A more inspired way of living.", category: "Travel and itineraries", deva: "" },
     ],
     join: {
       heading: "Become a member",
@@ -524,6 +528,7 @@ export const copy = {
       cta: "Become a member",
     },
     guest: {
+      kicker: "By the tastemaker, for the tastemaker",
       heading: "Welcome to Authority",
       body: "A members club for Nepal's tastemakers in fashion, hospitality, food and the arts.",
       signIn: "Sign in with Google",
@@ -782,7 +787,7 @@ export const copy = {
       name: "Satish Acharya",
       details: ["Founder, Authority", "Based in London, United Kingdom", "Speciality: Baas & Kapas"],
       body: "Authority is being developed with a perspective shaped by Nepal and by international exposure.",
-      photo: "/founder.jpg",
+      photo: "/founder-satish.jpg",
     },
     future: {
       eyebrow: "The long game",
