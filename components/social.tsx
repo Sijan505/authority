@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import { connect, disconnect, respond, sendMessage } from "@/app/actions/social";
+import { connect, disconnect, removeGroupMessage, respond, sendGroupMessage, sendMessage } from "@/app/actions/social";
 import { copy } from "@/content/copy";
 import type { ActionState } from "@/lib/validation";
 
@@ -91,8 +91,10 @@ export function DisconnectButton({ userId, label, confirm }: { userId: string; l
 }
 
 /** The message box at the bottom of a conversation. Enter sends; Shift+Enter adds a line. */
-export function MessageComposer({ to }: { to: string }) {
-  const [state, action] = useActionState(sendMessage, initial);
+export function MessageComposer({ to }: { to?: string }) {
+  // Without a recipient it posts to the members' group chat.
+  const [state, action] = useActionState(to ? sendMessage : sendGroupMessage, initial);
+  const placeholder = to ? t.write : copy.group.write;
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -101,10 +103,10 @@ export function MessageComposer({ to }: { to: string }) {
 
   return (
     <form ref={formRef} action={action} className="app-composer fixed inset-x-0 z-30 border-t border-line bg-ivory px-4 py-3">
-      <input type="hidden" name="to" value={to} />
+      {to && <input type="hidden" name="to" value={to} />}
       <div className="mx-auto flex max-w-xl items-end gap-2">
         <label htmlFor="m-body" className="sr-only">
-          {t.write}
+          {placeholder}
         </label>
         <textarea
           id="m-body"
@@ -112,7 +114,7 @@ export function MessageComposer({ to }: { to: string }) {
           rows={1}
           maxLength={2000}
           required
-          placeholder={t.write}
+          placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey && !window.matchMedia("(pointer: coarse)").matches) {
               e.preventDefault();
@@ -124,6 +126,17 @@ export function MessageComposer({ to }: { to: string }) {
         <Submit className="btn min-h-11 px-5">{t.send}</Submit>
       </div>
       <Error state={state} />
+    </form>
+  );
+}
+
+/** Removes a message from the group chat, after a confirm. */
+export function RemoveGroupMessage({ messageId }: { messageId: string }) {
+  const [, action] = useActionState(removeGroupMessage, initial);
+  return (
+    <form action={action} onSubmit={(e) => !window.confirm(copy.group.removeConfirm) && e.preventDefault()} className="inline">
+      <input type="hidden" name="messageId" value={messageId} />
+      <Submit className="text-[0.625rem] tracking-[0.14em] text-mute uppercase underline-offset-2 hover:text-error hover:underline">{copy.group.remove}</Submit>
     </form>
   );
 }

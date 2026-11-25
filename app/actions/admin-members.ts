@@ -5,6 +5,7 @@ import { assertAdmin } from "@/lib/access";
 import { runAction } from "@/lib/action";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
+import { postGroupJoin } from "@/lib/group";
 import { adminMembershipSchema, adminProfileSchema, fieldErrors, userIdSchema, type ActionState } from "@/lib/validation";
 
 // Admin → Members → one member: account settings. Every action checks the ADMIN role
@@ -112,6 +113,7 @@ export async function adminSetMembership(_prev: ActionState, formData: FormData)
         targetId: userId,
         details: { subscriptionId: created.id, until: until!.toISOString(), payment: "none (given by admin)" },
       });
+      await postGroupJoin(tx, userId, created.id);
       return "Membership started.";
     });
     refresh(userId);

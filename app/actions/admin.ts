@@ -7,6 +7,7 @@ import { AccessError, assertAdmin } from "@/lib/access";
 import { runAction } from "@/lib/action";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
+import { postGroupJoin } from "@/lib/group";
 import {
   articleSchema,
   fieldErrors,
@@ -63,6 +64,7 @@ export async function reviewPayment(_prev: ActionState, formData: FormData): Pro
         const startsAt = running?.expiresAt && running.expiresAt > now ? running.expiresAt : now;
         const expiresAt = new Date(startsAt.getTime() + CYCLE_DAYS[sub.billingCycle] * DAY);
         await tx.subscription.update({ where: { id: sub.id }, data: { status: "ACTIVE", startsAt, expiresAt } });
+        if (sub.package === "PRO") await postGroupJoin(tx, sub.userId, sub.id);
       }
 
       await audit(tx, {
@@ -75,6 +77,7 @@ export async function reviewPayment(_prev: ActionState, formData: FormData): Pro
     });
 
     revalidatePath("/admin", "layout");
+    revalidatePath("/app", "layout");
     return { ok: true, message: decision === "verify" ? "Payment verified. Membership is active." : "Payment rejected." };
   });
 }

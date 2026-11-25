@@ -1,6 +1,7 @@
 import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { groupUnread } from "@/lib/group";
 
 // Members connecting and messaging. Only active (paying, verified) members take part,
 // on both sides; blocks in either direction hide people from each other completely.
@@ -61,12 +62,14 @@ export async function areConnected(a: string, b: string) {
 
 /** Counts for the app's tab badges and bell. */
 export async function socialCounts(userId: string) {
-  const [messages, requests, notifications] = await Promise.all([
+  const user = await db.user.findUnique({ where: { id: userId }, select: { groupReadAt: true } });
+  const [direct, group, requests, notifications] = await Promise.all([
     db.message.count({ where: { recipientId: userId, readAt: null } }),
+    (await isActiveMember(userId)) ? groupUnread(userId, user?.groupReadAt ?? null) : 0,
     db.connection.count({ where: { addresseeId: userId, status: "PENDING" } }),
     db.notification.count({ where: { userId, readAt: null } }),
   ]);
-  return { messages, requests, notifications };
+  return { messages: direct + group, requests, notifications };
 }
 
 /** Ids hidden from the viewer: anyone they blocked or who blocked them. */

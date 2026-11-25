@@ -95,6 +95,7 @@ model User {
   city           String?
   contact        String?
   onboardedAt    DateTime?  @map("onboarded_at")
+  groupReadAt    DateTime?  @map("group_read_at") // last time they opened the members' group chat
   createdAt      DateTime   @default(now()) @map("created_at")
   updatedAt      DateTime   @updatedAt @map("updated_at")
 
@@ -118,6 +119,7 @@ model User {
   notifications       Notification[]     @relation("NotificationUser")
   causedNotifications Notification[]     @relation("NotificationActor")
   pushSubscriptions   PushSubscription[]
+  groupMessages       GroupMessage[]
 
   @@index([fieldId])
   @@map("users")
@@ -395,6 +397,24 @@ model Message {
   @@index([senderId, recipientId, createdAt])
   @@index([recipientId, readAt])
   @@map("messages")
+}
+
+// The members' group chat: every active member is in it (app/app/messages/group).
+// kind "join" is the notice posted when someone first becomes a member; joinKey
+// (their user id) keeps it to one per person.
+model GroupMessage {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  kind      String    @default("message") // message | join
+  body      String
+  joinKey   String?   @unique @map("join_key")
+  removedAt DateTime? @map("removed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("group_messages")
 }
 
 // In-app notifications; each new one is also pushed to the member's phones.

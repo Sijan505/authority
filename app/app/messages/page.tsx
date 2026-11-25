@@ -7,6 +7,7 @@ import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
 import { db } from "@/lib/db";
 import { photoUrl } from "@/lib/photo";
+import { groupUnread } from "@/lib/group";
 import { activeMemberWhere, blockedIds } from "@/lib/social";
 
 export const metadata = { title: "Messages" };
@@ -35,9 +36,15 @@ export default async function MessagesPage() {
   const connections = await db.connection.findMany({ where: { status: "ACCEPTED", OR: [{ requesterId: me }, { addresseeId: me }] } });
   const ids = connections.map((c) => (c.requesterId === me ? c.addresseeId : c.requesterId)).filter((id) => !hidden.includes(id));
 
-  const [people, unread] = await Promise.all([
+  const [people, unread, groupLast, groupNew] = await Promise.all([
     db.user.findMany({ where: { id: { in: ids }, ...activeMemberWhere() }, select: { id: true, name: true, image: true, photoUpdatedAt: true, field: { select: { name: true } } } }),
     db.message.groupBy({ by: ["senderId"], where: { recipientId: me, readAt: null, senderId: { in: ids } }, _count: { _all: true } }),
+    db.groupMessage.findFirst({
+      where: { removedAt: null, OR: [{ kind: "join" }, { userId: { notIn: hidden } }] },
+      orderBy: { createdAt: "desc" },
+      select: { body: true, kind: true, createdAt: true, userId: true, user: { select: { name: true } } },
+    }),
+    groupUnread(me, viewer.user.groupReadAt),
   ]);
   const unreadBy = new Map(unread.map((u) => [u.senderId, u._count._all]));
   const last = await Promise.all(
@@ -60,6 +67,27 @@ export default async function MessagesPage() {
         <p className="mt-2 text-sm text-mute">{t.messagesIntro}</p>
       </AppHeader>
       <div className="mx-auto max-w-xl px-5 pt-6 pb-10">
+        <Link href="/app/messages/group" className="mb-6 flex items-center gap-3 border border-gold/40 bg-gold-pale/30 px-4 py-4">
+          <Avatar name="A" image={null} size={52} />
+          <span className="min-w-0 flex-1">
+            <span className="flex items-baseline justify-between gap-2">
+              <span className={`truncate font-serif text-[1.125rem] ${groupNew ? "font-normal" : "font-light"}`}>{copy.group.name}</span>
+              {groupLast && <span className="shrink-0 text-xs text-mute">{when(groupLast.createdAt)}</span>}
+            </span>
+            <span className="flex items-center justify-between gap-2">
+              <span className={`truncate text-sm ${groupNew ? "text-ink" : "text-mute"}`}>
+                {!groupLast
+                  ? copy.group.preview
+                  : groupLast.kind === "join"
+                    ? groupLast.body
+                    : `${groupLast.userId === me ? t.you : (groupLast.user.name ?? "").split(" ")[0]}: ${groupLast.body}`}
+              </span>
+              {groupNew > 0 && (
+                <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-gold px-1.5 text-[0.6875rem] font-semibold text-ink">{groupNew > 99 ? "99+" : groupNew}</span>
+              )}
+            </span>
+          </span>
+        </Link>
         {rows.length === 0 ? (
           <div>
             <p className="text-mute">{t.noMessages}</p>

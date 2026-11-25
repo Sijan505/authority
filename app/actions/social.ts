@@ -4,10 +4,11 @@ import { revalidatePath } from "next/cache";
 import { copy } from "@/content/copy";
 import { AccessError, assertPro, assertViewer } from "@/lib/access";
 import { runAction } from "@/lib/action";
+import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
 import { areConnected, blockedEitherWay, connectionBetween, isActiveMember } from "@/lib/social";
-import { messageSchema, pushSubscriptionSchema, respondSchema, userIdSchema, type ActionState } from "@/lib/validation";
+import { groupMessageIdSchema, groupMessageSchema, messageSchema, pushSubscriptionSchema, respondSchema, userIdSchema, type ActionState } from "@/lib/validation";
 
 const t = copy.social;
 const displayName = (name: string | null) => (name ?? "").trim() || "An Authority member";
@@ -108,6 +109,39 @@ export async function sendMessage(_prev: ActionState, formData: FormData): Promi
     else await notify(to, { type: "message", ...t.notice.message(displayName(viewer.user.name)), link: `/app/messages/${viewer.user.id}`, actorId: viewer.user.id });
     revalidatePath(`/app/messages/${to}`);
     revalidatePath("/app/messages");
+    return { ok: true };
+  });
+}
+
+/** Post in the members' group chat. Every active member can read it. */
+export async function sendGroupMessage(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  return runAction("group", { max: 60, windowSeconds: 600 }, async (): Promise<ActionState> => {
+    const viewer = await assertPro();
+    const parsed = groupMessageSchema.safeParse({ body: formData.get("body") ?? "" });
+    if (!parsed.success) return { message: parsed.error.issues[0]?.message ?? copy.errors.generic };
+    const now = new Date();
+    await db.$transaction([
+      db.groupMessage.create({ data: { userId: viewer.user.id, body: parsed.data.body, createdAt: now } }),
+      db.user.update({ where: { id: viewer.user.id }, data: { groupReadAt: now } }),
+    ]);
+    revalidatePath("/app/messages", "layout");
+    return { ok: true };
+  });
+}
+
+/** Remove a group message: members their own, admins any. The row stays, marked removed. */
+export async function removeGroupMessage(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  return runAction("group", { max: 60, windowSeconds: 600 }, async (): Promise<ActionState> => {
+    const viewer = await assertViewer();
+    const parsed = groupMessageIdSchema.safeParse({ messageId: formData.get("messageId") });
+    if (!parsed.success) return { message: copy.errors.generic };
+    const m = await db.groupMessage.findUnique({ where: { id: parsed.data.messageId } });
+    if (!m || m.removedAt) return { ok: true };
+    const own = m.userId === viewer.user.id && m.kind === "message" && viewer.plan === "PRO";
+    if (!own && !viewer.isAdmin) throw new AccessError(copy.errors.forbidden);
+    await db.groupMessage.update({ where: { id: m.id }, data: { removedAt: new Date() } });
+    if (!own) await audit(db, { actorId: viewer.user.id, action: "group.remove_message", targetType: "group_message", targetId: m.id, details: { authorId: m.userId } });
+    revalidatePath("/app/messages", "layout");
     return { ok: true };
   });
 }

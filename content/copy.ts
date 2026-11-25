@@ -496,6 +496,20 @@ export const copy = {
     locked: "Connecting and messaging are for members. Become a member to meet the people shaping Nepal's fields.",
   },
 
+  // The members' group chat (app/app/messages/group).
+  group: {
+    name: "Authority Members",
+    intro: "Every member, in one room.",
+    preview: "The group chat for every member",
+    joined: (name: string, field: string | null) => (field ? `${name} joined Authority as a ${field} member` : `${name} joined Authority as a member`),
+    write: "Message all members",
+    privacy: "Every active member can read this group.",
+    empty: "No messages yet. Say hello to everyone.",
+    remove: "Remove",
+    removeConfirm: "Remove this message for everyone?",
+    removed: "Message removed",
+  },
+
   // The installed app (app/app/*).
   app: {
     dashboard: "Member dashboard",
