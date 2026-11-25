@@ -388,6 +388,7 @@ model Message {
   senderId    String    @map("sender_id")
   recipientId String    @map("recipient_id")
   body        String
+  editedAt    DateTime? @map("edited_at") // set when the sender edits it
   readAt      DateTime? @map("read_at")
   createdAt   DateTime  @default(now()) @map("created_at")
 
@@ -408,7 +409,8 @@ model GroupMessage {
   kind      String    @default("message") // message | join
   body      String
   joinKey   String?   @unique @map("join_key")
-  removedAt DateTime? @map("removed_at")
+  editedAt  DateTime? @map("edited_at") // set when the author edits it
+  removedAt DateTime? @map("removed_at") // removed by an admin; an author's unsend deletes the row
   createdAt DateTime  @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

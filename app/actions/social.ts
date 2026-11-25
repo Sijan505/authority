@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { MESSAGE_EDIT_MINUTES } from "@/config/site";
 import { copy } from "@/content/copy";
 import { AccessError, assertPro, assertViewer } from "@/lib/access";
 import { runAction } from "@/lib/action";
@@ -8,7 +9,7 @@ import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { notify } from "@/lib/notify";
 import { areConnected, blockedEitherWay, connectionBetween, isActiveMember } from "@/lib/social";
-import { groupMessageIdSchema, groupMessageSchema, messageSchema, pushSubscriptionSchema, respondSchema, userIdSchema, type ActionState } from "@/lib/validation";
+import { groupMessageIdSchema, groupMessageSchema, messageEditSchema, messageRefSchema, messageSchema, pushSubscriptionSchema, respondSchema, userIdSchema, type ActionState } from "@/lib/validation";
 
 const t = copy.social;
 const displayName = (name: string | null) => (name ?? "").trim() || "An Authority member";
@@ -142,6 +143,64 @@ export async function removeGroupMessage(_prev: ActionState, formData: FormData)
     await db.groupMessage.update({ where: { id: m.id }, data: { removedAt: new Date() } });
     if (!own) await audit(db, { actorId: viewer.user.id, action: "group.remove_message", targetType: "group_message", targetId: m.id, details: { authorId: m.userId } });
     revalidatePath("/app/messages", "layout");
+    return { ok: true };
+  });
+}
+
+/** The viewer's own message, private or in the group, or an error. */
+async function ownMessage(kind: "dm" | "group", messageId: string, userId: string) {
+  const m =
+    kind === "dm"
+      ? await db.message.findUnique({ where: { id: messageId } }).then((r) => r && { ...r, authorId: r.senderId, removed: false, other: r.recipientId })
+      : await db.groupMessage
+          .findUnique({ where: { id: messageId } })
+          .then((r) => r && r.kind === "message" && { ...r, authorId: r.userId, removed: !!r.removedAt, other: null });
+  if (!m || m.authorId !== userId || m.removed) throw new AccessError(t.messageGone);
+  return m;
+}
+
+function refreshMessages(kind: "dm" | "group", otherId: string | null) {
+  revalidatePath("/app/messages");
+  revalidatePath(kind === "group" ? "/app/messages/group" : `/app/messages/${otherId}`);
+}
+
+/** Edit a message you sent, within MESSAGE_EDIT_MINUTES of sending it. */
+export async function editMessage(input: { kind: "dm" | "group"; messageId: string; body: string }): Promise<ActionState> {
+  return runAction("message-edit", { max: 60, windowSeconds: 600 }, async (): Promise<ActionState> => {
+    const viewer = await assertPro();
+    const parsed = messageEditSchema.safeParse(input);
+    if (!parsed.success) return { message: parsed.error.issues[0]?.message ?? copy.errors.generic };
+    const { kind, messageId, body } = parsed.data;
+    const m = await ownMessage(kind, messageId, viewer.user.id);
+    if (Date.now() - m.createdAt.getTime() > MESSAGE_EDIT_MINUTES * 60_000) return { message: t.editExpired };
+    if (m.body === body) return { ok: true };
+
+    const data = { body, editedAt: new Date() };
+    if (kind === "dm") await db.message.update({ where: { id: m.id }, data });
+    else await db.groupMessage.update({ where: { id: m.id }, data });
+    refreshMessages(kind, m.other);
+    return { ok: true };
+  });
+}
+
+/** Unsend a message you sent: it is deleted for everyone, at any time. */
+export async function unsendMessage(input: { kind: "dm" | "group"; messageId: string }): Promise<ActionState> {
+  return runAction("message-edit", { max: 60, windowSeconds: 600 }, async (): Promise<ActionState> => {
+    const viewer = await assertViewer();
+    const parsed = messageRefSchema.safeParse(input);
+    if (!parsed.success) return { message: copy.errors.generic };
+    const { kind, messageId } = parsed.data;
+    const m = await ownMessage(kind, messageId, viewer.user.id);
+
+    if (kind === "group") {
+      await db.groupMessage.delete({ where: { id: m.id } });
+    } else {
+      await db.message.delete({ where: { id: m.id } });
+      // If nothing unread from the viewer is left, take back the "sent you a message" notice too.
+      const stillUnread = await db.message.count({ where: { senderId: viewer.user.id, recipientId: m.other!, readAt: null } });
+      if (!stillUnread) await db.notification.deleteMany({ where: { userId: m.other!, actorId: viewer.user.id, type: "message", readAt: null } });
+    }
+    refreshMessages(kind, m.other);
     return { ok: true };
   });
 }

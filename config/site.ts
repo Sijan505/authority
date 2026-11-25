@@ -20,6 +20,9 @@ export const helpOptions = ["Yes, I'd like to help", "Maybe, tell me more", "No,
 /** Days before expiry when the dashboard starts showing a renewal reminder. */
 export const RENEWAL_REMINDER_DAYS = 7;
 
+/** Members can edit a message they sent for this long, as on Instagram. Unsending works any time. */
+export const MESSAGE_EDIT_MINUTES = 15;
+
 // The public interest form (components/Inquiry.tsx), following the landing-page
 // workplan. The server validates answers against these lists, so edit them here only.
 // It reuses cities and helpOptions from above.

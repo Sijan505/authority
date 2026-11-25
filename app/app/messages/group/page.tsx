@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AppHeader } from "@/components/AppHeader";
 import { Avatar } from "@/components/Avatar";
 import { MembersLocked } from "@/components/MembersLocked";
-import { LiveRefresh, MessageComposer, RemoveGroupMessage, ScrollToEnd } from "@/components/social";
+import { LiveRefresh, MessageComposer, MessageMenu, ScrollToEnd } from "@/components/social";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
 import { db } from "@/lib/db";
@@ -93,19 +93,29 @@ export default async function GroupChatPage() {
                         )}
                       </span>
                     )}
-                    <div className={`max-w-[78%] px-4 py-2.5 ${mine ? "bg-ink text-ivory" : "border border-line bg-paper/70"} ${m.removedAt ? "opacity-60" : ""}`}>
-                      {!mine && !sameAuthor && (
-                        <p className="mb-0.5 text-xs">
-                          <span className="font-medium">{m.user.name}</span>
-                          {m.user.field && <span className="text-mute"> · {m.user.field.name}</span>}
+                    <MessageMenu
+                      kind="group"
+                      messageId={m.id}
+                      body={m.body}
+                      sentAt={m.createdAt.toISOString()}
+                      mine={mine && !m.removedAt}
+                      canRemove={viewer.isAdmin && !m.removedAt}
+                      className="max-w-[78%]"
+                    >
+                      <div className={`px-4 py-2.5 ${mine ? "bg-ink text-ivory" : "border border-line bg-paper/70"} ${m.removedAt ? "opacity-60" : ""}`}>
+                        {!mine && !sameAuthor && (
+                          <p className="mb-0.5 text-xs">
+                            <span className="font-medium">{m.user.name}</span>
+                            {m.user.field && <span className="text-mute"> · {m.user.field.name}</span>}
+                          </p>
+                        )}
+                        <p className={`break-words whitespace-pre-line ${m.removedAt ? "italic" : ""}`}>{m.removedAt ? t.removed : m.body}</p>
+                        <p className={`mt-1 text-right text-[0.625rem] ${mine ? "text-ivory/55" : "text-mute"}`}>
+                          {m.editedAt && !m.removedAt && `${copy.social.edited} · `}
+                          {time(m.createdAt)}
                         </p>
-                      )}
-                      <p className={`break-words whitespace-pre-line ${m.removedAt ? "italic" : ""}`}>{m.removedAt ? t.removed : m.body}</p>
-                      <p className={`mt-1 flex items-center justify-end gap-3 text-[0.625rem] ${mine ? "text-ivory/55" : "text-mute"}`}>
-                        {!m.removedAt && (mine || viewer.isAdmin) && <RemoveGroupMessage messageId={m.id} />}
-                        {time(m.createdAt)}
-                      </p>
-                    </div>
+                      </div>
+                    </MessageMenu>
                   </div>
                 )}
               </li>

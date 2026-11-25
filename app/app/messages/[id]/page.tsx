@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/Avatar";
 import { MembersLocked } from "@/components/MembersLocked";
-import { LiveRefresh, MessageComposer, ScrollToEnd } from "@/components/social";
+import { LiveRefresh, MessageComposer, MessageMenu, ScrollToEnd } from "@/components/social";
 import { AppHeader } from "@/components/AppHeader";
 import { copy } from "@/content/copy";
 import { getViewer } from "@/lib/access";
@@ -77,13 +77,16 @@ export default async function ConversationPage({ params }: PageProps<"/app/messa
               <li key={m.id}>
                 {newDay && <p className="my-4 text-center text-[0.6875rem] tracking-[0.18em] text-mute uppercase">{day(m.createdAt)}</p>}
                 <div className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] px-4 py-2.5 ${mine ? "bg-ink text-ivory" : "border border-line bg-paper/70"}`}>
-                    <p className="break-words whitespace-pre-line">{m.body}</p>
-                    <p className={`mt-1 text-right text-[0.625rem] ${mine ? "text-ivory/55" : "text-mute"}`}>
-                      {time(m.createdAt)}
-                      {mine && m.readAt && " · ✓✓"}
-                    </p>
-                  </div>
+                  <MessageMenu kind="dm" messageId={m.id} body={m.body} sentAt={m.createdAt.toISOString()} mine={mine} className="max-w-[80%]">
+                    <div className={`px-4 py-2.5 ${mine ? "bg-ink text-ivory" : "border border-line bg-paper/70"}`}>
+                      <p className="break-words whitespace-pre-line">{m.body}</p>
+                      <p className={`mt-1 text-right text-[0.625rem] ${mine ? "text-ivory/55" : "text-mute"}`}>
+                        {m.editedAt && `${t.edited} · `}
+                        {time(m.createdAt)}
+                        {mine && m.readAt && " · ✓✓"}
+                      </p>
+                    </div>
+                  </MessageMenu>
                 </div>
               </li>
             );
